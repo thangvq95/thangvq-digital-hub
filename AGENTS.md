@@ -2,7 +2,7 @@
 
 ### Source of truth
 
-- `plan.md` for product/roadmap.
+- `docs/PRD.md` for product/roadmap.
 - `CONTEXT.md` for domain terms + architecture rules.
 - `docs/adr/` for decisions.
 
