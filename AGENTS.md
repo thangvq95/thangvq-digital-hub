@@ -20,6 +20,18 @@
 - Keep components small + typed.
 - No direct secrets in client code.
 
+### Recommended skills (Universal)
+
+When working on this codebase, AI agents with skill systems (Hermes, OpenClaw, Antigravity) should load:
+- `to-issues` (for breaking docs/PRD.md into tickets)
+- `tdd` (for test-driven component/API creation)
+- `diagnose` (for rigorous debugging loops)
+- `improve-codebase-architecture` (when refactoring Next.js boundaries)
+- `writing-plans` (before executing complex feature changes)
+- `frontend-design` (for styling Next.js components)
+- `ui-ux-pro-max` (for UI/UX design patterns, shadcn/ui best practices)
+- `web-artifacts-builder` (for creating UI prototypes before implementing)
+
 ### Issue tracker
 
 GitHub Issues. See `docs/agents/issue-tracker.md`.
