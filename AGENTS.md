@@ -31,6 +31,7 @@ When working on this codebase, AI agents with skill systems (Hermes, OpenClaw, A
 - `frontend-design` (for styling Next.js components)
 - `ui-ux-pro-max` (for UI/UX design patterns, shadcn/ui best practices)
 - `web-artifacts-builder` (for creating UI prototypes before implementing)
+- `webapp-testing` (for Playwright-based local web app testing)
 
 ### Issue tracker
 
