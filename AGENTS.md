@@ -5,6 +5,7 @@
 - `docs/PRD.md` for product/roadmap.
 - `CONTEXT.md` for domain terms + architecture rules.
 - `docs/adr/` for decisions.
+- `design-system/MASTER.md` for UI/UX rules, colors, and styling patterns.
 
 ### Stack & structure
 
@@ -32,6 +33,7 @@ When working on this codebase, AI agents with skill systems (Hermes, OpenClaw, A
 - `ui-ux-pro-max` (for UI/UX design patterns, shadcn/ui best practices)
 - `web-artifacts-builder` (for creating UI prototypes before implementing)
 - `webapp-testing` (for Playwright-based local web app testing)
+- `karpathy-guidelines` (for simple, surgical, verifiable code changes)
 
 ### Issue tracker
 
