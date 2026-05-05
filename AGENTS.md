@@ -11,7 +11,7 @@
 
 - Next.js 14+ App Router (no `pages/`).
 - Tailwind CSS v4 + ShadcnUI.
-- Supabase PostgreSQL.
+- NestJS API + PostgreSQL (Docker/VPS).
 - `app/` routes: `/` portfolio, `/tech` dashboard.
 - UI components in `components/portfolio/` and `components/dashboard/`.
 

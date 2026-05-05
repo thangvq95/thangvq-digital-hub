@@ -10,32 +10,46 @@
 
 ```mermaid
 graph TB
-    subgraph "Monorepo: thangvq-digital-hub"
+    subgraph "Frontend: thangvq-digital-hub"
         A["Next.js 14+ App Router"]
         A --> B["/ — Portfolio"]
         A --> C["/tech — TechTrend Dashboard"]
     end
 
-    subgraph "Backend & Data"
-        D["Supabase PostgreSQL"]
+    subgraph "Backend & Data (Docker/VPS)"
+        N["NestJS API"]
+        D["PostgreSQL"]
+        N --> D
+    end
+
+    subgraph "AI Orchestration (Docker/VPS)"
+        SK["Spec Kit (Architect)"]
+        HA["Hermes Agent (Developer)"]
+        SK --> HA
+        HA --> N
     end
 
     subgraph "External Crawler"
         F["OpenClaw"]
         F -- "scrape + classify" --> F
-        F -- "POST /api/repos/upsert" --> A
+        F -- "POST /api/repos/upsert" --> N
     end
 
     subgraph "Infrastructure"
-        H["Mac Mini M4 Pro"]
+        H["VPS / Mac Mini M4 Pro"]
         CF["Cloudflare (DNS + WAF)"]
         K["Vercel"]
+        RP["Nginx / Caddy"]
     end
 
-    C -- "read" --> D
+    C -- "read" --> N
     A -- "deploy" --> K
+    N -- "runs on" --> H
+    D -- "runs on" --> H
+    SK -- "runs on" --> H
+    HA -- "runs on" --> H
     F -- "runs on" --> H
-    A -- "write" --> D
+    RP -- "routes" --> N
     CF -- "proxy / DDoS protect" --> K
 ```
 
@@ -43,34 +57,69 @@ graph TB
 
 | Layer | Choice | Rationale |
 |---|---|---|
-| Framework | **Next.js 14+ (App Router)** | SSR/SSG for portfolio SEO, RSC for dashboard |
-| Styling | **Tailwind CSS v4** + **ShadcnUI** | Rapid UI, consistent design system |
-| Database | **Supabase (PostgreSQL)** | Free tier sufficient, realtime, built-in REST API |
-| Crawler | **OpenClaw** (external) | Scrape + LLM classify + POST to upsert API |
-| Hosting | **Vercel** | Edge deployment, native Next.js integration |
-| DNS / Security | **Cloudflare** | DNS proxy, WAF, DDoS protection in front of Vercel |
-| Domain | `thangvq95.page` | Already owned, managed via Cloudflare |
+| Frontend | **Next.js 14+ (Vercel)** | SSR/SSG cho Portfolio SEO, RSC cho Dashboard. |
+| Styling | **Tailwind CSS v4** + **ShadcnUI** | Rapid UI, consistent design system. |
+| Backend API | **NestJS (Docker/VPS)** | Thay thế Supabase. Chạy tập trung trên VPS để Hermes truy cập trực tiếp. |
+| Database | **PostgreSQL (Docker/VPS)** | Lưu trữ dữ liệu repository và logs phả hệ/cá nhân cục bộ. |
+| Reverse Proxy| **Nginx / Caddy** | Quản lý SSL và điều hướng subdomain cho Dashboard/API. |
+| AI Orchestration | **Spec Kit + Hermes** | Chạy trong Docker container riêng biệt trên cùng VPS. |
+| Hosting | **Vercel** | Edge deployment, native Next.js integration cho Frontend. |
+| DNS / Security | **Cloudflare** | DNS proxy, WAF, DDoS protection. |
+| Domain | `thangvq95.page` | Quản lý qua Cloudflare. |
 
-### Data Flow: OpenClaw → App → Supabase
+### ⚡ MASTER PLAN: Autonomous Architecture
+
+#### 1. Core Philosophy: Spec-as-Code
+- **Single Source of Truth:** The `PRD.md` and the `/specs` folder are the absolute authorities.
+- **Zero-Dependency:** All critical data (Postgres) and logic (NestJS) reside on your VPS.
+- **Autonomous Lifecycle:** Listen (GitHub/Sentry) → Plan (Spec Kit) → Execute (Hermes) → Update Specs/Docs → Pull Request.
+
+#### 2. System Roles (Updated for Self-hosted BE)
+
+| Component | Role | Technical Configuration |
+|---|---|---|
+| **Spec Kit** | The Architect | Analyzes `/specs` and current DB schema to generate Implementation Plans. |
+| **Hermes Agent** | The Developer | Clones repo, writes NestJS code, and runs migrations on local Postgres. |
+| **Workstation** | VPS (Docker) | Isolated containers for NestJS, Postgres, and AI Agents. |
+| **API Bridge** | 9Router | Endpoint: `https://9router.phieucaphe.com/v1`. |
+
+#### 📘 SYSTEM PROMPTS (Finalized)
+
+**Prompt 1: Spec Kit (The Brain)**
+> "You are Spec Kit, Chief Architect for ThangVQ Digital Hub.
+> Listen: Receive signals from GitHub/Sentry.
+> Analyze: Compare requests against PRD.md and /specs.
+> Plan: Generate a JSON Implementation Plan. Since the Backend is now a self-hosted NestJS + Postgres stack, ensure plans include database migrations.
+> Document: Update /docs and /specs for every change.
+> Route: Use 9Router at https://9router.phieucaphe.com/v1."
+
+**Prompt 2: Hermes Agent (The Executioner)**
+> "You are Hermes Agent, an autonomous developer running in Docker.
+> Execute: Clones the repo and implements NestJS/Postgres logic using Claude 3.5 Sonnet.
+> Environment: You have direct access to the local Postgres container for testing migrations.
+> Self-Heal: If Sentry reports a bug, automatically fix the code, update specs/docs, and open a PR immediately.
+> No Supabase: All logic must be implemented in the local NestJS backend."
+
+### Data Flow: OpenClaw → NestJS API → PostgreSQL
 
 ```mermaid
 sequenceDiagram
     participant OC as OpenClaw (Mac Mini)
-    participant API as Next.js API Routes
-    participant DB as Supabase PostgreSQL
+    participant BE as NestJS API
+    participant DB as PostgreSQL
 
     OC->>OC: Scrape GitHub Trending (Daily/Weekly/Monthly top 25)
     OC->>OC: LLM classify domains for each new repo
-    OC->>API: POST /api/repos/upsert (batch payload + API key)
-    API->>API: Validate API key
-    API->>DB: Reset rank_* = NULL (per period)
-    API->>DB: Upsert repositories (preserve is_favorite, is_applied)
-    API->>DB: Insert sync_log
-    API-->>OC: 200 OK + sync summary
+    OC->>BE: POST /api/repos/upsert (batch payload + API key)
+    BE->>BE: Validate API key
+    BE->>DB: Reset rank_* = NULL (per period)
+    BE->>DB: Upsert repositories (preserve is_favorite, is_applied)
+    BE->>DB: Insert sync_log
+    BE-->>OC: 200 OK + sync summary
 ```
 
 > **Note:** OpenClaw is fully responsible for scraping and classifying repositories.
-> The app only provides an API endpoint to receive pre-processed data and persist it to Supabase.
+> The NestJS API receives pre-processed data and persists it to the local PostgreSQL database. The Next.js frontend fetches data directly from the NestJS API.
 
 ### Monorepo Structure
 
@@ -94,21 +143,18 @@ thangvq-digital-hub/
 │   ├── portfolio/              # Hero, About, TechStack, Experience, Contact
 │   └── dashboard/              # RepoCard, DomainFilter, RankToggle, SearchBar
 ├── lib/
-│   ├── supabase/
-│   │   ├── client.ts           # Browser Supabase client
-│   │   ├── server.ts           # Server Supabase client
-│   │   └── types.ts            # Generated DB types
+│   ├── api/
+│   │   └── client.ts           # Axios/Fetch client to NestJS backend
 │   └── constants.ts            # Domain list, rank labels, etc.
 ├── public/
 │   ├── images/                 # Profile photo, project screenshots
 │   └── resume.pdf              # Downloadable CV
-├── supabase/
-│   └── migrations/             # SQL migration files
+├── backend/                    # NestJS Application
 ├── .gitignore                  # Git ignore rules
 ├── next.config.ts
 ├── tailwind.config.ts
 ├── package.json
-├── .env.local                  # SUPABASE_URL, SUPABASE_ANON_KEY, SYNC_API_KEY
+├── .env.local                  # NEXT_PUBLIC_API_URL, SYNC_API_KEY
 └── plan.md                     # This file
 ```
 
@@ -118,19 +164,19 @@ thangvq-digital-hub/
 
 ### 1.1 Design Direction
 
-- **Style:** Dark-themed, minimalist, premium feel (glassmorphism accents)
-- **Inspiration:** Linear.app, Vercel.com, Raycast.com
-- **Typography:** `Inter` (body) + `JetBrains Mono` (code snippets)
+- **Style:** Liquid Glass (Flowing glass, morphing, fluid animations, translucent)
+- **Inspiration:** Premium SaaS, creative platforms, luxury portfolios
+- **Typography:** `Space Grotesk` (headings) + `DM Sans` (body)
 - **Color Palette:**
 
 | Token | Value | Usage |
 |---|---|---|
-| `--bg-primary` | `hsl(220, 20%, 6%)` | Page background |
-| `--bg-card` | `hsl(220, 15%, 10%)` | Card surfaces |
-| `--accent` | `hsl(210, 100%, 60%)` | Links, CTAs |
-| `--accent-glow` | `hsl(210, 100%, 60%, 0.15)` | Glow effects |
-| `--text-primary` | `hsl(0, 0%, 95%)` | Headings |
-| `--text-secondary` | `hsl(0, 0%, 60%)` | Body text |
+| `--bg-primary` | `#0F172A` | Page background |
+| `--bg-card` | `#1E293B` | Card surfaces |
+| `--accent` | `#22C55E` | Links, CTAs (Status Green) |
+| `--accent-glow` | `#22C55E26` | Glow effects |
+| `--text-primary` | `#F8FAFC` | Headings |
+| `--text-secondary` | `#94A3B8` | Body text |
 
 ### 1.2 Sections & Content
 
@@ -397,8 +443,8 @@ interface UpsertPayload {
 
 | # | Task | Priority | Est. |
 |---|---|---|---|
-| T1 | Supabase project setup + migration SQL | 🔴 High | 1h |
-| T2 | Supabase client setup (`lib/supabase/`) | 🔴 High | 30m |
+| T1 | NestJS + PostgreSQL project setup (Docker) | 🔴 High | 2h |
+| T2 | API client setup (`lib/api/`) | 🔴 High | 30m |
 | T3 | API route: `GET /api/repos` with filters | 🔴 High | 2h |
 | T4 | API route: `PATCH /api/repos/[fullName]` | 🔴 High | 1h |
 | T5 | API route: `POST /api/repos/upsert` (for OpenClaw) | 🔴 High | 2h |
@@ -419,7 +465,7 @@ interface UpsertPayload {
 - [x] Repo structure + plan ✅
 - [ ] Next.js + Tailwind + ShadcnUI setup (P1)
 - [ ] Design system tokens (P2)
-- [ ] Supabase project + migrations (T1, T2)
+- [ ] NestJS project + PostgreSQL migrations (T1, T2)
 
 ### Phase 2: Portfolio (Day 3-4)
 - [ ] Hero + About (P3, P4)
@@ -451,10 +497,8 @@ interface UpsertPayload {
 ## 🔐 Environment Variables
 
 ```env
-# Supabase
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
-SUPABASE_SERVICE_ROLE_KEY=eyJ...    # Server-side only, for upsert
+# Backend API
+NEXT_PUBLIC_API_URL=https://api.thangvq95.page
 
 # OpenClaw Sync Protection
 SYNC_API_KEY=random-secret-key       # x-api-key header for /api/repos/upsert
@@ -469,9 +513,9 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXX
 
 1. **Monorepo vs Multi-repo:** Single Next.js app — portfolio and dashboard share layout, fonts, and theme
 2. **SSR vs SSG:** Portfolio pages use SSG (static), Dashboard uses SSR + client-side fetching
-3. **Supabase vs Self-hosted PG:** Supabase for convenience — free tier is sufficient for a side project, REST API included out of the box
-4. **OpenClaw integration:** OpenClaw handles all scraping and LLM classification externally; the app only receives pre-processed data via the upsert API. No LLM key is needed in the app.
-5. **RLS Policy:** Row Level Security enabled — anon key is read-only, service role key is used by the upsert API
+3. **Backend Architecture:** Self-hosted NestJS + PostgreSQL running via Docker on VPS. Allows direct local access for Hermes Agent to test migrations and logic autonomously.
+4. **OpenClaw integration:** OpenClaw handles all scraping and LLM classification externally; the NestJS API receives pre-processed data via the upsert API. No LLM key is needed in the app.
+5. **Security:** NestJS will implement API key validation for OpenClaw upsert requests and appropriate CORS/Auth policies for frontend consumption.
 6. **Hosting:** Vercel — native Next.js integration, fast deploys, preview deployments
 7. **DNS / Security:** Cloudflare sits in front of Vercel as DNS proxy + WAF. Traffic flow: `User → Cloudflare (DNS proxy + DDoS/WAF) → Vercel (origin)`. Cloudflare issues the edge SSL certificate; Vercel issues a separate origin certificate.
 8. **Portfolio content:** Temporarily sourced from LinkedIn; detailed content will be updated once the CV is finalized
