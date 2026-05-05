@@ -35,6 +35,11 @@ When working on this codebase, AI agents with skill systems (Hermes, OpenClaw, A
 - `webapp-testing` (for Playwright-based local web app testing)
 - `karpathy-guidelines` (for simple, surgical, verifiable code changes)
 
+- `codebase-migrate` (for large refactors and migrations)
+- `create-plan` (for quick execution plans before coding)
+- `gh-fix-ci` (for inspecting and fixing GitHub Actions failures)
+- `pr-review-ci-fix` (for automated PR review + CI autofix)
+- `sentry-triage` (for mapping Sentry errors to source)
 ### Issue tracker
 
 GitHub Issues. See `docs/agents/issue-tracker.md`.
