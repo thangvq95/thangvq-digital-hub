@@ -24,7 +24,7 @@
 ### Recommended skills (Universal)
 
 This repository uses [skills.sh](https://skills.sh/) to lock and manage AI agent capabilities deterministically. 
-Agents MUST run `npx skills install` (or equivalent) upon entering the workspace to ensure the correct tooling version is loaded.
+Agents MUST run `npx skills experimental_install -y` (or equivalent) upon entering the workspace to ensure the correct tooling version is loaded.
 **Key skills loaded for this domain and their usage contexts:**
 
 - `to-issues` (for breaking docs/PRD.md into tickets)
