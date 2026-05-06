@@ -31,7 +31,7 @@ Throughout the entire workflow, operate in read-only mode. Do not write or updat
    - Then provide a **small checklist** of action items (default 6–10 items).
       - Each checklist item should be a concrete action and, when helpful, mention files/commands.
       - **Make items atomic and ordered**: discovery → changes → tests → rollout.
-      - **Verb-first**: “Add…”, “Refactor…”, “Verify…”, “Ship…”.
+      - **Verb-first**: "Add…", "Refactor…", "Verify…", "Ship…".
    - Include at least one item for **tests/validation** and one for **edge cases/risk** when applicable.
    - If there are unknowns, include a tiny **Open questions** section (max 3).
 
@@ -42,7 +42,7 @@ Throughout the entire workflow, operate in read-only mode. Do not write or updat
 ```markdown
 # Plan
 
-<1–3 sentences: what we’re doing, why, and the high-level approach.>
+<1–3 sentences: what we're doing, why, and the high-level approach.>
 
 ## Scope
 - In:
@@ -65,10 +65,10 @@ Throughout the entire workflow, operate in read-only mode. Do not write or updat
 ## Checklist item guidance
 Good checklist items:
 - Point to likely files/modules: src/..., app/..., services/...
-- Name concrete validation: “Run npm test”, “Add unit tests for X”
+- Name concrete validation: "Run npm test", "Add unit tests for X"
 - Include safe rollout when relevant: feature flag, migration plan, rollback note
 
 Avoid:
-- Vague steps (“handle backend”, “do auth”)
+- Vague steps ("handle backend", "do auth")
 - Too many micro-steps
 - Writing code snippets (keep the plan implementation-agnostic)

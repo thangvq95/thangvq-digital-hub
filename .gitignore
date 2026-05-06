@@ -4,6 +4,8 @@ node_modules/
 .pnp.js
 .yarn/install-state.gz
 
+# ─── AI Agents / Skills ──────────────────────────────────────────────────────
+.agents/skills/
 # ─── Next.js ─────────────────────────────────────────────────────────────────
 .next/
 out/
@@ -21,10 +23,6 @@ dist/
 .env.production.local
 .env*.local
 
-# ─── Supabase ────────────────────────────────────────────────────────────────
-# Local Supabase dev stack (Docker volumes, generated keys)
-supabase/.temp/
-supabase/functions/.cache/
 
 # ─── TypeScript ──────────────────────────────────────────────────────────────
 *.tsbuildinfo

@@ -23,7 +23,10 @@
 
 ### Recommended skills (Universal)
 
-When working on this codebase, AI agents with skill systems (Hermes, OpenClaw, Antigravity) should load:
+This repository uses [skills.sh](https://skills.sh/) to lock and manage AI agent capabilities deterministically. 
+Agents MUST run `npx skills install` (or equivalent) upon entering the workspace to ensure the correct tooling version is loaded.
+**Key skills loaded for this domain and their usage contexts:**
+
 - `to-issues` (for breaking docs/PRD.md into tickets)
 - `tdd` (for test-driven component/API creation)
 - `diagnose` (for rigorous debugging loops)
@@ -40,6 +43,10 @@ When working on this codebase, AI agents with skill systems (Hermes, OpenClaw, A
 - `gh-fix-ci` (for inspecting and fixing GitHub Actions failures)
 - `pr-review-ci-fix` (for automated PR review + CI autofix)
 - `sentry-triage` (for mapping Sentry errors to source)
+- `find-skills` (for discovering and installing new agent capabilities)
+- `grill-with-docs` (for stress-testing plans against existing domain architecture)
+- `to-prd` (for generating PRDs from the current conversation context)
+- `triage` (for managing and triaging issues through a structured workflow)
 ### Issue tracker
 
 GitHub Issues. See `docs/agents/issue-tracker.md`.
