@@ -5,6 +5,7 @@ import json
 import os
 import sqlite3
 import subprocess
+import threading
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
@@ -76,10 +77,11 @@ def _safe_ref_name(ref: str) -> str:
     return ref.replace("/", "_")
 
 
-def _create_worktree(ref: str) -> str:
+def _create_worktree(ref: str, run_id: str) -> str:
     os.makedirs(WORKTREES_DIR, exist_ok=True)
     safe_ref = _safe_ref_name(ref)
-    worktree_path = os.path.join(WORKTREES_DIR, safe_ref)
+    # Append run_id to ensure concurrent issues (same branch) don't collide
+    worktree_path = os.path.join(WORKTREES_DIR, f"{safe_ref}_{run_id}")
     _run(["git", "-C", BASE_REPO, "fetch", "origin", ref])
     _run(["git", "-C", BASE_REPO, "worktree", "add", "--force", worktree_path, f"origin/{ref}"])
     return worktree_path
@@ -207,20 +209,22 @@ class Handler(BaseHTTPRequestHandler):
             self.wfile.write(b"ignored: cannot determine skill or ref")
             return
 
-        try:
-            worktree = _create_worktree(ref)
-            _run_hermes(worktree, skill, target_desc)
-            _remove_worktree(worktree)
-        except Exception as e:
-            self.send_response(500)
-            self.end_headers()
-            self.wfile.write(str(e).encode("utf-8"))
-            return
+        def _process_background():
+            try:
+                # Use delivery ID (unique GitHub Webhook ID) as run_id
+                worktree = _create_worktree(ref, delivery)
+                _run_hermes(worktree, skill, target_desc)
+                _remove_worktree(worktree)
+            except Exception as e:
+                print(f"Background processing error for {delivery}: {e}")
+
+        # Run Hermes in a background thread to avoid blocking the HTTP Server
+        threading.Thread(target=_process_background, daemon=True).start()
 
         _mark_seen(delivery)
-        self.send_response(200)
+        self.send_response(202)
         self.end_headers()
-        self.wfile.write(b"ok")
+        self.wfile.write(b"accepted and processing in background")
 
 
 def main():
