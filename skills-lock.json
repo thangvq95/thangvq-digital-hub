@@ -62,7 +62,7 @@
       "computedHash": "15a7b5e36383ebadb2dec5e586679e55e9663d292da418926b8da6fc0ef27d84"
     },
     "template-custom-skill": {
-      "source": "./docs/custom-skills/template-custom-skill",
+      "source": "/Users/thang/Development/thangvq-digital-hub/docs/custom-skills/template-custom-skill",
       "sourceType": "local",
       "computedHash": "104cf1d583c9cccb00b62f424093b5f2d73536c84b56fb6d220fb07d35bfe0da"
     },
