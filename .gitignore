@@ -5,7 +5,7 @@ node_modules/
 .yarn/install-state.gz
 
 # ─── AI Agents / Skills ──────────────────────────────────────────────────────
-# .agents/skills/ (Đã mở khoá để commit trực tiếp vào repo)
+# .agents/skills/ (Unlocked to allow committing directly to the repo)
 # ─── Next.js ─────────────────────────────────────────────────────────────────
 .next/
 out/

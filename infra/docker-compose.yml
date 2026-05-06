@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  ai-workspace:
+    build:
+      context: ../
+      dockerfile: infra/ai-developer-workspace/Dockerfile
+    container_name: ai-developer-workspace
+    restart: always
+    ports:
+      - "${PORT:-8080}:8080"
+    volumes:
+      # Mount the entire source code repository for Git operations
+      - ../:/app/repo
+      # Mount data volume to store the SQLite deduplication DB
+      - listener_data:/app/data
+      # Mount Hermes configuration and memory to persist across upgrades
+      - ~/.hermes:/root/.hermes
+      # Mount SSH keys from the Host so the bot can push code to GitHub
+      - ~/.ssh:/root/.ssh:ro
+      # Mount GitHub CLI config (if using `gh auth login` instead of SSH)
+      - ~/.config/gh:/root/.config/gh:ro
+    environment:
+      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
+      - BASE_REPO=${BASE_REPO:-/app/repo}
+      - WORKTREES_DIR=${WORKTREES_DIR:-/app/worktrees}
+      - DEDUP_DB=${DEDUP_DB:-/app/data/ai-workspace.db}
+      - PORT=${PORT:-8080}
+      - HERMES_BIN=${HERMES_BIN:-hermes}
+
+volumes:
+  listener_data:

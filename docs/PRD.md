@@ -30,7 +30,7 @@ graph TB
     end
 
     subgraph "External Crawler"
-        F["OpenClaw"]
+        F["Hermes Agent"]
         F -- "scrape + classify" --> F
         F -- "POST /api/repos/upsert" --> N
     end
@@ -100,11 +100,11 @@ graph TB
 > Self-Heal: If Sentry reports a bug, automatically fix the code, update specs/docs, and open a PR immediately.
 > No Supabase: All logic must be implemented in the local NestJS backend."
 
-### Data Flow: OpenClaw → NestJS API → PostgreSQL
+### Data Flow: Hermes Agent → NestJS API → PostgreSQL
 
 ```mermaid
 sequenceDiagram
-    participant OC as OpenClaw (Mac Mini)
+    participant OC as Hermes Agent (Mac Mini)
     participant BE as NestJS API
     participant DB as PostgreSQL
 
@@ -118,7 +118,7 @@ sequenceDiagram
     BE-->>OC: 200 OK + sync summary
 ```
 
-> **Note:** OpenClaw is fully responsible for scraping and classifying repositories.
+> **Note:** Hermes Agent is fully responsible for scraping and classifying repositories.
 > The NestJS API receives pre-processed data and persists it to the local PostgreSQL database. The Next.js frontend fetches data directly from the NestJS API.
 
 ### Monorepo Structure
@@ -276,7 +276,7 @@ CREATE TABLE repositories (
     stars_growth    TEXT,                        -- "+1,200 stars this week"
     forks_total     INTEGER DEFAULT 0,
 
-    -- AI Classification (assigned by OpenClaw)
+    -- AI Classification (assigned by Hermes Agent)
     domains         TEXT[] DEFAULT '{}',         -- {"AI Agent", "Design", "Fintech"}
 
     -- User Interactions
@@ -385,11 +385,11 @@ export const DOMAINS = [
 | `/api/repos/[fullName]` | PATCH | Toggle `is_favorite`, `is_applied`, update `notes` |
 | `/api/sync` | GET | Latest sync log entry |
 
-#### Write API (called by OpenClaw to insert data)
+#### Write API (called by Hermes Agent to insert data)
 
 | Endpoint | Method | Auth | Description |
 |---|---|---|---|
-| `/api/repos/upsert` | POST | `x-api-key` header | Receives batch payload from OpenClaw |
+| `/api/repos/upsert` | POST | `x-api-key` header | Receives batch payload from Hermes Agent |
 
 ##### `POST /api/repos/upsert` — Request Payload
 
@@ -408,7 +408,7 @@ interface UpsertPayload {
         stars_total?: number;
         stars_growth?: string;       // "+1,200 stars this week"
         forks_total?: number;
-        domains: string[];           // ["AI Agent", "Backend"] — classified by OpenClaw
+        domains: string[];           // ["AI Agent", "Backend"] — classified by Hermes Agent
     }[];
 }
 ```
@@ -431,7 +431,7 @@ interface UpsertPayload {
 6. Return summary response
 ```
 
-### 2.4 Crawler Schedule (OpenClaw side)
+### 2.4 Crawler Schedule (Hermes Agent side)
 
 | Job | Schedule | Action |
 |---|---|---|
@@ -447,7 +447,7 @@ interface UpsertPayload {
 | T2 | API client setup (`lib/api/`) | 🔴 High | 30m |
 | T3 | API route: `GET /api/repos` with filters | 🔴 High | 2h |
 | T4 | API route: `PATCH /api/repos/[fullName]` | 🔴 High | 1h |
-| T5 | API route: `POST /api/repos/upsert` (for OpenClaw) | 🔴 High | 2h |
+| T5 | API route: `POST /api/repos/upsert` (for Hermes Agent) | 🔴 High | 2h |
 | T6 | API route: `GET /api/sync` | 🟢 Low | 30m |
 | T7 | Dashboard page layout + rank toggle | 🔴 High | 2h |
 | T8 | RepoCard component | 🔴 High | 2h |
@@ -475,7 +475,7 @@ interface UpsertPayload {
 
 ### Phase 3: Dashboard API (Day 5-6)
 - [ ] Read APIs (T3, T4, T6)
-- [ ] Upsert API for OpenClaw (T5)
+- [ ] Upsert API for Hermes Agent (T5)
 - [ ] Test with sample data
 
 ### Phase 4: Dashboard UI (Day 7-8)
@@ -489,7 +489,7 @@ interface UpsertPayload {
 - [ ] Cloudflare DNS: add `thangvq95.page` CNAME → Vercel (proxy enabled = orange cloud ☁️)
 - [ ] Vercel: add custom domain `thangvq95.page`, verify SSL
 - [ ] Cloudflare WAF: enable security rules, bot fight mode
-- [ ] Configure OpenClaw to call upsert API
+- [ ] Configure Hermes Agent to call upsert API
 - [ ] Final QA
 
 ---
@@ -500,7 +500,7 @@ interface UpsertPayload {
 # Backend API
 NEXT_PUBLIC_API_URL=https://api.thangvq95.page
 
-# OpenClaw Sync Protection
+# Hermes Agent Sync Protection
 SYNC_API_KEY=random-secret-key       # x-api-key header for /api/repos/upsert
 
 # Analytics (optional)
@@ -514,8 +514,8 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXX
 1. **Monorepo vs Multi-repo:** Single Next.js app — portfolio and dashboard share layout, fonts, and theme
 2. **SSR vs SSG:** Portfolio pages use SSG (static), Dashboard uses SSR + client-side fetching
 3. **Backend Architecture:** Self-hosted NestJS + PostgreSQL running via Docker on VPS. Allows direct local access for Hermes Agent to test migrations and logic autonomously.
-4. **OpenClaw integration:** OpenClaw handles all scraping and LLM classification externally; the NestJS API receives pre-processed data via the upsert API. No LLM key is needed in the app.
-5. **Security:** NestJS will implement API key validation for OpenClaw upsert requests and appropriate CORS/Auth policies for frontend consumption.
+4. **Hermes Agent integration:** Hermes Agent handles all scraping and LLM classification externally; the NestJS API receives pre-processed data via the upsert API. No LLM key is needed in the app.
+5. **Security:** NestJS will implement API key validation for Hermes Agent upsert requests and appropriate CORS/Auth policies for frontend consumption.
 6. **Hosting:** Vercel — native Next.js integration, fast deploys, preview deployments
 7. **DNS / Security:** Cloudflare sits in front of Vercel as DNS proxy + WAF. Traffic flow: `User → Cloudflare (DNS proxy + DDoS/WAF) → Vercel (origin)`. Cloudflare issues the edge SSL certificate; Vercel issues a separate origin certificate.
 8. **Portfolio content:** Temporarily sourced from LinkedIn; detailed content will be updated once the CV is finalized
