@@ -37,7 +37,12 @@ All skills are checked directly into the repository under `.agents/skills/` for 
 - `web-artifacts-builder` (for creating UI prototypes before implementing)
 - `webapp-testing` (for Playwright-based local web app testing)
 - `karpathy-guidelines` (for simple, surgical, verifiable code changes)
-
+- `brainstorming` (for refining rough ideas, generating creative solutions, and exploring alternatives before implementation)
+- `writing-skills` (for creating and testing new AI skills following best practices)
+- `skill-creator` (for creating, modifying, testing, and benchmarking custom AI skills)
+- `vercel-react-best-practices` (for enforcing Vercel's official React/Next.js performance guidelines and bundle optimizations)
+- `vercel-composition-patterns` (for designing scalable, maintainable React component architecture without prop drilling)
+- `web-design-guidelines` (for auditing UI code against web accessibility and best interface practices)
 - `codebase-migrate` (for large refactors and migrations)
 - `create-plan` (for quick execution plans before coding)
 - `gh-fix-ci` (for inspecting and fixing GitHub Actions failures)
