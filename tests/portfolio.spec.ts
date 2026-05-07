@@ -12,4 +12,37 @@ test.describe('Portfolio Page', () => {
     await expect(page.locator('#hero-view-projects')).toBeVisible();
     await expect(page.locator('#hero-download-cv')).toBeVisible();
   });
+
+  test('renders about section with heading', async ({ page }) => {
+    const about = page.locator('#about');
+    await expect(about).toBeVisible();
+    await expect(about.getByRole('heading', { name: /about me/i })).toBeVisible();
+  });
+
+  test('renders tech stack section with category cards', async ({ page }) => {
+    const techStack = page.locator('#tech-stack');
+    await expect(techStack).toBeVisible();
+    const cards = techStack.locator('[data-testid^="tech-category-"]');
+    await expect(cards).toHaveCount(5);
+  });
+
+  test('renders experience timeline with 4 entries', async ({ page }) => {
+    const experience = page.locator('#experience');
+    await expect(experience).toBeVisible();
+    const entries = experience.locator('[data-testid^="exp-entry-"]');
+    await expect(entries).toHaveCount(4);
+  });
+
+  test('renders projects section', async ({ page }) => {
+    const projects = page.locator('#projects');
+    await expect(projects).toBeVisible();
+    await expect(projects.getByRole('heading', { name: /projects/i })).toBeVisible();
+  });
+
+  test('renders contact footer with social links', async ({ page }) => {
+    const footer = page.locator('#contact-footer');
+    await expect(footer).toBeVisible();
+    await expect(page.locator('#footer-github-link')).toBeVisible();
+    await expect(page.locator('#footer-linkedin-link')).toBeVisible();
+  });
 });

@@ -1,61 +1,49 @@
+import { GITHUB_URL, LINKEDIN_URL } from "@/lib/constants";
+import { Globe, Link, Mail } from "lucide-react";
+
+const socialLinks = [
+  { id: "footer-github-link", href: GITHUB_URL, label: "GitHub", icon: Globe },
+  { id: "footer-linkedin-link", href: LINKEDIN_URL, label: "LinkedIn", icon: Link },
+  { id: "footer-email-link", href: "mailto:thangvq95@gmail.com", label: "Email", icon: Mail },
+];
+
 const ContactFooter: React.FC = () => {
   return (
-    <footer
-      id="contact"
-      className="border-t"
-      style={{ borderColor: "var(--border)" }}
-    >
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <footer id="contact-footer" className="py-16 px-4">
+      <div className="max-w-4xl mx-auto text-center">
         <h2
-          className="text-sm font-medium tracking-widest uppercase mb-3"
-          style={{ color: "var(--accent)" }}
-        >
-          Contact
-        </h2>
-        <p
-          className="text-3xl font-bold mb-6"
+          className="text-3xl sm:text-4xl font-bold mb-4"
           style={{ color: "var(--text-primary)" }}
         >
-          Let&apos;s build something great
-        </p>
-
-        <div className="flex flex-wrap justify-center gap-6 mb-12">
-          <a
-            id="contact-email"
-            href="mailto:thangvq95@gmail.com"
-            className="font-medium transition-colors hover:underline"
-            style={{ color: "var(--accent)" }}
-          >
-            thangvq95@gmail.com
-          </a>
-          <a
-            id="contact-github"
-            href="https://github.com/thangvq95"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium transition-colors hover:underline"
-            style={{ color: "var(--accent)" }}
-          >
-            GitHub
-          </a>
-          <a
-            id="contact-linkedin"
-            href="https://linkedin.com/in/thangvq95"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-medium transition-colors hover:underline"
-            style={{ color: "var(--accent)" }}
-          >
-            LinkedIn
-          </a>
-        </div>
-
+          Get In Touch
+        </h2>
         <p
-          className="text-xs"
-          style={{ color: "var(--text-muted)" }}
+          className="max-w-lg mx-auto mb-10 text-base"
+          style={{ color: "var(--text-secondary)" }}
         >
-          Built with Next.js · Hosted on Vercel · &copy; {new Date().getFullYear()} Thang VQ
+          Open to interesting opportunities and collaborations. Let&apos;s connect.
         </p>
+        <div className="flex justify-center gap-6 mb-12">
+          {socialLinks.map((link) => (
+            <a
+              key={link.id}
+              id={link.id}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-12 h-12 rounded-full glass flex items-center justify-center transition-all duration-200 hover:-translate-y-1 cursor-pointer"
+              style={{ border: "1px solid var(--border)" }}
+              aria-label={link.label}
+            >
+              <link.icon size={20} style={{ color: "var(--text-secondary)" }} />
+            </a>
+          ))}
+        </div>
+        <div className="pt-8" style={{ borderTop: "1px solid var(--border)" }}>
+          <p className="text-xs" style={{ color: "var(--text-muted)" }}>
+            Built with Next.js &middot; Hosted on Vercel &middot; &copy; {new Date().getFullYear()} Thang VQ
+          </p>
+        </div>
       </div>
     </footer>
   );
