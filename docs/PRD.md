@@ -207,9 +207,10 @@ GitNexus locates code → Fix + Playwright test → PR → Close Issue
 ## Agent Operating Rules
 
 1. **Single Source of Truth** — PRD + architecture docs define the system. Brainstorm RFCs are reference/history only.
-2. **No Manual Sync** — Hermes syncs task state between specs and GitHub Projects
-3. **Test First** — Playwright tests must pass before a task is marked DONE
-4. **Knowledge Persistence** — Update project dictionary after each feature for future planning context
+2. **Skill Routing** — Use Superpowers skills (`brainstorming`, `writing-plans`) for Planning/Design. Use Matt Pocock skills (`tdd`, `diagnose`) for execution, debugging, and testing.
+3. **No Manual Sync** — Hermes syncs task state between specs and GitHub Projects
+4. **Test First** — Playwright tests must pass before a task is marked DONE
+5. **Knowledge Persistence** — Update project dictionary after each feature for future planning context
 
 ---
 
