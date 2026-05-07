@@ -56,6 +56,16 @@ services:
       - PORT=8080
       - HERMES_BIN=${HERMES_BIN:-hermes}
 
+  # Cloudflare Tunnel — routes public traffic to internal services, no open ports needed
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: digitalhub-tunnel
+    restart: always
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - api
+      - ai-workspace
+
 volumes:
   pgdata:
   listener_data:
