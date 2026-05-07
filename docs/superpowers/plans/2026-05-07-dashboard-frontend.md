@@ -32,7 +32,7 @@
 
 ### Task 1: API Client + Extended Types
 
-- [ ] **Step 1: Create API client**
+- [x] **Step 1: Create API client**
 
 ```ts
 // lib/api/client.ts
@@ -72,7 +72,7 @@ export const api = {
 };
 ```
 
-- [ ] **Step 2: Extend types**
+- [x] **Step 2: Extend types**
 
 ```ts
 // lib/api/types.ts
@@ -125,7 +125,7 @@ export interface SyncLog {
 }
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add lib/api/
@@ -136,7 +136,7 @@ git commit -m "feat(dashboard): add API client + extended types for repos, relea
 
 ### Task 2: Dashboard E2E Tests
 
-- [ ] **Step 1: Write dashboard tests**
+- [x] **Step 1: Write dashboard tests**
 
 ```ts
 // tests/dashboard.spec.ts
@@ -167,12 +167,12 @@ test.describe('TechTrend Dashboard', () => {
 });
 ```
 
-- [ ] **Step 2: Run tests (red)**
+- [x] **Step 2: Run tests (red)**
 
 Run: `npx playwright test tests/dashboard.spec.ts --project=chromium`
 Expected: FAIL — missing IDs on filter bar, stats bar, repo grid.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add tests/dashboard.spec.ts
@@ -183,7 +183,7 @@ git commit -m "test: add TechTrend dashboard E2E tests"
 
 ### Task 3: FilterBar Client Component
 
-- [ ] **Step 1: Implement FilterBar with period/domain/fav tabs**
+- [x] **Step 1: Implement FilterBar with period/domain/fav tabs**
 
 ```tsx
 // components/dashboard/FilterBar.tsx
@@ -263,12 +263,12 @@ const FilterBar: React.FC = () => {
 export default FilterBar;
 ```
 
-- [ ] **Step 2: Run filter bar test**
+- [x] **Step 2: Run filter bar test**
 
 Run: `npx playwright test tests/dashboard.spec.ts -g "renders filter bar" --project=chromium`
 Expected: PASS
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add components/dashboard/FilterBar.tsx
@@ -279,7 +279,7 @@ git commit -m "feat(dashboard): implement FilterBar with period/domain/fav filte
 
 ### Task 4: RepoGrid with API Fetch + StatsBar
 
-- [ ] **Step 1: Create RepoGridClient (client component that fetches)**
+- [x] **Step 1: Create RepoGridClient (client component that fetches)**
 
 ```tsx
 // components/dashboard/RepoGrid.tsx
@@ -331,7 +331,7 @@ const RepoGrid: React.FC = () => {
 export default RepoGrid;
 ```
 
-- [ ] **Step 2: Update StatsBar**
+- [x] **Step 2: Update StatsBar**
 
 ```tsx
 // components/dashboard/StatsBar.tsx
@@ -369,7 +369,7 @@ const StatsBar: React.FC = () => {
 export default StatsBar;
 ```
 
-- [ ] **Step 3: Update RepoCard with optimistic PATCH**
+- [x] **Step 3: Update RepoCard with optimistic PATCH**
 
 Replace the TODO in `components/dashboard/RepoCard.tsx` — change the toggle handlers:
 
@@ -399,12 +399,12 @@ Add import at top of RepoCard.tsx:
 import { api } from "@/lib/api/client";
 ```
 
-- [ ] **Step 4: Run grid + stats tests**
+- [x] **Step 4: Run grid + stats tests**
 
 Run: `npx playwright test tests/dashboard.spec.ts --project=chromium`
 Expected: ALL PASS
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add components/dashboard/
@@ -415,7 +415,7 @@ git commit -m "feat(dashboard): wire RepoGrid, StatsBar, RepoCard to NestJS API"
 
 ### Task 5: Repo Detail Page
 
-- [ ] **Step 1: Create repo detail page**
+- [x] **Step 1: Create repo detail page**
 
 ```tsx
 // app/tech/[repo]/page.tsx
@@ -478,7 +478,7 @@ export default async function RepoDetailPage({ params }: Props) {
 }
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add app/tech/\[repo\]/
@@ -489,7 +489,7 @@ git commit -m "feat(dashboard): add repo detail page at /tech/[repo]"
 
 ### Task 6: Release Feed Page
 
-- [ ] **Step 1: Create ReleaseCard component**
+- [x] **Step 1: Create ReleaseCard component**
 
 ```tsx
 // components/dashboard/ReleaseCard.tsx
@@ -537,7 +537,7 @@ const ReleaseCard: React.FC<{ release: RepoRelease }> = ({ release }) => {
 export default ReleaseCard;
 ```
 
-- [ ] **Step 2: Create release feed page**
+- [x] **Step 2: Create release feed page**
 
 ```tsx
 // app/tech/releases/page.tsx
@@ -571,7 +571,7 @@ export default async function ReleaseFeedPage() {
 }
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add components/dashboard/ReleaseCard.tsx app/tech/releases/
@@ -582,7 +582,7 @@ git commit -m "feat(dashboard): add release feed page + ReleaseCard component"
 
 ### Task 7: Final Wiring + Nav Links
 
-- [ ] **Step 1: Add nav links to DashboardHeader**
+- [x] **Step 1: Add nav links to DashboardHeader**
 
 In `components/dashboard/DashboardHeader.tsx`, add links to releases feed in the `<nav>`:
 
@@ -593,19 +593,19 @@ In `components/dashboard/DashboardHeader.tsx`, add links to releases feed in the
 </Link>
 ```
 
-- [ ] **Step 2: Add `.env.local` template**
+- [x] **Step 2: Add `.env.local` template**
 
 ```bash
 # .env.local (gitignored)
 NEXT_PUBLIC_API_URL=http://localhost:3001
 ```
 
-- [ ] **Step 3: Run full test suite**
+- [x] **Step 3: Run full test suite**
 
 Run: `npx playwright test --project=chromium`
 Expected: ALL PASS (portfolio + dashboard tests)
 
-- [ ] **Step 4: Final commit**
+- [x] **Step 4: Final commit**
 
 ```bash
 git add -A
