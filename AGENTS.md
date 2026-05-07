@@ -15,6 +15,12 @@
 - `app/` routes: `/` portfolio, `/tech` dashboard.
 - UI components in `components/portfolio/` and `components/dashboard/`.
 
+### Architecture Principles
+
+- **Stateless AI & Stateful Repo:** All AI Agents (Hermes, Cursor, Claude Code) are stateless. Project memory and context are strictly stored in the GitHub Repo (`CONTEXT.md`, `PRD.md`) and PostgreSQL (Runtime State via LangGraph Checkpointer).
+- **Hermes as a Remote Agent:** Hermes runs on the VPS in Docker, acting as both an Autonomous Worker (cronjobs, DAG automation) and a Remote Developer for heavy tasks, seamlessly interoperable with local agents.
+- **Hybrid Collaboration:** Local and remote agents share the same source of truth via GitHub and GitNexus. LangGraph orchestrates the state machine centrally to ensure execution consistency across multiple environments.
+
 ### Coding rules
 
 - Prefer Server Components; use `"use client"` only when needed.
