@@ -36,7 +36,7 @@ services:
     container_name: ai-developer-workspace
     restart: always
     ports:
-      - "${PORT:-8080}:8080"
+      - "8080:8080"
     volumes:
       # Mount the entire source code repository for Git operations
       - ../:/app/repo
@@ -53,7 +53,7 @@ services:
       - BASE_REPO=${BASE_REPO:-/app/repo}
       - WORKTREES_DIR=${WORKTREES_DIR:-/app/worktrees}
       - DEDUP_DB=${DEDUP_DB:-/app/data/ai-workspace.db}
-      - PORT=${PORT:-8080}
+      - PORT=8080
       - HERMES_BIN=${HERMES_BIN:-hermes}
 
 volumes:
