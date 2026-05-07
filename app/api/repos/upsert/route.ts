@@ -21,7 +21,7 @@ interface UpsertPayload {
 /**
  * POST /api/repos/upsert
  * Protected by x-api-key header.
- * Called exclusively by OpenClaw crawler.
+ * Called exclusively by Hermes.
  */
 export async function POST(request: NextRequest) {
   // 1. Validate API key

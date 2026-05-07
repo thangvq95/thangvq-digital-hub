@@ -18,7 +18,7 @@ const RepoGrid: React.FC = async () => {
           No repositories yet
         </p>
         <p className="text-sm mt-1">
-          Waiting for the first OpenClaw sync...
+          Waiting for the first Hermes sync...
         </p>
       </div>
     );
