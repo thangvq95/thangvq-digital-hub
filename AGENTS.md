@@ -17,9 +17,9 @@
 
 ### Architecture Principles
 
-- **Stateless AI & Stateful Repo:** All AI Agents (Hermes, Cursor, Claude Code) are stateless. Project memory and context are strictly stored in the GitHub Repo (`CONTEXT.md`, `PRD.md`) and PostgreSQL (Runtime State via LangGraph Checkpointer).
-- **Hermes as a Remote Agent:** Hermes runs on the VPS in Docker, acting as both an Autonomous Worker (cronjobs, DAG automation) and a Remote Developer for heavy tasks, seamlessly interoperable with local agents.
-- **Hybrid Collaboration:** Local and remote agents share the same source of truth via GitHub and GitNexus. LangGraph orchestrates the state machine centrally to ensure execution consistency across multiple environments.
+- **Stateless AI & Stateful Repo:** All AI Agents (Hermes, Cursor, Claude Code) are stateless. Project memory and context are strictly stored in the GitHub Repo (`CONTEXT.md`, `PRD.md`), GitHub Projects (Task/DAG management), and PostgreSQL.
+- **Hermes as a Remote Agent:** Hermes runs on the VPS in Docker, acting as both an Autonomous Worker (cronjobs, DAG automation) and a Remote Developer for heavy tasks, seamlessly interoperable with local agents. Hermes self-manages its internal state and skills natively without external orchestrators like LangGraph.
+- **Hybrid Collaboration:** Local (Macbook) and remote (VPS) agents share the same source of truth via GitHub. Execution consistency is maintained through 100% synchronization via the GitHub Repo.
 
 ### Coding rules
 
