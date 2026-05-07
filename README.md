@@ -102,20 +102,6 @@ npx playwright test tests/portfolio.spec.ts --project=chromium
 
 ---
 
-## API Endpoints
-
-| Endpoint | Method | Auth | Description |
-|---|---|---|---|
-| `/api/repos` | GET | — | List repos with filters (period, domain, fav, q) |
-| `/api/repos/:fullName` | GET | — | Repo detail |
-| `/api/repos/:fullName` | PATCH | — | Toggle favorite/applied/viewed, update notes |
-| `/api/repos/upsert` | POST | `x-api-key` | Batch upsert from Hermes (Hermes-only) |
-| `/api/releases` | GET | — | Release feed (paginated) |
-| `/api/releases/upsert` | POST | `x-api-key` | Insert AI-analyzed releases (Hermes-only) |
-| `/api/sync` | GET | — | Latest sync log |
-
----
-
 ## Environment Variables
 
 ### Frontend (Vercel)
