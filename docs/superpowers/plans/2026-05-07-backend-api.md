@@ -27,14 +27,14 @@
 
 ### Task 1: Scaffold NestJS App + Docker Compose
 
-- [ ] **Step 1: Initialize NestJS project**
+- [x] **Step 1: Initialize NestJS project**
 
 ```bash
 cd /Users/thang/Documents/thangvq-digital-hub
 npx -y @nestjs/cli@latest new backend --package-manager npm --skip-git --strict
 ```
 
-- [ ] **Step 2: Install dependencies**
+- [x] **Step 2: Install dependencies**
 
 ```bash
 cd backend
@@ -42,7 +42,7 @@ npm install @nestjs/typeorm typeorm pg class-validator class-transformer
 npm install -D @types/pg
 ```
 
-- [ ] **Step 3: Update `infra/docker-compose.yml`**
+- [x] **Step 3: Update `infra/docker-compose.yml`**
 
 ```yaml
 version: '3.8'
@@ -103,7 +103,7 @@ volumes:
   listener_data:
 ```
 
-- [ ] **Step 4: Create `backend/Dockerfile`**
+- [x] **Step 4: Create `backend/Dockerfile`**
 
 ```dockerfile
 FROM node:20-alpine AS builder
@@ -122,7 +122,7 @@ EXPOSE 3001
 CMD ["node", "dist/main"]
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/ infra/docker-compose.yml
@@ -133,7 +133,7 @@ git commit -m "feat(backend): scaffold NestJS app + Docker Compose with PostgreS
 
 ### Task 2: Database Entities + TypeORM Setup
 
-- [ ] **Step 1: Configure TypeORM in `backend/src/app.module.ts`**
+- [x] **Step 1: Configure TypeORM in `backend/src/app.module.ts`**
 
 ```ts
 // backend/src/app.module.ts
@@ -160,7 +160,7 @@ import { SyncModule } from './sync/sync.module';
 export class AppModule {}
 ```
 
-- [ ] **Step 2: Create Repository entity**
+- [x] **Step 2: Create Repository entity**
 
 ```ts
 // backend/src/repos/repository.entity.ts
@@ -233,7 +233,7 @@ export class RepositoryEntity {
 }
 ```
 
-- [ ] **Step 3: Create RepoRelease entity**
+- [x] **Step 3: Create RepoRelease entity**
 
 ```ts
 // backend/src/releases/repo-release.entity.ts
@@ -286,7 +286,7 @@ export class RepoReleaseEntity {
 }
 ```
 
-- [ ] **Step 4: Create SyncLog entity**
+- [x] **Step 4: Create SyncLog entity**
 
 ```ts
 // backend/src/sync/sync-log.entity.ts
@@ -323,7 +323,7 @@ export class SyncLogEntity {
 }
 ```
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add backend/src/
@@ -334,7 +334,7 @@ git commit -m "feat(backend): add TypeORM entities for repositories, releases, s
 
 ### Task 3: API Key Guard
 
-- [ ] **Step 1: Create API key guard**
+- [x] **Step 1: Create API key guard**
 
 ```ts
 // backend/src/auth/api-key.guard.ts
@@ -353,7 +353,7 @@ export class ApiKeyGuard implements CanActivate {
 }
 ```
 
-- [ ] **Step 2: Commit**
+- [x] **Step 2: Commit**
 
 ```bash
 git add backend/src/auth/
@@ -364,7 +364,7 @@ git commit -m "feat(backend): add API key guard for Hermes-only endpoints"
 
 ### Task 4: Repos Module (GET list, GET detail, PATCH, POST upsert)
 
-- [ ] **Step 1: Create repos service**
+- [x] **Step 1: Create repos service**
 
 ```ts
 // backend/src/repos/repos.service.ts
@@ -428,7 +428,7 @@ export class ReposService {
 }
 ```
 
-- [ ] **Step 2: Create repos controller**
+- [x] **Step 2: Create repos controller**
 
 ```ts
 // backend/src/repos/repos.controller.ts
@@ -468,7 +468,7 @@ export class ReposController {
 }
 ```
 
-- [ ] **Step 3: Create repos module**
+- [x] **Step 3: Create repos module**
 
 ```ts
 // backend/src/repos/repos.module.ts
@@ -487,7 +487,7 @@ import { ReposService } from './repos.service';
 export class ReposModule {}
 ```
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add backend/src/repos/
@@ -498,7 +498,7 @@ git commit -m "feat(backend): implement repos module — list, detail, patch, up
 
 ### Task 5: Releases Module + Sync Module
 
-- [ ] **Step 1: Create releases service + controller + module**
+- [x] **Step 1: Create releases service + controller + module**
 
 ```ts
 // backend/src/releases/releases.service.ts
@@ -581,7 +581,7 @@ import { ReleasesService } from './releases.service';
 export class ReleasesModule {}
 ```
 
-- [ ] **Step 2: Create sync service + controller + module**
+- [x] **Step 2: Create sync service + controller + module**
 
 ```ts
 // backend/src/sync/sync.service.ts
@@ -648,7 +648,7 @@ import { SyncService } from './sync.service';
 export class SyncModule {}
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/src/releases/ backend/src/sync/
@@ -659,7 +659,7 @@ git commit -m "feat(backend): implement releases + sync modules"
 
 ### Task 6: Bootstrap + CORS + Validation
 
-- [ ] **Step 1: Update `backend/src/main.ts`**
+- [x] **Step 1: Update `backend/src/main.ts`**
 
 ```ts
 // backend/src/main.ts
@@ -684,7 +684,7 @@ async function bootstrap() {
 bootstrap();
 ```
 
-- [ ] **Step 2: Verify build**
+- [x] **Step 2: Verify build**
 
 ```bash
 cd backend && npm run build
@@ -692,7 +692,7 @@ cd backend && npm run build
 
 Expected: Compiles without errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add backend/src/main.ts
@@ -703,13 +703,13 @@ git commit -m "feat(backend): configure CORS, validation pipe, bootstrap"
 
 ### Task 7: Docker Compose Smoke Test
 
-- [ ] **Step 1: Start services**
+- [x] **Step 1: Start services**
 
 ```bash
 cd infra && docker compose up -d postgres api
 ```
 
-- [ ] **Step 2: Wait for startup then test health**
+- [x] **Step 2: Wait for startup then test health**
 
 ```bash
 sleep 5
@@ -719,7 +719,7 @@ curl -s http://localhost:3001/api/repos | head
 
 Expected: JSON responses (empty data, no errors).
 
-- [ ] **Step 3: Commit final**
+- [x] **Step 3: Commit final**
 
 ```bash
 git add -A
