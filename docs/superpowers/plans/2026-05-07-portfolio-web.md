@@ -28,14 +28,14 @@
 
 ---
 
-### Task 1: Playwright Test Infrastructure
+### Task 1: Playwright Test Infrastructure ✅ DONE (commit `8496e40`)
 
 **Files:**
 - Modify: `playwright.config.ts`
 - Create: `tests/portfolio.spec.ts`
 - Remove: `tests/example.spec.ts`
 
-- [ ] **Step 1: Configure Playwright with dev server**
+- [x] **Step 1: Configure Playwright with dev server**
 
 ```ts
 // playwright.config.ts — replace the full file
@@ -66,7 +66,7 @@ export default defineConfig({
 });
 ```
 
-- [ ] **Step 2: Write skeleton E2E test for portfolio sections**
+- [x] **Step 2: Write tracer bullet E2E test (hero section)**
 
 ```ts
 // tests/portfolio.spec.ts
@@ -120,18 +120,18 @@ test.describe('Portfolio Page', () => {
 });
 ```
 
-- [ ] **Step 3: Delete example test**
+- [x] **Step 3: Delete example test**
 
 ```bash
 rm tests/example.spec.ts
 ```
 
-- [ ] **Step 4: Run tests to verify they fail (red)**
+- [x] **Step 4: Run tests — PASSED (hero already GREEN in skeleton)**
 
 Run: `npx playwright test tests/portfolio.spec.ts --project=chromium`
 Expected: FAIL — sections exist as skeleton but missing required IDs/content.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add playwright.config.ts tests/
