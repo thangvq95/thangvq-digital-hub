@@ -1,22 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { DOMAINS } from "@/lib/constants";
 
-type Period = "daily" | "weekly" | "monthly";
-
-const PERIODS: { label: string; value: Period }[] = [
-  { label: "Daily", value: "daily" },
-  { label: "Weekly", value: "weekly" },
-  { label: "Monthly", value: "monthly" },
-];
+const PERIODS = ["daily", "weekly", "monthly"] as const;
 
 const FilterBar: React.FC = () => {
-  const [activePeriod, setActivePeriod] = useState<Period>("daily");
-  const [activeDomain, setActiveDomain] = useState<string | null>(null);
-  const [showFavOnly, setShowFavOnly] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const currentPeriod = searchParams.get("period") ?? "daily";
+  const currentDomain = searchParams.get("domain") ?? "";
+  const currentFav = searchParams.get("fav") === "true";
 
-  // TODO: propagate filter state via URL params or context
+  const setFilter = (key: string, value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (value) params.set(key, value);
+    else params.delete(key);
+    router.push(`/tech?${params.toString()}`);
+  };
 
   return (
     <div
@@ -24,67 +25,64 @@ const FilterBar: React.FC = () => {
       className="flex flex-wrap items-center gap-3 p-4 rounded-2xl glass"
       style={{ border: "1px solid var(--border)" }}
     >
-      {/* Period toggle */}
+      {/* Period tabs */}
       <div
-        className="flex items-center gap-1 p-1 rounded-xl"
+        className="flex gap-1 p-1 rounded-xl"
         style={{ background: "var(--bg-primary)" }}
         role="group"
         aria-label="Select time period"
       >
-        {PERIODS.map(({ label, value }) => (
+        {PERIODS.map((p) => (
           <button
-            key={value}
-            id={`filter-period-${value}`}
-            onClick={() => setActivePeriod(value)}
-            className="px-4 py-1.5 text-sm font-medium rounded-lg transition-all duration-200"
+            key={p}
+            id={`filter-period-${p}`}
+            onClick={() => setFilter("period", p)}
+            className="px-4 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer"
             style={
-              activePeriod === value
+              currentPeriod === p
                 ? { background: "var(--accent)", color: "#fff" }
-                : { color: "var(--text-secondary)" }
+                : { color: "var(--text-muted)" }
             }
-            aria-pressed={activePeriod === value}
+            aria-pressed={currentPeriod === p}
           >
-            {label}
+            {p.charAt(0).toUpperCase() + p.slice(1)}
           </button>
         ))}
       </div>
 
-      {/* Domain filter */}
+      {/* Domain dropdown */}
       <select
-        id="filter-domain-select"
-        value={activeDomain ?? ""}
-        onChange={(e) => setActiveDomain(e.target.value || null)}
-        className="px-3 py-2 rounded-xl text-sm outline-none transition-all cursor-pointer"
+        id="filter-domain"
+        value={currentDomain}
+        onChange={(e) => setFilter("domain", e.target.value)}
+        className="px-3 py-1.5 text-xs rounded-lg cursor-pointer outline-none"
         style={{
           background: "var(--bg-card)",
-          color: "var(--text-primary)",
+          color: "var(--text-secondary)",
           border: "1px solid var(--border)",
         }}
         aria-label="Filter by domain"
       >
         <option value="">All Domains</option>
-        {DOMAINS.map((domain) => (
-          <option key={domain} value={domain}>
-            {domain}
-          </option>
+        {DOMAINS.map((d) => (
+          <option key={d} value={d}>{d}</option>
         ))}
       </select>
 
       {/* Favorites toggle */}
       <button
-        id="filter-favorites-toggle"
-        onClick={() => setShowFavOnly((v) => !v)}
-        className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200"
+        id="filter-fav"
+        onClick={() => setFilter("fav", currentFav ? "" : "true")}
+        className="px-4 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer"
         style={
-          showFavOnly
-            ? { background: "var(--accent-glow)", color: "var(--accent)", border: "1px solid var(--accent)" }
-            : { background: "var(--bg-card)", color: "var(--text-secondary)", border: "1px solid var(--border)" }
+          currentFav
+            ? { background: "var(--accent)", color: "#fff" }
+            : { background: "var(--bg-card)", color: "var(--text-muted)", border: "1px solid var(--border)" }
         }
-        aria-pressed={showFavOnly}
+        aria-pressed={currentFav}
         aria-label="Show favorites only"
       >
-        <span aria-hidden="true">⭐</span>
-        Favorites
+        {currentFav ? "♥ Favorites" : "♡ Favorites"}
       </button>
     </div>
   );
