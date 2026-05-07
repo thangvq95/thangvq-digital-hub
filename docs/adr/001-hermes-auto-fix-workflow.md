@@ -29,10 +29,13 @@ graph LR
    ```
    
 4. **Hermes Agent Execution:**
-   Because the `.agents/skills` directory has been committed directly to the repo, the newly created worktree immediately contains all custom skills. The listener simply invokes Hermes with the dynamically selected skill:
+   Because the `.agents/skills` directory has been committed directly to the repo, the newly created worktree immediately contains all custom skills. The listener simply invokes Hermes with the dynamically selected skill based on the **Skill Routing** rules defined in `docs/PRD.md`:
    ```bash
-   # Example: Automatically dispatched based on issue label "feature"
-   hermes -w ../worktrees/pr-123 -s to-prd -c "implement feature for issue #123"
+   # Bug Fix Example: Automatically dispatched for CI failure or 'bug' label
+   hermes -w ../worktrees/pr-123 -s diagnose -c "Fix the failing tests in issue #123"
+
+   # Feature Plan Example: Automatically dispatched for 'feature' label
+   hermes -w ../worktrees/feat-124 -s writing-plans -c "Break down implementation plan for issue #124"
    ```
    *(Note: The `listener.py` does NOT run `npm install`. It is up to the Hermes Agent to analyze the workspace and run `npm install` or other commands autonomously if required by its skill).*
 
