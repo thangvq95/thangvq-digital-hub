@@ -1,95 +1,139 @@
-# ThangVQ AI Developer Workspace (Hermes Agent)
+# Hermes AI Agent Workspace
 
-This directory contains:
+Hermes runs on the VPS inside Docker, acting as both an **Autonomous Worker** (cronjobs, trending sync, release analysis) and a **Remote Developer** (webhook-triggered CI fixes).
 
-- `infra/ai-developer-workspace/listener.py` – a minimal HTTP server that receives GitHub webhook events, validates them, and triggers Hermes to execute tasks.
-- `scripts/setup-vps.sh` – a bootstrap script to deploy the workspace via Docker.
+---
 
-## How it works
+## How It Works
 
-1. The listener runs as a systemd service on your VPS.
-2. When GitHub sends a webhook (e.g., `check_run.completed`), the listener:
-   - Verifies the HMAC secret.
-   - Deduplicates using the `X-GitHub-Delivery` header and a local SQLite cache.
-   - Extracts the PR number and head branch/ref.
-   - Creates a git worktree from the base clone at that ref.
-   - Runs `hermes -w <worktree> -s gh-fix-ci -c "fix PR <number>"`.
-   - Removes the worktree after Hermes finishes.
-3. Hermes uses the `gh-fix-ci` skill (repo‑local) to inspect the failure and push a fix back to the same branch.
+```
+GitHub Webhook → listener.py (port 8080)
+                     ↓ HMAC verify + SQLite dedup
+                     ↓ extract PR / branch
+                     ↓ git worktree
+                     ↓ hermes -s <skill> -c "<task>"
+                     ↓ push fix back to branch
+                     ↓ cleanup worktree
+```
 
-## Deployment
+Hermes also runs **scheduled cronjobs** independently (no webhook needed):
 
-### Prerequisites on the VPS
+| Cronjob | Schedule | Action |
+|---|---|---|
+| Daily Trending Sync | `0 8,20 * * *` | Scrape GitHub Trending → `POST /api/repos/upsert` |
+| Weekly Trending Sync | `0 9 * * 1` | Weekly top 25 |
+| Monthly Trending Sync | `0 9 1 * *` | Monthly top 25 |
+| Favorite Release Monitor | `0 10 * * *` | Check releases → AI analyze → `POST /api/releases/upsert` |
 
-- **Docker & Docker Compose** installed.
-- (Optional but recommended) Authenticated GitHub CLI (`gh`) or SSH keys in your home directory `~/.ssh` so the Hermes agent can push code.
+---
 
-### One‑line deploy
+## Deployment (VPS)
 
-Instead of installing packages directly on your VPS, everything is containerized.
-1. SSH into your VPS.
-2. Clone this repository (if not already done).
-3. Copy the environment variables template:
+### Prerequisites
+- Docker & Docker Compose installed on VPS
+- SSH keys or `gh auth login` configured
+
+### Steps
 
 ```bash
+# 1. SSH into VPS, clone repo
+git clone git@github.com:thangvq95/thangvq-digital-hub.git
 cd thangvq-digital-hub/infra
-cp ai-developer-workspace/.env.example .env
+
+# 2. Create env file (never committed)
+cat > .env << 'EOF'
+SYNC_API_KEY=<your-sync-api-key>
+PORT=3001
+NODE_ENV=production
+POSTGRES_PASSWORD=<your-postgres-password>
+WEBHOOK_SECRET=<your-webhook-secret>
+HERMES_BIN=hermes
+BASE_REPO=/app/repo
+WORKTREES_DIR=/app/worktrees
+DEDUP_DB=/app/data/ai-workspace.db
+EOF
+chmod 600 .env
+
+# 3. Start all services
+docker compose --env-file .env up -d
+
+# 4. Verify
+docker compose ps
+curl http://localhost:3001/api/sync
 ```
 
-4. Edit `.env` to set your `WEBHOOK_SECRET`.
-5. Run the container:
+### Services
+
+| Container | Port | Description |
+|---|---|---|
+| `digitalhub-postgres` | 5432 | PostgreSQL 16 database |
+| `digitalhub-api` | 3001 | NestJS API (auto-migrates schema on start) |
+| `ai-developer-workspace` | 8080 | Hermes webhook listener |
+
+---
+
+## GitHub Webhook Setup
+
+In GitHub repo → Settings → Webhooks:
+
+| Field | Value |
+|---|---|
+| Payload URL | `https://<your-domain>:8080/` or via Cloudflare Tunnel |
+| Content type | `application/json` |
+| Secret | Same as `WEBHOOK_SECRET` in `infra/.env` |
+| Events | Check run, Check suite, Pull request |
+
+---
+
+## Cloudflare Tunnel (Recommended)
+
+Instead of exposing ports directly, use Cloudflare Tunnel to securely route traffic:
 
 ```bash
-docker compose up -d
+# Already have Cloudflare token — run cloudflared in Docker or as service
+cloudflared tunnel run --token <your-token>
 ```
 
-The Docker Compose configuration will:
-- Build an image containing Python, Node.js, Git, and GitHub CLI.
-- Mount the current repository so the agent can read/write the codebase.
-- Mount your SSH keys/GH config so the agent can authenticate with GitHub.
-- Expose the listener on the configured port.
+Routes:
+- `thangvq95.page` → Vercel (frontend)
+- `api.thangvq95.page` → `localhost:3001` (NestJS API)
 
+---
 
-### GitHub webhook setup
+## Skills
 
-In your repository Settings → Webhooks:
-- Payload URL: `http://<your-vps-ip>:<PORT>/` (the listener root; it accepts POST on `/`).
-- Content type: `application/json`
-- Secret: same as `WEBHOOK_SECRET` in `.env`
-- Which events: Let me select individual events → check:
-  - Check run
-  - Check suite
-  - Pull request
+All Superpowers skills are committed to `.agents/skills/` for **offline, reproducible** execution. Hermes does not need internet to load skills.
 
-## Development
+Key skills used by Hermes:
 
-To run the listener locally for testing:
+| Skill | When |
+|---|---|
+| `tdd` | Writing tests + implementation |
+| `diagnose` | Debugging CI failures |
+| `writing-plans` | Breaking specs into tasks |
+| `pr-review-ci-fix` | Auto-fixing failing PRs |
+
+---
+
+## Local Testing
+
+Run the listener locally (no Docker needed):
 
 ```bash
-# 1. Create venv if not exists
 python3 -m venv infra/ai-developer-workspace/.venv
 source infra/ai-developer-workspace/.venv/bin/activate
 
-# 2. Export env vars (or use .env)
 export WEBHOOK_SECRET=testsecret
 export BASE_REPO=$(pwd)
 export PORT=8080
 
-# 3. Run
 python infra/ai-developer-workspace/listener.py
 ```
 
-You can then send test payloads with `curl` or use [https://webhook.site](https://webhook.site) to verify.
-
-### Configuration
-
-The listener reads configuration from `infra/.env` (not committed). Copy the example:
-
-## Notes
-
-- The listener is intentionally simple and dependency‑light. For production you may want to add:
-  - Structured logging.
-  - Metrics (e.g., Prometheus).
-  - Graceful shutdown.
-- The worktree base clone should be kept updated (e.g., via a cron `git fetch origin` or the listener can fetch on each event).
-- Hermes must be able to push without interaction; ensure SSH agent forwarding or `gh` auth is set up for the service user.
+Send a test payload:
+```bash
+curl -X POST http://localhost:8080/ \
+  -H "Content-Type: application/json" \
+  -H "X-GitHub-Event: check_run" \
+  -d '{"action":"completed"}'
+```

@@ -1,103 +1,165 @@
-# 🌟 ThangVQ Digital Hub: Next.js Starter + AI Agent Workspace
+# 🌟 ThangVQ Digital Hub
 
-This project is a high-performance **Next.js** application featuring a modern dashboard for tracking technology trends. It also includes an integrated **AI Agent Workspace** powered by Nous Research's Hermes, enabling fully offline, automated CI/CD workflows.
+A **Developer Intelligence Platform** — Portfolio + TechTrend Dashboard with AI-powered release monitoring.
 
-## 🚀 Quick Start
+Live: **[thangvq95.page](https://thangvq95.page)**
+
+---
+
+## Architecture
+
+```
+User → Cloudflare → Vercel (Next.js 16)
+                       ↓
+              api.thangvq95.page (NestJS API)
+                       ↓
+              PostgreSQL ← Hermes Agent (VPS)
+```
+
+| Layer | Tech | Hosting |
+|---|---|---|
+| Frontend | Next.js 16, Tailwind CSS v4, ShadcnUI | Vercel |
+| Backend API | NestJS, TypeORM, PostgreSQL 16 | VPS / Mac Mini (Docker) |
+| AI Agent | Hermes + Superpowers Skills | VPS (Docker) |
+| DNS / Security | Cloudflare WAF + Tunnel | Cloudflare |
+
+---
+
+## Routes
+
+| Route | Description |
+|---|---|
+| `/` | Portfolio — SSG, Liquid Glass design |
+| `/tech/trending` | GitHub Trending repos (daily/weekly/monthly) |
+| `/tech/releases` | AI-analyzed release feed from favorited repos |
+| `/tech/favorites` | Favorited repositories |
+| `/tech/[repo]` | Repo detail + release history + AI summaries |
+
+---
+
+## Quick Start (Local Development)
 
 ### Prerequisites
-- **Node.js** (LTS version)
-- **npm** (or pnpm/yarn)
+- **Node.js** 20+ (LTS)
+- **Docker Desktop** (for PostgreSQL + NestJS API)
 
-### Installation
-1. Clone the repository
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   pnpm install
-   ```
+### 1. Frontend (Next.js)
 
-### Development Mode
-Start the development server with Hot Module Replacement (HMR):
 ```bash
-npm run dev
-# or
-pnpm dev
+npm install
+cp .env.local.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:3001
+npm run dev                         # → http://localhost:3000
 ```
 
-### Production Build
-Build the optimized production application:
+### 2. Backend API + Database (Docker)
+
 ```bash
-npm run build
-# or
-pnpm build
-```
-Then run the server:
-```bash
-npm run start
-# or
-pnpm start
+cd infra
+cp .env.example .env    # fill in POSTGRES_PASSWORD, SYNC_API_KEY, NODE_ENV=development
+docker compose --env-file .env up -d postgres api
+# NestJS API → http://localhost:3001
 ```
 
-## 🛠️ AI Agent Workspace
+### 3. Run E2E Tests
 
-This repository includes a complete, offline-capable AI Agent environment for automated development tasks (CI/CD, bug fixes, feature additions).
+```bash
+npx playwright test tests/portfolio.spec.ts --project=chromium
+```
 
-### Key Features
-- **Fully Offline Capable**: No internet required for the agent. All skills are committed to `.agents/skills/`.
-- **Custom Skills**: Includes a full suite of custom skills for Next.js development (code generation, testing, build verification).
-- **Direct Git Integration**: The agent can read and modify the codebase directly.
-- **VPS Deployment Ready**: Includes `infra/ai-developer-workspace` scripts for easy Docker-based deployment.
+---
 
-### Quick Local Agent Setup
-1. **Install All Skills**:
-   ```bash
-   npx skills experimental_install -y
-   ```
-2. **Run Hermes Agent**:
-   ```bash
-   # Run Hermes in development mode with skills from local repo
-   hermes -w . --skills-dir .agents/skills --shell "bash" --model "nous-hermes-3-27b:free"
-   ```
-
-### Using the Automated CI/CD Workflow (VPS)
-See the dedicated documentation:
-👉 [AI Agent Workspace Setup Guide](infra/ai-developer-workspace/README-ai-workspace.md)
-
-## 📁 Project Structure
+## Project Structure
 
 ```
 /thangvq-digital-hub
-├── /app                    # Next.js Application
-│   ├── (dashboard)         # Main dashboard pages
-│   ├── api/                # API Routes
-│   └── components/         # Reusable UI components
-├── /infra                  # Infrastructure & Deployment Scripts
-│   └── ai-developer-workspace/  # AI Agent Workspace (Dockerfile, listener.py)
-├── .agents/                # AI Agent Configuration & Custom Skills
-│   └── custom-skills/      # All custom skills for Hermes
-├── AGENTS.md               # Agent configuration and instructions
-├── package.json            # Project dependencies
-├── skills-lock.json        # Lock file for installed skills
-└── ...                     # Standard Next.js files
+├── app/                        # Next.js App Router
+│   ├── page.tsx                # Portfolio (/)
+│   ├── tech/                   # Dashboard (/tech/*)
+│   └── api/                    # Next.js API proxy routes
+├── backend/                    # NestJS API (standalone)
+│   └── src/
+│       ├── repos/              # GET/PATCH repos, POST upsert
+│       ├── releases/           # GET feed, POST upsert
+│       ├── sync/               # GET latest sync log
+│       └── auth/               # API key guard (Hermes endpoints)
+├── components/
+│   ├── portfolio/              # Portfolio page sections
+│   └── dashboard/              # TechTrend dashboard components
+├── lib/api/                    # Frontend API client + types
+├── infra/
+│   ├── docker-compose.yml      # postgres + api + ai-workspace
+│   ├── .env                    # Secrets (gitignored — create manually)
+│   └── ai-developer-workspace/ # Hermes webhook listener (Docker)
+├── .agents/skills/             # Superpowers AI skills (offline)
+├── docs/
+│   ├── PRD.md                  # Product requirements
+│   ├── architecture/           # Deep-dive architecture docs
+│   └── superpowers/plans/      # Implementation plans
+├── tests/                      # Playwright E2E tests
+├── AGENTS.md                   # AI agent rules & skill routing
+└── CONTEXT.md                  # Domain dictionary for agents
 ```
 
-## 📚 Custom Skills
+---
 
-The `.agents/custom-skills/` directory contains a comprehensive set of skills for working with Next.js applications. These skills are committed directly to the repository for offline access.
+## API Endpoints
 
-**Key Skill Categories:**
-- **Project Management**: `plan-project`, `add-feature`, `refactor-code`
-- **Next.js Development**: `add-nextjs-component`, `add-nextjs-page`, `fix-nextjs-typescript-error`, `install-nextjs-dependency`
-- **Testing**: `add-nextjs-test`, `verify-nextjs-test-pass`
-- **CI/CD**: `fix-nextjs-ci-failure`, `add-nextjs-ci-test`
+| Endpoint | Method | Auth | Description |
+|---|---|---|---|
+| `/api/repos` | GET | — | List repos with filters (period, domain, fav, q) |
+| `/api/repos/:fullName` | GET | — | Repo detail |
+| `/api/repos/:fullName` | PATCH | — | Toggle favorite/applied/viewed, update notes |
+| `/api/repos/upsert` | POST | `x-api-key` | Batch upsert from Hermes (Hermes-only) |
+| `/api/releases` | GET | — | Release feed (paginated) |
+| `/api/releases/upsert` | POST | `x-api-key` | Insert AI-analyzed releases (Hermes-only) |
+| `/api/sync` | GET | — | Latest sync log |
 
-### Adding/Updating Skills
-1. Create or edit a skill in `.agents/custom-skills/`
-2. Run `npx skills experimental_install -y` to update the lock file
-3. Commit the changes:
-   ```bash
-   git add .agents/custom-skills/ AGENTS.md infra/
-   git commit -m "chore: update skills"
-   git push
-   ```
+---
+
+## Environment Variables
+
+### Frontend (Vercel)
+```env
+NEXT_PUBLIC_API_URL=https://api.thangvq95.page
+SYNC_API_KEY=<secret>
+```
+
+### VPS — `infra/.env` (create manually, never commit)
+```env
+SYNC_API_KEY=<secret>           # Must match Vercel + Hermes
+PORT=3001
+NODE_ENV=production
+POSTGRES_PASSWORD=<secret>
+WEBHOOK_SECRET=<secret>         # GitHub webhook HMAC
+HERMES_BIN=hermes
+BASE_REPO=/app/repo
+WORKTREES_DIR=/app/worktrees
+DEDUP_DB=/app/data/ai-workspace.db
+```
+
+Generate secrets:
+```bash
+openssl rand -hex 32   # for SYNC_API_KEY, WEBHOOK_SECRET
+openssl rand -hex 16   # for POSTGRES_PASSWORD
+```
+
+---
+
+## AI Agent Workflow
+
+```
+Brainstorm → writing-plans → Hermes executes → Playwright tests → GitHub Projects → docs update
+```
+
+Skills live in `.agents/skills/` — committed to repo for offline access. See `AGENTS.md` for routing rules.
+
+---
+
+## Docs
+
+| Document | Purpose |
+|---|---|
+| [PRD.md](docs/PRD.md) | Product requirements & architecture overview |
+| [CONTEXT.md](CONTEXT.md) | Domain terms & architecture rules |
+| [AGENTS.md](AGENTS.md) | AI agent rules, skill routing |
+| [architecture/](docs/architecture/) | Deep-dive: sync lifecycle, release pipeline, task execution |
