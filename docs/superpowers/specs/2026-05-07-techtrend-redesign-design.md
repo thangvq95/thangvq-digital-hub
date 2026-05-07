@@ -2,6 +2,7 @@
 
 > **Date:** 2026-05-07
 > **Status:** Approved
+> **Type:** Brainstorm / RFC (reference only — not an execution contract)
 > **Scope:** TechTrend Dashboard rework, PRD restructuring, Autonomous Workflow formalization
 
 ---

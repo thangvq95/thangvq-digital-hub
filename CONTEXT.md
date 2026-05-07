@@ -17,12 +17,18 @@ Developer Intelligence Platform — Portfolio + TechTrend Dashboard with AI-powe
 - **PostgreSQL** — Primary database (repos, releases, sync logs).
 - **9Router** — API Gateway/Proxy at `https://9router.phieucaphe.com/v1`.
 
-## Autonomous Workflow (The Loop)
+## Autonomous Workflow — 4-Layer Architecture
 
-1. **Planning** → Hermes + GitNexus + Spec Kit → Spec & Plan
-2. **Tasking** → Tasks extracted → GitHub Projects Issues
-3. **Execution** → Phase+DAG ordering → Playwright TDD → Self-healing
-4. **Documentation** → Update docs → Close Issue
+| Layer | Purpose | Location |
+|---|---|---|
+| **1. Brainstorm / RFC** | Design discussions, decision history (reference only) | `docs/superpowers/specs/*` |
+| **2. Spec Kit Contracts** | Machine-readable execution contracts — **canonical source of truth** | Managed by Spec Kit |
+| **3. Runtime State** | Execution state, retries, logs, task status | GitHub Projects + runtime |
+| **4. Documentation** | Human-facing architecture, onboarding | `docs/PRD.md`, `docs/architecture/*` |
+
+**Key rule:** Markdown brainstorm docs are reference knowledge only. Hermes executes exclusively from Spec Kit structured output.
+
+Pipeline: `Brainstorm RFC → Spec Kit contracts → Hermes executes → runtime state → docs update`
 
 ## Task Execution Model
 

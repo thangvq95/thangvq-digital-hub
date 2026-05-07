@@ -1,6 +1,23 @@
 # Task Execution Model — Phase + DAG
 
 > Defines how Hermes Agent orchestrates multi-task work.
+> **Execution authority:** Spec Kit structured contracts (not markdown docs).
+
+---
+
+## Execution Authority
+
+Hermes executes tasks **exclusively from Spec Kit structured output**. The flow:
+
+```
+Brainstorm RFC (docs/superpowers/specs/*) → reference only
+        ↓
+Spec Kit compiles into structured contracts → canonical source of truth
+        ↓
+Hermes executes from contracts → runtime state in GitHub Projects
+```
+
+Markdown brainstorm docs, architecture docs, and PRD are **context/reference** — never execution contracts.
 
 ---
 

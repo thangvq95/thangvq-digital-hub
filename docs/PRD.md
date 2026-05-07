@@ -150,18 +150,38 @@ Key constraints:
 
 ## Autonomous Workflow
 
-The system operates in a closed autonomous loop:
+### Information Layers
+
+The system enforces a strict separation of concerns across 4 layers:
 
 ```mermaid
-graph LR
-    P["1. Planning"] --> T["2. Tasking"] --> E["3. Execution"] --> D["4. Documentation"]
-    D --> P
+graph TB
+    L1["1. Brainstorm / RFC Layer"] -->|compile/refine| L2["2. Spec Kit Execution Layer"]
+    L2 -->|Hermes executes| L3["3. Runtime State Layer"]
+    L3 -->|results feed back| L4["4. Documentation Layer"]
+    L4 -.->|informs next cycle| L1
 ```
 
-1. **Planning** — Hermes uses GitNexus for codebase context + Spec Kit for spec/plan generation
-2. **Tasking** — Extract tasks from spec → sync to GitHub Projects as Issues
-3. **Execution** — Execute tasks using Phase+DAG model with Playwright TDD and self-healing
-4. **Documentation** — Update docs, close issues
+| Layer | Purpose | Location | Consumed By |
+|---|---|---|---|
+| **1. Brainstorm / RFC** | Design discussions, architecture reasoning, decision history | `docs/superpowers/specs/*` | Humans, Spec Kit (reference only) |
+| **2. Spec Kit Contracts** | Machine-readable structured specs, tasks, contracts — **canonical source of truth** | Managed by Spec Kit | Hermes (execution) |
+| **3. Runtime State** | Execution state, retries, logs, checkpoints, task status | Runtime / GitHub Projects | Hermes (operational) |
+| **4. Documentation** | Human-facing docs, onboarding, architecture reference | `docs/PRD.md`, `docs/architecture/*` | Humans, agents (context) |
+
+> **Key rule:** Markdown brainstorm docs (`docs/superpowers/specs/*`) are reference knowledge only, not execution contracts. Hermes executes exclusively from Spec Kit structured output.
+
+### Execution Pipeline
+
+```
+Brainstorm RFC → compile into Spec Kit contracts → Hermes executes → runtime state tracking → docs update
+```
+
+1. **Brainstorm** — Human + AI discuss design in `docs/superpowers/specs/`. RFC-style, not executable.
+2. **Compile** — Spec Kit refines brainstorm output into structured, machine-readable contracts (specs, tasks, dependencies).
+3. **Execute** — Hermes executes from Spec Kit contracts using Phase+DAG model with Playwright TDD and self-healing.
+4. **Track** — Runtime state (task status, retries, logs) lives in GitHub Projects + operational storage.
+5. **Document** — After completion, update human-facing docs and close issues.
 
 ### Task Execution Model
 
@@ -179,18 +199,18 @@ GitNexus locates code → Fix + Playwright test → PR → Close Issue
 
 | Component | Role |
 |---|---|
-| **Spec Kit** | Architect/Planner — defines specs, plans, tasks |
+| **Spec Kit** | Architect/Planner — compiles brainstorms into executable contracts |
 | **GitNexus** | Knowledge graph — provides codebase context via MCP |
-| **Hermes Agent** | Executor — writes code, runs tests, self-heals, syncs GitHub Projects |
+| **Hermes Agent** | Executor — runs Spec Kit contracts, writes code, tests, self-heals |
 | **Playwright** | Testing — E2E & API automation, headless on Mac Mini |
-| **GitHub Projects** | Kanban — task state tracking synced from Hermes |
+| **GitHub Projects** | Runtime state — task status tracking synced from Hermes |
 | **9Router** | API Gateway — stable internet access for agents |
 
 ---
 
 ## Agent Operating Rules
 
-1. **Single Source of Truth** — All logic changes start from Spec Kit specs
+1. **Single Source of Truth** — Spec Kit contracts are the only execution authority. Brainstorm docs are reference only.
 2. **No Manual Sync** — Hermes syncs task state between specs and GitHub Projects
 3. **Test First** — Playwright tests must pass before a task is marked DONE
 4. **Knowledge Persistence** — Update project dictionary after each feature for future planning context
