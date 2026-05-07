@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { api } from "@/lib/api/client";
 import type { Repository } from "@/lib/api/types";
 
 interface RepoCardProps {
@@ -12,9 +13,23 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo }) => {
   const [isFavorite, setIsFavorite] = useState(repo.is_favorite);
   const [isApplied, setIsApplied] = useState(repo.is_applied);
 
-  // TODO: implement optimistic PATCH calls to /api/repos/[fullName]
-  const handleToggleFavorite = () => setIsFavorite((v) => !v);
-  const handleToggleApplied = () => setIsApplied((v) => !v);
+  const handleToggleFavorite = async () => {
+    setIsFavorite((v) => !v);
+    try {
+      await api.repos.patch(repo.full_name, { is_favorite: !isFavorite });
+    } catch {
+      setIsFavorite((v) => !v); // rollback
+    }
+  };
+
+  const handleToggleApplied = async () => {
+    setIsApplied((v) => !v);
+    try {
+      await api.repos.patch(repo.full_name, { is_applied: !isApplied });
+    } catch {
+      setIsApplied((v) => !v); // rollback
+    }
+  };
 
   const rank = repo.rank_daily ?? repo.rank_weekly ?? repo.rank_monthly;
 
