@@ -97,6 +97,41 @@ export const EXPERIENCE: {
   },
 ];
 
+// ─── Portfolio: Featured Projects ─────────────────────────────────────────────
+export const PROJECTS: {
+  title: string;
+  description: string;
+  tags: string[];
+  url?: string;
+}[] = [
+  {
+    title: "Sổ Giáo Dân",
+    description:
+      "Full-stack parish management platform with NestJS API, PostgreSQL, and Next.js dashboard.",
+    tags: ["NestJS", "Next.js", "PostgreSQL", "Docker"],
+    url: "https://sogioadan.com",
+  },
+  {
+    title: "ThangVQ Digital Hub",
+    description:
+      "Developer intelligence platform with AI-powered trending repo analysis and release monitoring.",
+    tags: ["Next.js", "Tailwind", "Hermes", "Playwright"],
+    url: "https://thangvq95.page",
+  },
+  {
+    title: "Care Mobile App",
+    description:
+      "Production Flutter app serving thousands of users. Built CI/CD pipelines and clean architecture.",
+    tags: ["Flutter", "Dart", "Riverpod", "CI/CD"],
+  },
+  {
+    title: "Self-Hosted Infrastructure",
+    description:
+      "Mac Mini M4 Pro production server running Docker, Cloudflare Tunnels, and autonomous AI agents.",
+    tags: ["Docker", "Cloudflare", "GitHub Actions", "Mac Mini"],
+  },
+];
+
 // ─── Misc ─────────────────────────────────────────────────────────────────────
 export const SITE_URL = "https://thangvq95.page";
 export const GITHUB_URL = "https://github.com/thangvq95";
