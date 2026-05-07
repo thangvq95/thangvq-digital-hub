@@ -35,7 +35,7 @@ All skills are checked directly into the repository under `.agents/skills/` for 
 - `tdd` (for test-driven component/API creation)
 - `diagnose` (for rigorous debugging loops)
 - `improve-codebase-architecture` (when refactoring Next.js boundaries)
-- `writing-plans` (Activates with approved design. Breaks work into bite-sized tasks (2-5 minutes each). Every task has exact file paths, complete code, verification steps.)
+- `writing-plans` (for breaking approved designs into bite-sized, verifiable execution tasks)
 - `ui-ux-pro-max` (for UI/UX design patterns, shadcn/ui best practices)
 - `webapp-testing` (for Playwright-based local web app testing)
 - `brainstorming` (for refining rough ideas, generating creative solutions, and exploring alternatives before implementation)
