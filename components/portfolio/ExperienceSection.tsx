@@ -2,109 +2,88 @@ import { EXPERIENCE } from "@/lib/constants";
 
 const ExperienceSection: React.FC = () => {
   return (
-    <section
-      id="experience"
-      className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-24"
-    >
-      <h2
-        className="text-sm font-medium tracking-widest uppercase mb-3"
-        style={{ color: "var(--accent)" }}
-      >
-        Experience
-      </h2>
-      <p
-        className="text-4xl font-bold mb-12"
-        style={{ color: "var(--text-primary)" }}
-      >
-        Career Timeline
-      </p>
-
-      <div className="relative">
-        {/* Timeline line */}
-        <div
-          className="absolute left-4 top-0 bottom-0 w-px"
-          style={{ background: "var(--border)" }}
-        />
-
-        <div className="space-y-8 pl-12">
-          {EXPERIENCE.map((job, idx) => (
-            <div
-              key={idx}
-              id={`experience-${job.company.toLowerCase().replace(/\s+/g, "-")}`}
-              className="relative"
-            >
-              {/* Timeline dot */}
+    <section id="experience" className="py-24 px-4">
+      <div className="max-w-4xl mx-auto">
+        <h2
+          className="text-3xl sm:text-4xl font-bold text-center mb-4"
+          style={{ color: "var(--text-primary)" }}
+        >
+          Experience
+        </h2>
+        <p
+          className="text-center max-w-2xl mx-auto mb-16 text-base"
+          style={{ color: "var(--text-secondary)" }}
+        >
+          A decade of building mobile and web applications across startups and enterprise.
+        </p>
+        <div className="relative">
+          {/* Vertical line */}
+          <div
+            aria-hidden="true"
+            className="absolute left-4 sm:left-1/2 top-0 bottom-0 w-px"
+            style={{ background: "var(--border)" }}
+          />
+          <div className="space-y-12">
+            {EXPERIENCE.map((exp, i) => (
               <div
-                className="absolute -left-9 top-1 w-3 h-3 rounded-full border-2 animate-pulse-glow"
-                style={{
-                  background: "var(--accent)",
-                  borderColor: "var(--bg-primary)",
-                }}
-              />
-
-              <div
-                className="p-6 rounded-2xl glass card-hover"
-                style={{ border: "1px solid var(--border)" }}
+                key={exp.company}
+                data-testid={`exp-entry-${i}`}
+                className={`relative flex flex-col sm:flex-row gap-4 ${i % 2 === 0 ? "sm:flex-row-reverse" : ""}`}
               >
-                <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
-                  <div>
+                {/* Timeline dot */}
+                <div
+                  aria-hidden="true"
+                  className="absolute left-4 sm:left-1/2 w-3 h-3 rounded-full -translate-x-1/2 mt-6 z-10"
+                  style={{
+                    background: i === 0 ? "var(--accent)" : "var(--border)",
+                    boxShadow: i === 0 ? "0 0 12px var(--accent)" : "none",
+                  }}
+                />
+                <div className="w-full sm:w-[calc(50%-2rem)] ml-10 sm:ml-0">
+                  <div
+                    className="p-5 rounded-2xl glass card-hover"
+                    style={{ border: "1px solid var(--border)" }}
+                  >
+                    <div className="flex items-center justify-between mb-2">
+                      <span
+                        className="text-xs font-medium px-2 py-0.5 rounded-full"
+                        style={{ background: "var(--accent-glow)", color: "var(--accent)" }}
+                      >
+                        {exp.duration}
+                      </span>
+                      <span className="text-xs" style={{ color: "var(--text-muted)" }}>
+                        {exp.period}
+                      </span>
+                    </div>
                     <h3
-                      className="text-lg font-semibold"
+                      className="text-lg font-semibold mb-1"
                       style={{ color: "var(--text-primary)" }}
                     >
-                      {job.role}
+                      {exp.company}
                     </h3>
                     <p
-                      className="font-medium"
+                      className="text-sm font-medium mb-2"
                       style={{ color: "var(--accent)" }}
                     >
-                      {job.company}
+                      {exp.role}
                     </p>
-                  </div>
-                  <div className="text-right">
-                    <p
-                      className="text-sm"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {job.period}
-                    </p>
-                    <p
-                      className="text-xs"
-                      style={{ color: "var(--text-muted)" }}
-                    >
-                      {job.duration}
+                    <p className="text-sm" style={{ color: "var(--text-secondary)" }}>
+                      {exp.highlights}
                     </p>
                   </div>
                 </div>
-                <p
-                  className="text-sm"
-                  style={{ color: "var(--text-secondary)" }}
-                >
-                  {job.highlights}
-                </p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
-
-      {/* Education */}
-      <div
-        className="mt-12 p-6 rounded-2xl glass"
-        style={{ border: "1px solid var(--border)" }}
-      >
-        <p
-          className="text-xs font-semibold tracking-wider uppercase mb-1"
-          style={{ color: "var(--accent)" }}
-        >
-          Education
-        </p>
-        <p className="font-semibold" style={{ color: "var(--text-primary)" }}>
-          Ton Duc Thang University
-        </p>
-        <p style={{ color: "var(--text-secondary)" }}>
-          Bachelor&apos;s in Computer Science · 2013–2017
-        </p>
+        <div className="mt-16 text-center">
+          <p className="text-sm font-medium mb-1" style={{ color: "var(--text-muted)" }}>
+            Education
+          </p>
+          <p style={{ color: "var(--text-primary)" }}>
+            Ton Duc Thang University — B.S. Computer Science (2013–2017)
+          </p>
+        </div>
       </div>
     </section>
   );
