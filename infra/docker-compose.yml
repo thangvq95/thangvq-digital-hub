@@ -1,6 +1,34 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: digitalhub-postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: digitalhub
+      POSTGRES_USER: digitalhub
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-devpassword}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: ../backend
+      dockerfile: Dockerfile
+    container_name: digitalhub-api
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      DATABASE_URL: postgres://digitalhub:${POSTGRES_PASSWORD:-devpassword}@postgres:5432/digitalhub
+      SYNC_API_KEY: ${SYNC_API_KEY}
+      PORT: 3001
+    depends_on:
+      - postgres
+
   ai-workspace:
     build:
       context: ../
@@ -29,4 +57,5 @@ services:
       - HERMES_BIN=${HERMES_BIN:-hermes}
 
 volumes:
+  pgdata:
   listener_data:
