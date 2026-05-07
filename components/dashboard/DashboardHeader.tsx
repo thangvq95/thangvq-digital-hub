@@ -48,6 +48,14 @@ const DashboardHeader: React.FC = () => {
 
         <nav className="flex items-center gap-4">
           <Link
+            href="/tech/releases"
+            id="dashboard-releases-link"
+            className="text-sm transition-colors hover:underline"
+            style={{ color: "var(--text-secondary)" }}
+          >
+            Releases
+          </Link>
+          <Link
             href="/"
             id="dashboard-portfolio-link"
             className="text-sm transition-colors hover:underline"
