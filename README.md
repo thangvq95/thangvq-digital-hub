@@ -134,7 +134,7 @@ openssl rand -hex 16   # for POSTGRES_PASSWORD
 ## AI Agent Workflow
 
 ```
-Brainstorm → writing-plans → Hermes executes → Playwright tests → GitHub Projects → docs update
+Brainstorm → writing-plans → Hermes executes → Playwright tests → Hermes Kanban → docs update
 ```
 
 Skills live in `.agents/skills/` — committed to repo for offline access. See `AGENTS.md` for routing rules.
