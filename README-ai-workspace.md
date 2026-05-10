@@ -68,7 +68,7 @@ curl http://localhost:3001/api/sync
 |---|---|---|
 | `digitalhub-postgres` | 5432 | PostgreSQL 16 database |
 | `digitalhub-api` | 3001 | NestJS API (auto-migrates schema on start) |
-| `ai-developer-workspace` | 8080 | Hermes webhook listener |
+| `ai-developer-workspace` | 8080 | Hermes webhook listener + GitNexus Global Knowledge Graph |
 
 ---
 

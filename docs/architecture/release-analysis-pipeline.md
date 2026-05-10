@@ -20,10 +20,11 @@ sequenceDiagram
     participant BE as NestJS API
     participant DB as PostgreSQL
 
-    Cron->>DB: SELECT repos WHERE is_favorite = true
+    Cron->>BE: GET /api/repos/favorites
+    BE->>DB: SELECT repos WHERE is_favorite = true
     loop For each favorite repo
         Cron->>GH: GET /repos/{owner}/{repo}/releases/latest
-        Cron->>DB: Compare release_tag with latest in repo_releases
+        Cron->>BE: GET /api/repos/{owner}/{repo}/releases/latest-tag
         alt New release found
             Cron->>GH: Fetch changelog_raw + release_body_hash
             Cron->>AI: Analyze changelog
@@ -32,7 +33,8 @@ sequenceDiagram
             BE->>DB: INSERT INTO repo_releases
             BE->>DB: UPDATE repositories SET last_release_checked_at = NOW()
         else Same release
-            Cron->>DB: UPDATE repositories SET last_release_checked_at = NOW()
+            Cron->>BE: POST /api/repos/{owner}/{repo}/check-ping
+            BE->>DB: UPDATE repositories SET last_release_checked_at = NOW()
             Note over Cron: Skip
         end
     end

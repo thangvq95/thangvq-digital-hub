@@ -11,9 +11,10 @@ RUN apt-get update && apt-get install -y curl git gnupg \
     && apt-get update && apt-get install -y nodejs gh pipx \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Install Spec Kit (Specify CLI) for the VPS environment (for future automation)
-RUN pipx install git+https://github.com/github/spec-kit.git
-ENV PATH="/root/.local/bin:$PATH"
+# Install GitNexus as the global codebase knowledge graph MCP server
+RUN npm install -g gitnexus
+
+
 
 # Bypass Git's "dubious ownership" error when mounting volumes from the Host
 RUN git config --global --add safe.directory '*'

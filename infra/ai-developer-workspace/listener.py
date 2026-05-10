@@ -16,7 +16,7 @@ WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "")
 DEDUP_DB = os.environ.get("DEDUP_DB", "/home/thang/.cache/ai-workspace.db")
 PORT = int(os.environ.get("PORT", "8080"))
 
-EVENTS_ALLOWLIST = {"check_run", "check_suite", "pull_request", "issues"}
+EVENTS_ALLOWLIST = {"check_run", "check_suite", "pull_request", "issues", "push"}
 ACTION_ALLOWLIST = {"completed", "rerequested", "requested", "synchronize", "opened", "reopened", "labeled"}
 
 
@@ -198,6 +198,34 @@ class Handler(BaseHTTPRequestHandler):
             self.end_headers()
             self.wfile.write(b"ignored")
             return
+
+        # Handle push event: Update BASE_REPO and run GitNexus
+        if event == "push":
+            ref = payload.get("ref", "")
+            if ref in ["refs/heads/main", "refs/heads/master"]:
+                def _process_push():
+                    try:
+                        print(f"Updating BASE_REPO and running gitnexus analyze for {ref}...")
+                        branch = ref.split("/")[-1]
+                        _run(["git", "-C", BASE_REPO, "fetch", "origin"])
+                        _run(["git", "-C", BASE_REPO, "reset", "--hard", f"origin/{branch}"])
+                        _run(["gitnexus", "analyze"], cwd=BASE_REPO)
+                        print("GitNexus analyze completed successfully.")
+                    except Exception as e:
+                        print(f"Push processing error for {delivery}: {e}")
+                
+                threading.Thread(target=_process_push, daemon=True).start()
+                _mark_seen(delivery)
+                self.send_response(202)
+                self.end_headers()
+                self.wfile.write(b"accepted push event and updating knowledge graph")
+                return
+            else:
+                _mark_seen(delivery)
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(b"ignored push event (not main branch)")
+                return
 
         skill, target_desc = _determine_skill_and_target(event, payload)
         ref = _extract_ref(payload, event)

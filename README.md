@@ -19,8 +19,8 @@ User → Cloudflare → Vercel (Next.js 16)
 | Layer | Tech | Hosting |
 |---|---|---|
 | Frontend | Next.js 16, Tailwind CSS v4, ShadcnUI | Vercel |
-| Backend API | NestJS, TypeORM, PostgreSQL 16 | VPS / Mac Mini (Docker) |
-| AI Agent | Hermes + Superpowers Skills | VPS (Docker) |
+| Backend API | NestJS, TypeORM, PostgreSQL 16 | VPS (Docker) |
+| AI Agent & Graph | Hermes + GitNexus MCP Server + Skills | VPS (Docker `ai-workspace`) |
 | DNS / Security | Cloudflare WAF + Tunnel | Cloudflare |
 
 ---
@@ -134,7 +134,7 @@ openssl rand -hex 16   # for POSTGRES_PASSWORD
 ## AI Agent Workflow
 
 ```
-Brainstorm → writing-plans → Hermes executes → Playwright tests → Hermes Kanban → docs update
+Brainstorm → writing-plans → Hermes executes → Playwright tests → GitHub Issues → docs update
 ```
 
 Skills live in `.agents/skills/` — committed to repo for offline access. See `AGENTS.md` for routing rules.

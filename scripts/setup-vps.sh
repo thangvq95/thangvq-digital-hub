@@ -8,7 +8,8 @@ set -e
 echo "[INFO] Starting Docker-based setup..."
 
 REPO_URL="https://github.com/thangvq95/thangvq-digital-hub.git"
-BASE_DIR="$HOME/Development/thangvq-digital-hub"
+# Thông thường trên VPS Linux, thư mục /opt/ hoặc /var/www/ là chuẩn nhất cho các ứng dụng web.
+BASE_DIR="/opt/thangvq-digital-hub"
 
 # Check if Docker is available
 if ! command -v docker >/dev/null 2>&1; then
@@ -24,7 +25,8 @@ fi
 # Clone or update repository
 if [ ! -d "$BASE_DIR" ]; then
     echo "[INFO] Cloning repository to $BASE_DIR"
-    mkdir -p "$(dirname "$BASE_DIR")"
+    sudo mkdir -p "$(dirname "$BASE_DIR")"
+    sudo chown -R $USER:$USER "$(dirname "$BASE_DIR")" # Đảm bảo quyền truy cập cho user hiện tại
     git clone "$REPO_URL" "$BASE_DIR"
 else
     echo "[INFO] Updating existing repository"
@@ -39,19 +41,28 @@ if [ ! -f "$BASE_DIR/infra/.env" ]; then
     echo "========================================"
     echo "No .env file found. Let's configure it now."
     
-    # Ask for WEBHOOK_SECRET
-    read -p "Enter WEBHOOK_SECRET (Press Enter to use 'your_secret_here'): " input_secret
-    input_secret=${input_secret:-your_secret_here}
+    # Auto-generate secure secrets if user skips
+    read -p "Enter WEBHOOK_SECRET (Press Enter to auto-generate): " input_webhook
+    input_webhook=${input_webhook:-$(openssl rand -hex 32)}
     
-    # Ask for PORT
-    read -p "Enter PORT (Press Enter to use '8080'): " input_port
-    input_port=${input_port:-8080}
-    
+    read -p "Enter SYNC_API_KEY (Press Enter to auto-generate): " input_sync
+    input_sync=${input_sync:-$(openssl rand -hex 32)}
+
+    read -p "Enter POSTGRES_PASSWORD (Press Enter to auto-generate): " input_pg
+    input_pg=${input_pg:-$(openssl rand -hex 16)}
+
     cat <<EOF > "$BASE_DIR/infra/.env"
-WEBHOOK_SECRET=$input_secret
-PORT=$input_port
-# BASE_REPO=/app/repo
-# WORKTREES_DIR=/app/worktrees
+# 🔒 Security & Database
+WEBHOOK_SECRET=$input_webhook
+SYNC_API_KEY=$input_sync
+POSTGRES_PASSWORD=$input_pg
+
+# 🌐 API Backend
+PORT=3005
+NODE_ENV=production
+
+# ☁️ Cloudflare (Optional)
+CLOUDFLARE_TUNNEL_TOKEN=
 EOF
     echo "[INFO] .env file generated successfully at $BASE_DIR/infra/.env"
     echo "========================================"
@@ -60,8 +71,9 @@ fi
 # Run Docker Compose
 echo "[INFO] Booting up the system via Docker Compose..."
 cd "$BASE_DIR/infra"
-docker compose build
-docker compose up -d
 
-echo "[INFO] Setup successful! The AI Developer Workspace is running in the background."
-echo "[INFO] Don't forget to update $BASE_DIR/infra/.env with your actual WEBHOOK_SECRET."
+# Dùng lệnh gộp này sẽ tối ưu hơn, nó tự build image mới nếu thấy Dockerfile thay đổi và chạy container.
+docker compose up --build -d
+
+echo "[INFO] Setup successful! 🚀 System is running in the background."
+echo "[INFO] Run 'docker compose logs -f' inside $BASE_DIR/infra to see logs."

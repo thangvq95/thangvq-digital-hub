@@ -6,7 +6,7 @@ services:
     container_name: digitalhub-postgres
     restart: always
     ports:
-      - "5432:5432"
+      - "5435:5432"
     environment:
       POSTGRES_DB: digitalhub
       POSTGRES_USER: digitalhub
@@ -21,7 +21,7 @@ services:
     container_name: digitalhub-api
     restart: always
     ports:
-      - "3001:3001"
+      - "3005:3001"
     environment:
       DATABASE_URL: postgres://digitalhub:${POSTGRES_PASSWORD:-devpassword}@postgres:5432/digitalhub
       SYNC_API_KEY: ${SYNC_API_KEY}
@@ -36,15 +36,17 @@ services:
     container_name: ai-developer-workspace
     restart: always
     ports:
-      - "8080:8080"
+      - "8085:8080"
     volumes:
-      # Mount the entire source code repository for Git operations
+      # Mount the host directory where all your projects live (for multi-repo)
+      # On VPS, change this to where you clone your repos, e.g., /var/www or /opt
       - ../:/app/repo
       # Mount data volume to store the SQLite deduplication DB
       - listener_data:/app/data
-      # Mount Hermes configuration and memory to persist across upgrades
-      - ~/.hermes:/root/.hermes
-      # Mount SSH keys from the Host so the bot can push code to GitHub
+      # Use Named Volumes for AI Brains (persistent on VPS)
+      - hermes_data:/root/.hermes
+      - gitnexus_data:/root/.gitnexus
+      # Mount SSH keys from the Host so the bot can push code to GitHub (if needed)
       - ~/.ssh:/root/.ssh:ro
       # Mount GitHub CLI config (if using `gh auth login` instead of SSH)
       - ~/.config/gh:/root/.config/gh:ro
@@ -69,3 +71,5 @@ services:
 volumes:
   pgdata:
   listener_data:
+  hermes_data:
+  gitnexus_data:
