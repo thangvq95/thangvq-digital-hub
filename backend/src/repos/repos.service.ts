@@ -364,11 +364,23 @@ Rules for tags:
 
     if (res.ok) {
       const data = await res.json();
+      let summarizedBody = data.body;
+
+      // Only summarize if the body is long enough to warrant it
+      if (data.body && data.body.length > 300) {
+        try {
+          summarizedBody = await this.summarizeRelease(fullName, data.tag_name, data.body);
+        } catch (err) {
+          this.logger.error(`Failed to summarize release for ${fullName}: ${err.message}`);
+          // Fallback to raw body if AI fails
+        }
+      }
+
       await this.repo.update(
         { full_name: fullName },
         {
           latest_release_tag: data.tag_name,
-          latest_release_body: data.body,
+          latest_release_body: summarizedBody,
           has_new_release: false,
         },
       );
@@ -387,6 +399,51 @@ Rules for tags:
     const updated = await this.repo.findOneBy({ full_name: fullName });
     if (!updated) throw new Error('Repo not found after sync');
     return updated;
+  }
+
+  private async summarizeRelease(fullName: string, tag: string, body: string): Promise<string> {
+    const NINE_ROUTER_API_KEY = process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || '';
+    if (!NINE_ROUTER_API_KEY) return body;
+
+    const res = await fetch(`${NINE_ROUTER_URL}/chat/completions`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${NINE_ROUTER_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: NINE_ROUTER_MODEL,
+        messages: [
+          {
+            role: 'system',
+            content: `You are a Principal Engineer summarizing GitHub release notes. 
+Extract only the most important developer-relevant changes. 
+Format the output in clean Markdown using these sections (only if they have content):
+- 🚀 **Features**
+- ⚠️ **Breaking Changes**
+- 🐛 **Fixes**
+- 📦 **Internal / Chore**
+
+Rules:
+- Be extremely concise and technical.
+- Remove all boilerplate like "Full Changelog", contributor lists, emojis (except section headers), and repetitive links.
+- Use bullet points.
+- If the release is trivial, provide a 1-sentence summary.
+- Max 150 words total.`,
+          },
+          {
+            role: 'user',
+            content: `Repository: ${fullName}\nRelease: ${tag}\n\nRaw Notes:\n${body.substring(0, 6000)}`,
+          },
+        ],
+        temperature: 0.2,
+        max_tokens: 500,
+      }),
+    });
+
+    if (!res.ok) throw new Error(`9Router error: ${res.statusText}`);
+    const data = await res.json();
+    return data.choices?.[0]?.message?.content ?? body;
   }
 
   // ─── Batch check releases for favorite repos (from Hermes cron) ───────────

@@ -384,23 +384,38 @@ export default function RepoDetailPage() {
             </div>
 
             {repoData.latest_release_body && (
-              <div className="space-y-4">
+              <div className="space-y-6">
                 <div 
-                  className="p-4 rounded-xl bg-black/20 border border-white/5 text-xs max-h-96 overflow-y-auto prose prose-invert prose-sm max-w-none [&_h1]:text-base [&_h2]:text-sm [&_h3]:text-sm [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4 [&_code]:bg-white/10 [&_code]:px-1 [&_code]:rounded"
-                  style={{ color: "var(--text-secondary)" }}
+                  className="p-8 rounded-2xl bg-[#0a0a0c]/40 border border-white/5 text-[13px] max-h-[600px] overflow-y-auto 
+                             prose prose-invert prose-sm max-w-none 
+                             scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent
+                             [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-6 [&_h1]:text-white [&_h1]:border-b [&_h1]:border-white/5 [&_h1]:pb-2
+                             [&_h2]:text-lg [&_h2]:font-semibold [&_h2]:mt-8 [&_h2]:mb-4 [&_h2]:text-white
+                             [&_h3]:text-base [&_h3]:font-semibold [&_h3]:mt-6 [&_h3]:mb-3 [&_h3]:text-neutral-200
+                             [&_p]:leading-relaxed [&_p]:mb-4 [&_p]:text-neutral-400
+                             [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-6 [&_ul]:space-y-2
+                             [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-6 [&_ol]:space-y-2
+                             [&_li]:text-neutral-400
+                             [&_code]:text-[11px] [&_code]:bg-white/10 [&_code]:px-1.5 [&_code]:py-0.5 [&_code]:rounded [&_code]:text-[var(--accent)] [&_code]:before:content-none [&_code]:after:content-none
+                             [&_pre]:bg-black/60 [&_pre]:border [&_pre]:border-white/10 [&_pre]:rounded-xl [&_pre]:p-5 [&_pre]:my-6
+                             [&_table]:w-full [&_table]:border-collapse [&_table]:my-6 [&_table]:text-xs
+                             [&_th]:text-left [&_th]:p-3 [&_th]:border-b [&_th]:border-white/10 [&_th]:text-white [&_th]:bg-white/5
+                             [&_td]:p-3 [&_td]:border-b [&_td]:border-white/5 [&_td]:text-neutral-400
+                             [&_strong]:text-white [&_strong]:font-semibold
+                             [&_a]:text-[var(--accent)] [&_a]:no-underline hover:[&_a]:underline"
                 >
                   <ReactMarkdown remarkPlugins={[remarkGfm]}>
                     {repoData.latest_release_body}
                   </ReactMarkdown>
                 </div>
-                <div className="flex justify-center">
+                <div className="flex justify-center pb-2">
                   <a
                     href={`${repoData.html_url}/releases`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[10px] uppercase tracking-wider font-bold py-2 px-6 rounded-full glass border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all text-neutral-500 hover:text-neutral-200"
+                    className="text-[10px] uppercase tracking-[0.2em] font-bold py-3 px-8 rounded-full glass border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all text-neutral-500 hover:text-white"
                   >
-                    View full release history on GitHub →
+                    View full release history on GitHub
                   </a>
                 </div>
               </div>
