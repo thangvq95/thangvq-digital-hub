@@ -26,12 +26,6 @@ or the hermes-agent codebase.
 """
 
 import sys
-import logging
-
-logging.basicConfig(level=logging.INFO)
-
-
-logger = logging.getLogger("hermes_patches")
 
 try:
     import httpx
@@ -39,6 +33,7 @@ try:
     # Patch httpx.Request.__init__ to globally intercept and override any User-Agent headers
     # since request-specific headers in OpenAI/httpx override default client headers.
     original_request_init = httpx.Request.__init__
+
     
     def patched_request_init(self, *args, **kwargs):
         original_request_init(self, *args, **kwargs)
@@ -48,9 +43,9 @@ try:
             pass
             
     httpx.Request.__init__ = patched_request_init
-    logger.info("Successfully applied global httpx.Request User-Agent override monkeypatch!")
 except ImportError:
     pass
-except Exception as e:
-    logger.error(f"Failed to apply httpx patch: {e}")
+except Exception:
+    pass
+
 
