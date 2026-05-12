@@ -25,6 +25,11 @@ RUN git config --global --add safe.directory '*' \
 RUN curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash \
     && /root/.hermes/venv/bin/python3 -m pip install fastapi uvicorn ptyprocess || /usr/local/lib/hermes-agent/venv/bin/python3 -m pip install fastapi uvicorn ptyprocess || echo "Could not find venv"
 
+# Copy the custom User-Agent monkeypatch into the virtual environment's site-packages to bypass Cloudflare WAF blocks on 9router
+# This ensures it is loaded by all python processes inside the venv, even if PYTHONPATH is cleared or ignored.
+COPY infra/patches/sitecustomize.py /usr/local/lib/hermes-agent/venv/lib/python3.11/site-packages/sitecustomize.py
+
+
 # Ensure Hermes is in the PATH environment variable
 ENV PATH="/root/.local/bin:/root/.cargo/bin:$PATH"
 
