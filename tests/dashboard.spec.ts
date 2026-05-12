@@ -5,21 +5,23 @@ test.describe('TechTrend Dashboard', () => {
     await page.goto('/tech');
   });
 
-  test('renders dashboard header with search', async ({ page }) => {
+  test('renders dashboard header with tabs', async ({ page }) => {
     await expect(page.locator('#dashboard-header')).toBeVisible();
-    await expect(page.locator('#dashboard-search-input')).toBeVisible();
-  });
-
-  test('renders filter bar with period tabs', async ({ page }) => {
-    await expect(page.locator('#filter-bar')).toBeVisible();
-    await expect(page.locator('#filter-period-daily')).toBeVisible();
+    await expect(page.locator('#tab-all')).toBeVisible();
+    await expect(page.locator('#tab-favorites')).toBeVisible();
+    await expect(page.locator('#tab-archived')).toBeVisible();
   });
 
   test('renders repo grid container', async ({ page }) => {
     await expect(page.locator('#repo-grid')).toBeVisible();
   });
 
-  test('renders stats bar with sync info', async ({ page }) => {
-    await expect(page.locator('#stats-bar')).toBeVisible();
+  test('can open add repo form', async ({ page }) => {
+    const addButton = page.getByText('+ Add Repo');
+    await expect(addButton).toBeVisible();
+    await addButton.click();
+    
+    const input = page.getByPlaceholder('facebook/react or URL');
+    await expect(input).toBeVisible();
   });
 });

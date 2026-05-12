@@ -59,6 +59,10 @@ services:
       - DEDUP_DB=${DEDUP_DB:-/app/data/ai-workspace.db}
       - PORT=8080
       - HERMES_BIN=${HERMES_BIN:-hermes}
+      - NINE_ROUTER_API_KEY=${NINE_ROUTER_API_KEY}
+      - NINE_ROUTER_URL=${NINE_ROUTER_URL}
+      - NINE_ROUTER_MODEL=${NINE_ROUTER_MODEL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
 
   hermes-gateway:
     build:
@@ -72,6 +76,10 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=9119
+      - NINE_ROUTER_API_KEY=${NINE_ROUTER_API_KEY}
+      - NINE_ROUTER_URL=${NINE_ROUTER_URL}
+      - NINE_ROUTER_MODEL=${NINE_ROUTER_MODEL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     command: [ "hermes", "dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--insecure" ]
 
   # Cloudflare Tunnel — routes public traffic to internal services, no open ports needed
