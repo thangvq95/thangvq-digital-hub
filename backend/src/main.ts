@@ -9,6 +9,7 @@ async function bootstrap() {
     origin: [
       'http://localhost:3000',
       'https://thangvq95.page',
+      'https://www.thangvq95.page',
     ],
     methods: ['GET', 'POST', 'PATCH', 'DELETE'],
     credentials: true,
