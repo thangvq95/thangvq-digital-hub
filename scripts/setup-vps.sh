@@ -78,6 +78,19 @@ fi
 echo "[INFO] Booting up the system via Docker Compose..."
 cd "$BASE_DIR/infra"
 
+# Set up 4GB swap space to prevent OOM errors during Docker builds (Exit Code 137)
+if [ ! -f /swapfile ]; then
+    echo "[INFO] Creating 4GB swap file to prevent out-of-memory errors..."
+    sudo fallocate -l 4G /swapfile
+    sudo chmod 600 /swapfile
+    sudo mkswap /swapfile
+    sudo swapon /swapfile
+    echo '/swapfile none swap sw 0 0' | sudo tee -a /etc/fstab
+    echo "[INFO] Swap space created and enabled."
+else
+    echo "[INFO] Swap space already exists."
+fi
+
 # Dùng lệnh gộp này sẽ tối ưu hơn, nó tự build image mới nếu thấy Dockerfile thay đổi và chạy container.
 docker compose up --build -d
 
