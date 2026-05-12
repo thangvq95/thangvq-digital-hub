@@ -2,12 +2,12 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RepositoryEntity } from './repository.entity';
-import { ReposController } from './repos.controller';
+import { ReposController, ReposCompatController } from './repos.controller';
 import { ReposService } from './repos.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([RepositoryEntity])],
-  controllers: [ReposController],
+  controllers: [ReposController, ReposCompatController],
   providers: [ReposService],
   exports: [ReposService],
 })

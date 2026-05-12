@@ -69,6 +69,28 @@ curl http://localhost:3001/api/sync
 | `ai-developer-workspace` | 8080 | Hermes webhook listener + GitNexus Global Knowledge Graph |
 | `hermes-gateway` | 9119 | Hermes Kanban Dashboard UI |
 
+### Troubleshooting: 9Router Cloudflare WAF (HTTP 403 Block)
+
+**Problem:**  
+The custom OpenAI gateway endpoint `https://9router.phieucaphe.com/v1` uses Cloudflare, which is configured to block or challenge `POST` requests (like chat completions) coming from hosting/datacenter IPs if they carry default developer User-Agents (such as `OpenAI/Python` or `httpx`), returning `HTTP 403 Forbidden` ("Your request was blocked.").
+
+**Solution:**  
+We use a global Python startup monkeypatch (`sitecustomize.py`) to transparently override all outgoing `httpx` User-Agent headers with a standard Chrome browser User-Agent.
+
+Since CLI wrappers sometimes clear `PYTHONPATH`, the patch must be copied directly into the virtual environment's `site-packages` directory inside the container:
+
+```bash
+# 1. Pull the latest patch file
+git pull origin main
+
+# 2. Copy the patch directly into the container's Python virtual environment
+docker compose -f infra/docker-compose.yml exec -T hermes-gateway cp /app/repo/infra/patches/sitecustomize.py /usr/local/lib/hermes-agent/venv/lib/python3.11/site-packages/sitecustomize.py
+
+# 3. Test your connection directly by entering chat
+docker compose -f infra/docker-compose.yml exec -it hermes-gateway hermes
+```
+*(Note: The Dockerfile has been updated to automatically apply this patch on builds, but if you run containers without rebuilding, use the copy command above).*
+
 ---
 
 ## GitHub Webhook Setup

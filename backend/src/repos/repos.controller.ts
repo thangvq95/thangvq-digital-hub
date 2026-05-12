@@ -68,3 +68,15 @@ export class ReposController {
     return this.reposService.checkReleases(body.releases);
   }
 }
+
+@Controller('api')
+export class ReposCompatController {
+  constructor(private readonly reposService: ReposService) {}
+
+  @Post(['github/trending/repo', 'github/trending/repos'])
+  @UseGuards(ApiKeyGuard)
+  upsertCompat(@Body() body: { repositories: Partial<RepositoryEntity>[] }) {
+    return this.reposService.upsert(body.repositories);
+  }
+}
+
