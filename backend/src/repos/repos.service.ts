@@ -1,98 +1,338 @@
 // backend/src/repos/repos.service.ts
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { RepositoryEntity } from './repository.entity';
 
+const NINE_ROUTER_URL =
+  process.env.NINE_ROUTER_URL || 'https://9router.phieucaphe.com/v1';
+const NINE_ROUTER_MODEL = process.env.NINE_ROUTER_MODEL || 'gpt-4o-mini';
+
 @Injectable()
 export class ReposService {
+  private readonly logger = new Logger(ReposService.name);
+
   constructor(
     @InjectRepository(RepositoryEntity)
     private readonly repo: Repository<RepositoryEntity>,
   ) {}
 
-  async findAll(filters: {
-    period?: string;
-    domain?: string;
-    fav?: boolean;
-    q?: string;
-  }) {
+  // ─── List repos with tab filtering + pagination ───────────────────────────
+  async findAll(tab: string = 'all', page = 1, limit = 20) {
     const qb = this.repo.createQueryBuilder('r');
 
-    if (filters.period === 'daily') {
-      qb.andWhere('r.rank_daily IS NOT NULL').orderBy('r.rank_daily', 'ASC');
-    } else if (filters.period === 'weekly') {
-      qb.andWhere('r.rank_weekly IS NOT NULL').orderBy('r.rank_weekly', 'ASC');
-    } else if (filters.period === 'monthly') {
-      qb.andWhere('r.rank_monthly IS NOT NULL').orderBy('r.rank_monthly', 'ASC');
+    if (tab === 'favorites') {
+      qb.andWhere('r.is_favorite = true');
+      qb.andWhere('r.is_archived = false');
+    } else if (tab === 'archived') {
+      qb.andWhere('r.is_archived = true');
     } else {
-      qb.orderBy('r.updated_at', 'DESC');
+      // "all" — show non-archived repos
+      qb.andWhere('r.is_archived = false');
     }
 
-    if (filters.domain) {
-      qb.andWhere(':domain = ANY(r.domains)', { domain: filters.domain });
-    }
-    if (filters.fav) {
-      qb.andWhere('r.is_favorite = true');
-    }
-    if (filters.q) {
-      qb.andWhere(
-        '(r.full_name ILIKE :q OR r.description ILIKE :q)',
-        { q: `%${filters.q}%` },
-      );
-    }
+    qb.orderBy('r.first_seen_at', 'DESC');
+    qb.skip((page - 1) * limit).take(limit);
 
     const [data, total] = await qb.getManyAndCount();
-    return { data, meta: { total, period: filters.period ?? 'all' } };
+    return { data, meta: { total, page, limit, tab } };
   }
 
+  // ─── Get single repo ──────────────────────────────────────────────────────
   async findOne(fullName: string) {
-    return this.repo.findOneBy({ full_name: fullName });
+    const repo = await this.repo.findOneBy({ full_name: fullName });
+    if (!repo) throw new NotFoundException(`Repo ${fullName} not found`);
+    return repo;
   }
 
+  // ─── Patch user fields (favorite, archive, dismiss new release) ───────────
   async patch(
     fullName: string,
     updates: Partial<
-      Pick<RepositoryEntity, 'is_favorite' | 'is_applied' | 'is_viewed' | 'notes'>
+      Pick<
+        RepositoryEntity,
+        'is_favorite' | 'is_archived' | 'has_new_release' | 'is_read'
+      >
     >,
   ) {
     await this.repo.update({ full_name: fullName }, updates);
     return this.repo.findOneBy({ full_name: fullName });
   }
 
-  async upsert(
-    syncType: string,
-    repos: Partial<RepositoryEntity>[],
-  ): Promise<{ received: number; new: number }> {
-    // Reset ranks by sync type (NULL out so old entries don't retain stale ranks)
-    if (syncType === 'daily') {
-      await this.repo.query('UPDATE repositories SET rank_daily = NULL');
-    } else if (syncType === 'weekly') {
-      await this.repo.query('UPDATE repositories SET rank_weekly = NULL');
-    } else if (syncType === 'monthly') {
-      await this.repo.query('UPDATE repositories SET rank_monthly = NULL');
-    } else if (syncType === 'full') {
-      await this.repo.query(
-        'UPDATE repositories SET rank_daily = NULL, rank_weekly = NULL, rank_monthly = NULL',
+  // ─── Trigger async AI analysis (Approach C: async + polling) ──────────────
+  async triggerAnalyze(fullName: string): Promise<RepositoryEntity | null> {
+    const repo = await this.repo.findOneBy({ full_name: fullName });
+    if (!repo) throw new NotFoundException(`Repo ${fullName} not found`);
+
+    // Mark as analyzing (FE will poll for status change)
+    await this.repo.update(
+      { full_name: fullName },
+      { analyze_status: 'analyzing' },
+    );
+
+    // Fire-and-forget: run analysis in background
+    this.runAnalysis(repo).catch((err) => {
+      this.logger.error(`Analysis failed for ${fullName}: ${err.message}`);
+    });
+
+    return this.repo.findOneBy({ full_name: fullName });
+  }
+
+  // ─── Background analysis: fetch README → call 9Router LLM → save ─────────
+  private async runAnalysis(repo: RepositoryEntity): Promise<void> {
+    try {
+      // 1. Fetch README from GitHub API
+      const readmeRes = await fetch(
+        `https://api.github.com/repos/${repo.full_name}/readme`,
+        {
+          headers: {
+            Accept: 'application/vnd.github.raw+json',
+            'User-Agent': 'ThangVQ-Digital-Hub/1.0',
+          },
+        },
+      );
+
+      let readmeContent = '';
+      if (readmeRes.ok) {
+        readmeContent = await readmeRes.text();
+        // Truncate to ~8000 chars to stay within LLM context limits
+        if (readmeContent.length > 8000) {
+          readmeContent = readmeContent.substring(0, 8000) + '\n\n[...truncated]';
+        }
+      } else {
+        readmeContent = 'No README available for this repository.';
+      }
+
+      // 2. Call 9Router LLM
+      const NINE_ROUTER_API_KEY = process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || '';
+      
+      const llmRes = await fetch(`${NINE_ROUTER_URL}/chat/completions`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(NINE_ROUTER_API_KEY ? { 'Authorization': `Bearer ${NINE_ROUTER_API_KEY}` } : {}),
+        },
+        body: JSON.stringify({
+          model: NINE_ROUTER_MODEL,
+          response_format: { type: 'json_object' },
+          messages: [
+            {
+              role: 'system',
+              content: `You are a Principal Software Engineer evaluating a GitHub repository. Based on the README, you must return a JSON object with this structure:
+{
+  "summary": "A highly concise, punchy Markdown string.",
+  "tags": ["array", "of", "relevant", "tags"]
+}
+
+For the "summary", use explicit markdown (###, **, -). Keep it extremely concise and dense with value. No fluff or marketing speak.
+
+### Overview
+1-2 sentences maximum explaining what it is and the core problem it solves.
+
+### Use Cases & Integrations
+This is the most important section. Think beyond the README! Based on your broad engineering knowledge of this tool's domain:
+- Provide 3 concrete, advanced use cases.
+- Explicitly suggest powerful tool integrations (e.g., n8n, LangChain, Supabase, Vercel, Docker) that developers typically combine with this tool, even if not mentioned in the README.
+
+### Tech Stack & Architecture
+Bullet points of key technologies. If it involves a complex workflow, use a \`\`\`mermaid diagram. Otherwise, keep it very short.
+
+Rules for the Markdown summary:
+- Write in English.
+- Be extremely concise, punchy, and action-oriented. Use bullet points heavily.
+- Use Mermaid diagrams (\`\`\`mermaid) ONLY when explaining complex workflows.
+- Do NOT include installation instructions or basic tutorials.
+
+Rules for tags:
+- Provide 3 to 6 tags.
+- Use lower-case, short, highly relevant keywords (e.g., 'database', 'react', 'llm', 'automation').`,
+            },
+            {
+              role: 'user',
+              content: `Repository: ${repo.full_name}\nDescription: ${repo.description ?? 'N/A'}\nLanguage: ${repo.language ?? 'N/A'}\nStars: ${repo.stars_total}\n\nREADME:\n${readmeContent}`,
+            },
+          ],
+          temperature: 0.3,
+          max_tokens: 2000,
+          stream: false,
+        }),
+      });
+
+      if (!llmRes.ok) {
+        const errorText = await llmRes.text();
+        throw new Error(`9Router returned ${llmRes.status}: ${errorText}`);
+      }
+
+      let contentStr = '';
+      const rawText = await llmRes.text();
+      try {
+        const llmData = JSON.parse(rawText);
+        contentStr = llmData.choices?.[0]?.message?.content ?? '{}';
+      } catch (e) {
+        // If it's somehow still returning SSE (some proxies force stream), accumulate the chunks
+        if (rawText.includes('data: ')) {
+          const lines = rawText.split('\\n');
+          let fullContent = '';
+          for (const line of lines) {
+            if (line.startsWith('data: ') && !line.includes('[DONE]')) {
+              try {
+                const chunk = JSON.parse(line.replace('data: ', ''));
+                if (chunk.choices?.[0]?.delta?.content) {
+                  fullContent += chunk.choices[0].delta.content;
+                } else if (chunk.choices?.[0]?.message?.content) {
+                  fullContent += chunk.choices[0].message.content;
+                }
+              } catch (err) {}
+            }
+          }
+          if (fullContent) {
+            contentStr = fullContent;
+          } else {
+            throw new Error(`Failed to extract content from SSE stream.`);
+          }
+        } else {
+          throw new Error(`Failed to parse LLM response JSON. Raw: ${rawText.substring(0, 100)}`);
+        }
+      }
+      
+      let aiSummary = 'Analysis failed.';
+      let tags: string[] = [];
+      try {
+        // Some models wrap the JSON output in markdown code blocks
+        let cleanJson = contentStr.trim();
+        if (cleanJson.startsWith('\`\`\`json')) {
+          cleanJson = cleanJson.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
+        } else if (cleanJson.startsWith('\`\`\`')) {
+          cleanJson = cleanJson.replace(/^\`\`\`/, '').replace(/\`\`\`$/, '').trim();
+        }
+
+        const parsed = JSON.parse(cleanJson);
+        aiSummary = parsed.summary ?? aiSummary;
+        tags = Array.isArray(parsed.tags) ? parsed.tags : [];
+      } catch (e) {
+        this.logger.error(`Failed to parse LLM JSON response: ${e.message}`);
+        // Try to salvage if it's completely broken (including truncation without closing quotes)
+        const summaryMatch = contentStr.match(/"summary"\s*:\s*"([\s\S]*)/);
+        if (summaryMatch && summaryMatch[1]) {
+           let extracted = summaryMatch[1];
+           // Remove trailing JSON artifacts if it wasn't completely truncated
+           extracted = extracted.replace(/"\s*(?:,|})\s*[\s\S]*$/, '');
+           if (extracted.endsWith('"')) {
+             extracted = extracted.slice(0, -1);
+           }
+           // Unescape literal \n to actual newlines
+           aiSummary = extracted.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+           
+           // If we managed to salvage summary, try to salvage tags too
+           const tagsMatch = contentStr.match(/"tags"\s*:\s*\[(.*?)\]/);
+           if (tagsMatch && tagsMatch[1]) {
+             tags = tagsMatch[1].split(',').map(t => t.replace(/"/g, '').trim()).filter(Boolean);
+           }
+        } else {
+           aiSummary = contentStr; // Absolute fallback
+        }
+      }
+
+      // 3. Save result to database
+      await this.repo.update(
+        { full_name: repo.full_name },
+        { ai_summary: aiSummary, tags, analyze_status: 'done' },
+      );
+
+      this.logger.log(`Analysis completed for ${repo.full_name}`);
+    } catch (error) {
+      this.logger.error(
+        `Analysis failed for ${repo.full_name}: ${error.message}`,
+      );
+      await this.repo.update(
+        { full_name: repo.full_name },
+        { analyze_status: 'failed' },
       );
     }
+  }
 
+  // ─── Batch upsert from Hermes trending sync (append-only) ─────────────────
+  async upsert(
+    repos: Partial<RepositoryEntity>[],
+  ): Promise<{ received: number; new: number }> {
     let newCount = 0;
     for (const r of repos) {
       const existing = await this.repo.findOneBy({ full_name: r.full_name });
       if (!existing) {
-        await this.repo.save({ ...r, is_viewed: false });
+        await this.repo.save({
+          ...r,
+          is_favorite: false,
+          is_archived: false,
+          has_new_release: false,
+          is_read: false,
+          analyze_status: 'idle',
+        });
         newCount++;
-      } else {
-        // Preserve user fields: is_favorite, is_applied, is_viewed, viewed_at, notes, first_seen_at
-        const { is_favorite, is_applied, is_viewed, viewed_at, notes, first_seen_at, ...syncFields } = r as RepositoryEntity;
-        void is_favorite; void is_applied; void is_viewed; void viewed_at; void notes; void first_seen_at;
-        await this.repo.update(
-          { full_name: r.full_name },
-          { ...syncFields, last_ranked_at: new Date() },
-        );
       }
+      // If exists → skip entirely (preserve all user data)
     }
     return { received: repos.length, new: newCount };
+  }
+
+  // ─── Manual Add Repo ──────────────────────────────────────────────────────
+  async addManualRepo(urlOrFullName: string): Promise<RepositoryEntity> {
+    let fullName = urlOrFullName
+      .replace(/^(https?:\/\/)?(www\.)?github\.com\//i, '')
+      .trim();
+    fullName = fullName.replace(/\/$/, '').replace(/\.git$/, '');
+
+    const existing = await this.repo.findOneBy({ full_name: fullName });
+    if (existing) return existing;
+
+    const res = await fetch(`https://api.github.com/repos/${fullName}`, {
+      headers: {
+        Accept: 'application/vnd.github.v3+json',
+        'User-Agent': 'ThangVQ-Digital-Hub/1.0',
+      },
+    });
+
+    if (!res.ok) {
+      throw new Error(`GitHub API error: ${res.statusText}`);
+    }
+
+    const data = await res.json();
+
+    const newRepo = this.repo.create({
+      full_name: data.full_name,
+      description: data.description,
+      html_url: data.html_url,
+      language: data.language,
+      avatar_url: data.owner?.avatar_url,
+      stars_total: data.stargazers_count,
+      forks_total: data.forks_count,
+      is_favorite: false,
+      is_archived: false,
+      has_new_release: false,
+      is_read: true,
+      analyze_status: 'idle',
+    });
+
+    return this.repo.save(newRepo);
+  }
+
+  // ─── Batch check releases for favorite repos (from Hermes cron) ───────────
+  async checkReleases(
+    releases: { full_name: string; tag_name: string }[],
+  ): Promise<{ received: number; updated: number }> {
+    let updated = 0;
+    for (const r of releases) {
+      const existing = await this.repo.findOneBy({ full_name: r.full_name });
+      if (existing && existing.latest_release_tag !== r.tag_name) {
+        await this.repo.update(
+          { full_name: r.full_name },
+          {
+            latest_release_tag: r.tag_name,
+            has_new_release: true,
+          },
+        );
+        updated++;
+      }
+    }
+    return { received: releases.length, updated };
   }
 }

@@ -4,7 +4,7 @@
 > **Repo:** `thangvq-digital-hub` (monorepo)
 > **Developed by:** Hermes Agent (Powered by Superpowers Skills & GitNexus)
 > **Status:** Autonomous Workflow Ready
-> **Last Updated:** 2026-05-07
+> **Last Updated:** 2026-05-11
 
 ---
 
@@ -15,7 +15,7 @@ graph TB
     subgraph "Frontend & UI (Vercel)"
         A["Next.js 16 App Router"]
         A --> B["/ — Portfolio"]
-        A --> C["/tech — Developer Intelligence Dashboard"]
+        A --> C["/tech — TechTrend Dashboard"]
     end
 
     subgraph "Stateless AI Execution (Local / Remote)"
@@ -72,11 +72,8 @@ graph TB
 
 ```
 /                       → Portfolio (SSG)
-/tech                   → Redirect to /tech/trending
-/tech/trending          → GitHub Trending repos (daily/weekly/monthly rankings)
-/tech/releases          → Cross-repo release feed (favorites only, AI-analyzed)
-/tech/favorites         → Favorited repos
-/tech/[repo]            → Repo detail + release history + AI summaries + notes
+/tech                   → TechTrend Dashboard (trending repos, load more)
+/tech/[owner]/[repo]    → Repo detail + AI Magic Analyze
 ```
 
 ---
@@ -104,50 +101,53 @@ Design direction, personal content, and implementation details are in:
 
 ---
 
-## Part 2: Developer Intelligence Dashboard (`/tech`)
+## Part 2: TechTrend Dashboard (`/tech`)
 
 ### Core Features
 
-1. **Trending Repos** — Daily/weekly/monthly GitHub Trending, AI-classified by domain
-2. **Unviewed Highlighting** — New repos highlighted until user clicks into detail view
-3. **Favorite Release Monitoring** — Daily check for new releases on favorited repos
-4. **AI Release Analysis** — Hermes generates summaries, breaking changes, migration notes, relevance scores
-5. **Release Feed** — Cross-repo timeline for quick daily scanning
-6. **Repo Detail Page** — Deep-dive with trend history, releases, AI summaries, personal notes
+1. **Weekly Trending Sync** — Hermes scrapes `github.com/trending?since=weekly` (first page, ~25 repos) at 8AM & 8PM daily
+2. **Simple Dedup** — If repo already exists in DB, skip. If new, insert with original trending order.
+3. **Favorite** — Mark repos as favorites, filter by favorites tab
+4. **Archive** — Hide repos you're not interested in, viewable in archived tab
+5. **Add Repo (Manual)** — Add any GitHub repository via URL manually via the UI.
+6. **New Repo Indicator (`is_read`)** — Newly scraped repositories have a "NEW" badge. Clicking into the repo detail page automatically marks them as read.
+7. **AI Magic Analyze** — On repo detail page, click "Magic" button → AI reads the repo and generates a **Markdown-formatted** explanation
+8. **Favorite Release Monitor** — Daily cronjob checks favorite repos for new GitHub releases, highlights them with `has_new_release` badge
+9. **Release Changelog Link** — Detail page links to GitHub Releases page; clicking it dismisses the new-release highlight
+10. **Load More Pagination** — 20 repos per batch, load more on scroll/click
 
 ### Database Schema
 
-Detailed schemas in architecture docs. Summary:
-
 | Table | Purpose |
 |---|---|
-| `repositories` | Repo identity, rankings, metrics, domains, user interactions, view state |
-| `repo_releases` | Release data + AI analysis (summary, breaking changes, migration notes, relevance score) |
+| `repositories` | Repo identity, trending rank, stars, user interactions (favorite/archive), release tracking, AI summary (Markdown) |
 | `sync_logs` | Audit trail for sync operations |
 
-Key constraints:
-- `repo_releases` has `UNIQUE(repo_full_name, release_tag)` for idempotent upserts
-- `release_body_hash` detects edited release notes for re-analysis
-- `is_viewed` on both repos and releases (different consumption signals)
-- `last_release_checked_at` on repos for cron observability
+Key design:
+- `repositories` uses `full_name` (owner/repo) as primary key
+- Simple dedup: if `full_name` exists → skip, if not → insert with `is_read = false`
+- `is_archived` hides repos from default view
+- `latest_release_tag` + `has_new_release` for lightweight release tracking (no full changelog storage)
+- `ai_summary` stores the Magic Analyze result as **Markdown** (rendered with `react-markdown`)
 
 ### Cronjob Pipelines
 
-| Cronjob | Target | Schedule | Details |
+| Cronjob | Source | Schedule | Details |
 |---|---|---|---|
-| Trending Sync | All repos | 2x daily + weekly + monthly | → [repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md) |
-| Favorite Release Monitor | `is_favorite = true` only | Daily 10AM | → [release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) |
+| Weekly Trending Sync | `github.com/trending?since=weekly` | `0 8,20 * * *` (8AM & 8PM UTC+7) | → [repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md) |
+| Favorite Release Monitor | Favorite repos | `0 10 * * *` (10AM UTC+7) | → [release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) |
 
 ### API Routes
 
 | Endpoint | Method | Auth | Description |
 |---|---|---|---|
-| `/api/repos` | GET | — | List repos with filters |
-| `/api/repos/[fullName]` | GET | — | Repo detail with releases |
-| `/api/repos/[fullName]` | PATCH | — | Toggle favorite/applied/viewed, update notes |
+| `/api/repos` | GET | — | List repos (tab: all/favorites/archived, pagination) |
+| `/api/repos/{fullName}` | GET | — | Repo detail |
+| `/api/repos/{fullName}` | PATCH | — | Toggle favorite/archive/has_new_release/is_read |
+| `/api/repos/{fullName}/analyze` | POST | — | Trigger AI Magic Analyze |
+| `/api/repos/add` | POST | — | Manually add a repo via URL |
 | `/api/repos/upsert` | POST | `x-api-key` | Batch upsert from Hermes trending sync |
-| `/api/releases` | GET | — | Release feed (favorites, paginated) |
-| `/api/releases/upsert` | POST | `x-api-key` | Insert AI-analyzed releases from Hermes |
+| `/api/repos/check-releases` | POST | `x-api-key` | Batch update release tags (from Hermes favorite monitor) |
 | `/api/sync` | GET | — | Latest sync log |
 
 ---
@@ -251,11 +251,12 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXX              # Analytics (optional)
 1. **Monorepo** — Portfolio and dashboard share layout, fonts, theme in one Next.js app
 2. **SSR vs SSG** — Portfolio uses SSG (static), Dashboard uses SSR + client-side fetching
 3. **Backend** — Self-hosted NestJS + PostgreSQL via Docker for direct Hermes access
-4. **Hermes integration** — Handles scraping, AI classification, and release analysis externally; NestJS receives pre-processed data
+4. **Hermes integration** — Handles scraping via Cron page; NestJS receives pre-processed data via upsert API
 5. **Hosting** — Vercel for frontend edge deployment; DigitalOcean/Mac Mini for backend
 6. **DNS** — Cloudflare proxy + WAF in front of Vercel. Traffic: `User → Cloudflare → Vercel`
 7. **Document structure** — PRD stays concise; deep mechanics in `docs/architecture/`; personal content in `docs/portfolio-content.md`
 8. **Autonomous Pipeline** — Superpowers skills (brainstorming → writing-plans) + GitNexus + Hermes + Playwright form the development cycle. Spec Kit concepts (DAGs, structured contracts) to be adopted incrementally as complexity grows.
+9. **TechTrend Simplification (2026-05-11)** — Removed release monitoring, domain classification, multi-period ranking. Simplified to weekly trending scrape + dedup + favorite/archive + on-demand AI analysis. See `docs/superpowers/specs/2026-05-11-techtrend-simplification-design.md`.
 
 ---
 
@@ -265,5 +266,5 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXX              # Analytics (optional)
 |---|---|
 | [portfolio-content.md](portfolio-content.md) | Personal profile, experience, projects |
 | [architecture/task-execution-model.md](architecture/task-execution-model.md) | Phase + DAG execution, state machine, task metadata |
-| [architecture/release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) | Favorite monitoring, AI analysis, relevance scoring |
-| [architecture/repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md) | Trending sync flow, upsert logic, data preservation |
+| [architecture/repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md) | Weekly trending sync flow, upsert logic |
+| [architecture/release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) | Favorite release monitor (lightweight) |

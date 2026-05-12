@@ -24,15 +24,6 @@ export class RepositoryEntity {
   @Column({ nullable: true })
   avatar_url: string;
 
-  @Column({ type: 'int', nullable: true })
-  rank_daily: number;
-
-  @Column({ type: 'int', nullable: true })
-  rank_weekly: number;
-
-  @Column({ type: 'int', nullable: true })
-  rank_monthly: number;
-
   @Column({ type: 'int', default: 0 })
   stars_total: number;
 
@@ -42,32 +33,36 @@ export class RepositoryEntity {
   @Column({ type: 'int', default: 0 })
   forks_total: number;
 
-  @Column('text', { array: true, default: '{}' })
-  domains: string[];
+  @Column({ type: 'smallint', nullable: true })
+  trending_rank: number;
 
   @Column({ default: false })
   is_favorite: boolean;
 
   @Column({ default: false })
-  is_applied: boolean;
-
-  @Column({ default: false })
-  is_viewed: boolean;
-
-  @Column({ type: 'timestamptz', nullable: true })
-  viewed_at: Date;
+  is_archived: boolean;
 
   @Column({ type: 'text', nullable: true })
-  notes: string;
+  latest_release_tag: string;
 
-  @Column({ type: 'timestamptz', nullable: true })
-  last_release_checked_at: Date;
+  @Column({ default: false })
+  has_new_release: boolean;
+
+  @Column({ default: false })
+  is_read: boolean;
+
+  @Column({ type: 'text', nullable: true })
+  ai_summary: string;
+
+  /** 'idle' | 'analyzing' | 'done' | 'failed' */
+  @Column({ default: 'idle' })
+  analyze_status: string;
+
+  @Column({ type: 'text', array: true, default: [] })
+  tags: string[];
 
   @CreateDateColumn({ type: 'timestamptz' })
   first_seen_at: Date;
-
-  @Column({ type: 'timestamptz', nullable: true })
-  last_ranked_at: Date;
 
   @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;

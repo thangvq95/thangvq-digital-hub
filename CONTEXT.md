@@ -2,19 +2,22 @@
 
 ## Core Purpose
 
-Developer Intelligence Platform — Portfolio + TechTrend Dashboard with AI-powered release monitoring.
+Developer Intelligence Platform — Portfolio + TechTrend Dashboard with weekly GitHub trending repos and on-demand AI analysis.
 
 ## Key Terminology
 
-- **Hermes Agent** — Autonomous executor on VPS. Writes code, runs tests, syncs tasks, analyzes releases.
+- **Hermes Agent** — Autonomous executor on VPS. Writes code, runs tests, syncs tasks, scrapes trending repos.
 - **Superpowers Skills** — AI workflow skills (brainstorming, writing-plans, diagnose, etc.) for planning, design, and task breakdown.
 - **GitNexus** — Knowledge graph providing codebase context to Hermes via MCP.
 - **Playwright** — Automated E2E & API testing. All tasks require passing tests (TDD).
 - **GitHub Projects & Issues** — Task orchestrator (To-do / In Progress / Done).
-- **TechTrend** — Developer intelligence dashboard showing trending repos + AI-analyzed releases.
-- **Release Feed** — Cross-repo timeline of AI-analyzed releases from favorited repositories.
+- **TechTrend** — Dashboard showing weekly trending GitHub repos with favorite/archive features.
+- **Magic Analyze** — On-demand AI analysis triggered via Frontend to NestJS. NestJS directly fetches the README and calls 9Router LLM, updating the repo with the Markdown result. Rendered with `react-markdown` + `remark-gfm` + `rehype-highlight`.
+- **Favorite Release Monitor** — Daily Hermes cronjob that checks favorite repos for new GitHub releases. Updates `latest_release_tag` and sets `has_new_release = true` for UI highlight. No changelog data stored.
+- **has_new_release** — Boolean flag on repos, set by release monitor cronjob, cleared when user clicks the changelog link on the detail page.
+- **is_read** — Boolean flag on repos, set to `false` when newly scraped by trending sync, cleared to `true` when user visits the detail page.
 - **NestJS API** — Backend service running on VPS via Docker.
-- **PostgreSQL** — Primary database (repos, releases, sync logs).
+- **PostgreSQL** — Primary database (repos, sync logs).
 - **9Router** — API Gateway/Proxy at `https://9router.phieucaphe.com/v1`.
 
 ## Autonomous Workflow — 4-Layer Architecture

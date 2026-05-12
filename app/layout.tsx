@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { DM_Sans, Space_Grotesk } from "next/font/google";
 import "./globals.css";
+import "highlight.js/styles/github-dark.css";
+import "katex/dist/katex.min.css";
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
@@ -51,7 +53,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${dmSans.variable} ${spaceGrotesk.variable}`}>
+    <html lang="en" className={`${dmSans.variable} ${spaceGrotesk.variable}`} data-scroll-behavior="smooth">
       <body className="antialiased">{children}</body>
     </html>
   );

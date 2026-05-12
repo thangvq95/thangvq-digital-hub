@@ -11,17 +11,11 @@ export class SyncLogEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  sync_type: string;
-
   @Column({ type: 'int', default: 0 })
   repos_scraped: number;
 
   @Column({ type: 'int', default: 0 })
   repos_new: number;
-
-  @Column({ type: 'int', default: 0 })
-  repos_classified: number;
 
   @Column({ default: 'running' })
   status: string;

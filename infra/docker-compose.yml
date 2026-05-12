@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   postgres:
     image: postgres:16-alpine
@@ -25,6 +23,10 @@ services:
     environment:
       DATABASE_URL: postgres://digitalhub:${POSTGRES_PASSWORD:-devpassword}@postgres:5432/digitalhub
       SYNC_API_KEY: ${SYNC_API_KEY}
+      NINE_ROUTER_API_KEY: ${NINE_ROUTER_API_KEY}
+      NINE_ROUTER_URL: ${NINE_ROUTER_URL}
+      NINE_ROUTER_MODEL: ${NINE_ROUTER_MODEL}
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
       PORT: 3001
     depends_on:
       - postgres
@@ -57,6 +59,20 @@ services:
       - DEDUP_DB=${DEDUP_DB:-/app/data/ai-workspace.db}
       - PORT=8080
       - HERMES_BIN=${HERMES_BIN:-hermes}
+
+  hermes-gateway:
+    build:
+      context: ../
+      dockerfile: infra/ai-developer-workspace/Dockerfile
+    container_name: hermes-gateway
+    restart: always
+    volumes:
+      - ../:/app/repo
+      - hermes_data:/root/.hermes
+    environment:
+      - HOST=0.0.0.0
+      - PORT=9119
+    command: [ "hermes", "gateway", "start" ]
 
   # Cloudflare Tunnel — routes public traffic to internal services, no open ports needed
   cloudflared:

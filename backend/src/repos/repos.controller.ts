@@ -8,7 +8,6 @@ import {
   Param,
   Body,
   UseGuards,
-  NotFoundException,
 } from '@nestjs/common';
 import { ReposService } from './repos.service';
 import { ApiKeyGuard } from '../auth/api-key.guard';
@@ -20,44 +19,52 @@ export class ReposController {
 
   @Get()
   findAll(
-    @Query('period') period?: string,
-    @Query('domain') domain?: string,
-    @Query('fav') fav?: string,
-    @Query('q') q?: string,
+    @Query('tab') tab?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
   ) {
-    return this.reposService.findAll({
-      period,
-      domain,
-      fav: fav === 'true',
-      q,
-    });
+    return this.reposService.findAll(
+      tab ?? 'all',
+      Number(page) || 1,
+      Number(limit) || 20,
+    );
   }
 
   @Get(':fullName')
-  async findOne(@Param('fullName') fullName: string) {
-    const repo = await this.reposService.findOne(decodeURIComponent(fullName));
-    if (!repo) throw new NotFoundException('Repository not found');
-    return repo;
+  findOne(@Param('fullName') fullName: string) {
+    return this.reposService.findOne(decodeURIComponent(fullName));
   }
 
   @Patch(':fullName')
   patch(
     @Param('fullName') fullName: string,
-    @Body()
-    body: Partial<Pick<RepositoryEntity, 'is_favorite' | 'is_applied' | 'is_viewed' | 'notes'>>,
+    @Body() body: { is_favorite?: boolean; is_archived?: boolean; has_new_release?: boolean; is_read?: boolean },
   ) {
     return this.reposService.patch(decodeURIComponent(fullName), body);
   }
 
+  @Post(':fullName/analyze')
+  analyze(@Param('fullName') fullName: string) {
+    return this.reposService.triggerAnalyze(decodeURIComponent(fullName));
+  }
+
+  @Post('add')
+  addRepo(@Body() body: { url: string }) {
+    if (!body.url) throw new Error('URL is required');
+    return this.reposService.addManualRepo(body.url);
+  }
+
   @Post('upsert')
   @UseGuards(ApiKeyGuard)
-  upsert(
-    @Body()
-    body: {
-      sync_type: string;
-      repositories: Partial<RepositoryEntity>[];
-    },
+  upsert(@Body() body: { repositories: Partial<RepositoryEntity>[] }) {
+    return this.reposService.upsert(body.repositories);
+  }
+
+  @Post('check-releases')
+  @UseGuards(ApiKeyGuard)
+  checkReleases(
+    @Body() body: { releases: { full_name: string; tag_name: string }[] },
   ) {
-    return this.reposService.upsert(body.sync_type, body.repositories);
+    return this.reposService.checkReleases(body.releases);
   }
 }

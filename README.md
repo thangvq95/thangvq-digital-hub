@@ -1,6 +1,6 @@
 # 🌟 ThangVQ Digital Hub
 
-A **Developer Intelligence Platform** — Portfolio + TechTrend Dashboard with AI-powered release monitoring.
+A **Developer Intelligence Platform** — Portfolio + TechTrend Dashboard with AI-powered repository analysis.
 
 Live: **[thangvq95.page](https://thangvq95.page)**
 
@@ -30,10 +30,8 @@ User → Cloudflare → Vercel (Next.js 16)
 | Route | Description |
 |---|---|
 | `/` | Portfolio — SSG, Liquid Glass design |
-| `/tech/trending` | GitHub Trending repos (daily/weekly/monthly) |
-| `/tech/releases` | AI-analyzed release feed from favorited repos |
-| `/tech/favorites` | Favorited repositories |
-| `/tech/[repo]` | Repo detail + release history + AI summaries |
+| `/tech` | GitHub Trending repos (All, Favorites, Archived) |
+| `/tech/[owner]/[repo]` | Repo detail + release version tracking + AI summaries |
 
 ---
 
@@ -74,12 +72,10 @@ npx playwright test tests/portfolio.spec.ts --project=chromium
 /thangvq-digital-hub
 ├── app/                        # Next.js App Router
 │   ├── page.tsx                # Portfolio (/)
-│   ├── tech/                   # Dashboard (/tech/*)
-│   └── api/                    # Next.js API proxy routes
+│   └── tech/                   # Dashboard (/tech/*)
 ├── backend/                    # NestJS API (standalone)
 │   └── src/
-│       ├── repos/              # GET/PATCH repos, POST upsert
-│       ├── releases/           # GET feed, POST upsert
+│       ├── repos/              # GET/PATCH repos, POST upsert, POST analyze
 │       ├── sync/               # GET latest sync log
 │       └── auth/               # API key guard (Hermes endpoints)
 ├── components/

@@ -13,7 +13,7 @@ This repo uses the default vocabulary for issue triage:
 The `infra/ai-developer-workspace/listener.py` webhook automatically dispatches the Hermes Agent based on GitHub Issue labels. When creating an issue (e.g., via Spec Kit), apply the appropriate label to trigger the correct skill:
 
 - `bug` or `sentry` → Triggers the `diagnose` skill. (Agent will reproduce, minimize, and fix the bug).
-- `feature` or `enhancement` → Triggers the `to-prd` skill. (Agent will implement the feature based on requirements).
+- `feature` or `enhancement` → Triggers the `to-prd` or `writing-plans` skill. (Agent will create a PRD and break down the feature into a plan).
 - `plan` → Triggers the `writing-plans` skill. (Agent will break down an epic or complex task into a plan).
 
 *If an issue lacks these specific routing labels, the listener defaults to the `triage` skill.*

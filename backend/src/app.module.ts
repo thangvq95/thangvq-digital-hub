@@ -2,7 +2,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ReposModule } from './repos/repos.module';
-import { ReleasesModule } from './releases/releases.module';
 import { SyncModule } from './sync/sync.module';
 
 @Module({
@@ -15,7 +14,6 @@ import { SyncModule } from './sync/sync.module';
       logging: process.env.NODE_ENV !== 'production',
     }),
     ReposModule,
-    ReleasesModule,
     SyncModule,
   ],
 })

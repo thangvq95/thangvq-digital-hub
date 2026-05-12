@@ -20,10 +20,8 @@ Hermes also runs **scheduled cronjobs** independently (no webhook needed):
 
 | Cronjob | Schedule | Action |
 |---|---|---|
-| Daily Trending Sync | `0 8,20 * * *` | Scrape GitHub Trending → `POST /api/repos/upsert` |
-| Weekly Trending Sync | `0 9 * * 1` | Weekly top 25 |
-| Monthly Trending Sync | `0 9 1 * *` | Monthly top 25 |
-| Favorite Release Monitor | `0 10 * * *` | Check releases → AI analyze → `POST /api/releases/upsert` |
+| Weekly Trending Sync | `0 8,20 * * *` | Scrape GitHub Trending (Weekly) → `POST /api/repos/upsert` |
+| Favorite Release Monitor | `0 10 * * *` | Check favorite repos for new releases → `POST /api/repos/check-releases` |
 
 ---
 
@@ -69,6 +67,7 @@ curl http://localhost:3001/api/sync
 | `digitalhub-postgres` | 5432 | PostgreSQL 16 database |
 | `digitalhub-api` | 3001 | NestJS API (auto-migrates schema on start) |
 | `ai-developer-workspace` | 8080 | Hermes webhook listener + GitNexus Global Knowledge Graph |
+| `hermes-gateway` | 9119 | Hermes Kanban Dashboard UI |
 
 ---
 
@@ -78,7 +77,7 @@ In GitHub repo → Settings → Webhooks:
 
 | Field | Value |
 |---|---|
-| Payload URL | `https://<your-domain>:8080/` or via Cloudflare Tunnel |
+| Payload URL | `https://webhook.<your-domain>/` (via Cloudflare Tunnel) |
 | Content type | `application/json` |
 | Secret | Same as `WEBHOOK_SECRET` in `infra/.env` |
 | Events | Check run, Check suite, Pull request |
@@ -90,13 +89,14 @@ In GitHub repo → Settings → Webhooks:
 Instead of exposing ports directly, use Cloudflare Tunnel to securely route traffic:
 
 ```bash
-# Already have Cloudflare token — run cloudflared in Docker or as service
-cloudflared tunnel run --token <your-token>
+# cloudflared runs automatically in Docker via docker-compose.yml
 ```
 
 Routes:
 - `thangvq95.page` → Vercel (frontend)
-- `api.thangvq95.page` → `localhost:3001` (NestJS API)
+- `api.thangvq95.page` → `http://api:3001` (NestJS API)
+- `webhook.thangvq95.page` → `http://ai-workspace:8080` (Hermes Listener)
+- `kanban.thangvq95.page` → `http://hermes-gateway:9119` (Hermes Kanban)
 
 ---
 

@@ -15,17 +15,13 @@ export class SyncService {
     return this.repo.findOne({ order: { started_at: 'DESC' } });
   }
 
-  async create(syncType: string): Promise<SyncLogEntity> {
-    return this.repo.save({ sync_type: syncType, status: 'running' });
+  async create(): Promise<SyncLogEntity> {
+    return this.repo.save({ status: 'running' });
   }
 
   async complete(
     id: string,
-    counts: {
-      repos_scraped: number;
-      repos_new: number;
-      repos_classified: number;
-    },
+    counts: { repos_scraped: number; repos_new: number },
   ) {
     return this.repo.update(id, {
       ...counts,

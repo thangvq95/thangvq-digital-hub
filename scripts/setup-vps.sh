@@ -58,8 +58,14 @@ SYNC_API_KEY=$input_sync
 POSTGRES_PASSWORD=$input_pg
 
 # 🌐 API Backend
-PORT=3005
+PORT=3001
 NODE_ENV=production
+
+# 🤖 AI Analysis (9Router & OpenAI)
+NINE_ROUTER_URL=https://9router.phieucaphe.com/v1
+NINE_ROUTER_MODEL=planning
+NINE_ROUTER_API_KEY=
+OPENAI_API_KEY=
 
 # ☁️ Cloudflare (Optional)
 CLOUDFLARE_TUNNEL_TOKEN=
