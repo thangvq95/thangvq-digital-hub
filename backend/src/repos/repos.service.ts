@@ -268,11 +268,26 @@ Rules for tags:
           analyze_status: 'idle',
         });
         newCount++;
+      } else {
+        // Update dynamic GitHub-sourced metadata while strictly preserving user state/preferences
+        await this.repo.update(
+          { full_name: r.full_name },
+          {
+            description: r.description,
+            html_url: r.html_url,
+            language: r.language,
+            avatar_url: r.avatar_url,
+            stars_total: r.stars_total,
+            stars_growth: r.stars_growth,
+            forks_total: r.forks_total,
+            trending_rank: r.trending_rank,
+          },
+        );
       }
-      // If exists → skip entirely (preserve all user data)
     }
     return { received: repos.length, new: newCount };
   }
+
 
   // ─── Manual Add Repo ──────────────────────────────────────────────────────
   async addManualRepo(urlOrFullName: string): Promise<RepositoryEntity> {
