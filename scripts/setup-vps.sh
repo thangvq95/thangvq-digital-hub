@@ -42,14 +42,19 @@ if [ ! -f "$BASE_DIR/infra/.env" ]; then
     echo "No .env file found. Let's configure it now."
     
     # Auto-generate secure secrets if user skips
-    read -p "Enter WEBHOOK_SECRET (Press Enter to auto-generate): " input_webhook
+    read -p "Enter WEBHOOK_SECRET (Press Enter to auto-generate): " input_webhook < /dev/tty || input_webhook=""
     input_webhook=${input_webhook:-$(openssl rand -hex 32)}
     
-    read -p "Enter SYNC_API_KEY (Press Enter to auto-generate): " input_sync
+    read -p "Enter SYNC_API_KEY (Press Enter to auto-generate): " input_sync < /dev/tty || input_sync=""
     input_sync=${input_sync:-$(openssl rand -hex 32)}
 
-    read -p "Enter POSTGRES_PASSWORD (Press Enter to auto-generate): " input_pg
+    read -p "Enter POSTGRES_PASSWORD (Press Enter to auto-generate): " input_pg < /dev/tty || input_pg=""
     input_pg=${input_pg:-$(openssl rand -hex 16)}
+
+    # Optional API Keys
+    read -p "Enter NINE_ROUTER_API_KEY (Optional, press Enter to skip): " input_nine_router < /dev/tty || input_nine_router=""
+    read -p "Enter OPENAI_API_KEY (Optional, press Enter to skip): " input_openai < /dev/tty || input_openai=""
+    read -p "Enter CLOUDFLARE_TUNNEL_TOKEN (Optional, press Enter to skip): " input_cf < /dev/tty || input_cf=""
 
     cat <<EOF > "$BASE_DIR/infra/.env"
 # 🔒 Security & Database
@@ -64,11 +69,11 @@ NODE_ENV=production
 # 🤖 AI Analysis (9Router & OpenAI)
 NINE_ROUTER_URL=https://9router.phieucaphe.com/v1
 NINE_ROUTER_MODEL=planning
-NINE_ROUTER_API_KEY=
-OPENAI_API_KEY=
+NINE_ROUTER_API_KEY=$input_nine_router
+OPENAI_API_KEY=$input_openai
 
 # ☁️ Cloudflare (Optional)
-CLOUDFLARE_TUNNEL_TOKEN=
+CLOUDFLARE_TUNNEL_TOKEN=$input_cf
 EOF
     echo "[INFO] .env file generated successfully at $BASE_DIR/infra/.env"
     echo "========================================"
