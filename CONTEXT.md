@@ -31,12 +31,6 @@ Developer Intelligence Platform — Portfolio + TechTrend Dashboard with weekly 
 
 Pipeline: `Brainstorm → writing-plans → Hermes executes → GitHub Issues → docs update`
 
-## Task Execution Model
-
-- Top-level: Phase-based grouping (human-readable)
-- Within phase: Dependency DAG (parallel when possible)
-- States: READY → BLOCKED → RUNNING → FAILED → DONE
-- Details: `docs/architecture/task-execution-model.md`
 
 ## Architecture Rules
 

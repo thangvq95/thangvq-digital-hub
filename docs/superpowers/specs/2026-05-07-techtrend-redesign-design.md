@@ -40,7 +40,6 @@ docs/
 ├── PRD.md                              # High-level system contract
 ├── portfolio-content.md                # Personal content (About, Experience, etc.)
 └── architecture/
-    ├── task-execution-model.md         # Phase + DAG + state machine
     ├── release-analysis-pipeline.md    # Favorite monitoring + AI analysis
     └── repo-sync-lifecycle.md          # Trending sync cronjob flow
 ```

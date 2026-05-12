@@ -193,10 +193,7 @@ Brainstorm (brainstorming skill) → Plan (writing-plans skill) → Hermes execu
 4. **Track** — Task status synced to GitHub Projects
 5. **Document** — Update architecture docs and close issues after completion
 
-### Task Execution Model
 
-Phase-based grouping (human clarity) + dependency DAG (machine optimization).
-Full specification: → [task-execution-model.md](architecture/task-execution-model.md)
 
 ### Bug Fix Flow (Sentry-triggered)
 
@@ -265,6 +262,5 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXX              # Analytics (optional)
 | Document | Purpose |
 |---|---|
 | [portfolio-content.md](portfolio-content.md) | Personal profile, experience, projects |
-| [architecture/task-execution-model.md](architecture/task-execution-model.md) | Phase + DAG execution, state machine, task metadata |
 | [architecture/repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md) | Weekly trending sync flow, upsert logic |
 | [architecture/release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) | Favorite release monitor (lightweight) |
