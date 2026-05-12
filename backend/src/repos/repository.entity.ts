@@ -64,6 +64,10 @@ export class RepositoryEntity {
   @CreateDateColumn({ type: 'timestamptz' })
   first_seen_at: Date;
 
+  @Column({ type: 'timestamptz', nullable: true })
+  last_scraped_at: Date;
+
   @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
 }
+

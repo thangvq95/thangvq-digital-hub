@@ -31,7 +31,10 @@ export class ReposService {
       qb.andWhere('r.is_archived = false');
     }
 
-    qb.orderBy('r.first_seen_at', 'DESC');
+    qb.orderBy('CASE WHEN r.last_scraped_at >= CURRENT_DATE THEN 0 ELSE 1 END', 'ASC');
+    qb.addOrderBy('CASE WHEN r.last_scraped_at >= CURRENT_DATE THEN r.trending_rank ELSE NULL END', 'ASC', 'NULLS LAST');
+    qb.addOrderBy('r.stars_total', 'DESC');
+
     qb.skip((page - 1) * limit).take(limit);
 
     const [data, total] = await qb.getManyAndCount();
@@ -266,6 +269,7 @@ Rules for tags:
           has_new_release: false,
           is_read: false,
           analyze_status: 'idle',
+          last_scraped_at: new Date(),
         });
         newCount++;
       } else {
@@ -281,6 +285,7 @@ Rules for tags:
             stars_growth: r.stars_growth,
             forks_total: r.forks_total,
             trending_rank: r.trending_rank,
+            last_scraped_at: new Date(),
           },
         );
       }
@@ -325,6 +330,7 @@ Rules for tags:
       has_new_release: false,
       is_read: true,
       analyze_status: 'idle',
+      last_scraped_at: new Date(),
     });
 
     return this.repo.save(newRepo);

@@ -7,7 +7,7 @@
 
 ## Overview
 
-Hermes scrapes the first page of GitHub Weekly Trending on a schedule (2x daily) and upserts new repos into PostgreSQL via the NestJS API. Repos that already exist are skipped entirely — no re-ranking, no overwriting.
+Hermes scrapes the first page of GitHub Weekly Trending on a schedule (2x daily) and upserts new repos into PostgreSQL via the NestJS API. Repos that already exist have their dynamic GitHub metadata (stars, forks, ranking, description, avatar, language) updated automatically, while all user-specific custom states (favorites, archives, read status, AI summaries) are strictly preserved.
 
 Users can also manually add a repository via the `POST /api/repos/add` endpoint (from the Dashboard UI). This fetches the repo directly from GitHub and inserts it into the database with `is_read = true`.
 
@@ -32,7 +32,7 @@ sequenceDiagram
         alt Repo NOT in DB
             BE->>DB: INSERT INTO repositories (new repo)
         else Repo already exists
-            Note over BE: Skip — no update needed
+            BE->>DB: UPDATE repositories (dynamic metadata: stars, forks, etc.)
         end
     end
     BE->>DB: Update sync_log (status: success, counts)
@@ -60,18 +60,20 @@ sequenceDiagram
 3. For each repo in payload:
    - Check: does full_name exist in repositories table?
    - If NOT exists → INSERT new row (is_favorite=false, is_archived=false, has_new_release=false, is_read=false, latest_release_tag=null)
-   - If EXISTS → Skip entirely (preserve all user data)
+   - If EXISTS → UPDATE dynamic metadata (description, html_url, language, avatar_url, stars_total, stars_growth, forks_total, trending_rank)
 4. Update sync_log (status: "success", repos_scraped, repos_new)
 5. Return summary response
 ```
 
-**Key difference from old design:** No rank reset, no column overwriting, no re-classification. Pure append-only for new repos.
+**Key difference from old design:** Hybrid upsert. Dynamic fields (stars, forks, ranking, description, avatar, language) are continuously updated to ensure fresh data, while user-specific states and AI-generated outputs are strictly preserved.
 
 ---
 
-## Data Preserved (Always)
+## Field-Level Update Strategy
 
-Since existing repos are never overwritten, ALL user fields are inherently preserved:
+To ensure data is always fresh without losing user preferences and custom AI summaries, database fields are split into **Updated** (dynamically fetched from GitHub) and **Preserved** (user settings & AI-generated state):
+
+### 🛡️ Preserved Fields (Never Overwritten on Upsert)
 
 | Field | Reason |
 |---|---|
@@ -81,7 +83,21 @@ Since existing repos are never overwritten, ALL user fields are inherently prese
 | `latest_release_tag` | Release tracking state |
 | `has_new_release` | Release notification state |
 | `ai_summary` | AI-generated content (Markdown, from Magic Analyze) |
+| `tags` | AI-generated tags |
 | `first_seen_at` | Historical tracking |
+| `analyze_status` | Status of the background AI analyzer |
+
+### 🔄 Updated Fields (Refreshed on Every Sync)
+
+| Field | Description |
+|---|---|
+| `stars_total` | Total stars on GitHub |
+| `stars_growth` | Stars gained during the weekly period (e.g. "1,234 stars this week") |
+| `forks_total` | Total forks on GitHub |
+| `trending_rank` | Position on the GitHub Trending page (1-based) |
+| `description` | Main repository description |
+| `language` | Primary programming language |
+| `avatar_url` | Repository owner's profile picture |
 
 ---
 

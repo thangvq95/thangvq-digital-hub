@@ -17,6 +17,7 @@ export interface Repository {
   tags: string[]; // AI generated tags
   analyze_status: 'idle' | 'analyzing' | 'done' | 'failed';
   first_seen_at: string;
+  last_scraped_at: string | null;
   updated_at: string;
 }
 
