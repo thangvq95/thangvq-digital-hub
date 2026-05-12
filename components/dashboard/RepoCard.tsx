@@ -49,6 +49,11 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
     return scrapedDate.toDateString() === today.toDateString();
   };
 
+  const [imageError, setImageError] = useState(false);
+  const isValidAvatar = repo.avatar_url && 
+    repo.avatar_url.startsWith("http") && 
+    !repo.avatar_url.includes("[object Object]");
+
   return (
     <article
       id={`repo-card-${repo.full_name.replace("/", "-")}`}
@@ -138,19 +143,22 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
       {/* Header with Title */}
       <div className="flex items-start gap-3 mb-3 pr-20">
         <div className="flex items-start gap-3">
-          {repo.avatar_url ? (
+          {isValidAvatar && !imageError ? (
             <Image
-              src={repo.avatar_url}
+              src={repo.avatar_url!}
               alt={`${repo.full_name} owner avatar`}
               width={32}
               height={32}
               className="rounded-full flex-shrink-0"
+              onError={() => setImageError(true)}
             />
           ) : (
             <div
-              className="w-8 h-8 rounded-full flex-shrink-0"
-              style={{ background: "var(--bg-card)" }}
-            />
+              className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center text-[10px] font-bold"
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)", color: "var(--text-muted)" }}
+            >
+              {repo.full_name.substring(0, 2).toUpperCase()}
+            </div>
           )}
           <div
             className="text-sm font-semibold leading-tight hover:underline line-clamp-2"

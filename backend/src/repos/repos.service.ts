@@ -261,9 +261,14 @@ Rules for tags:
     let newCount = 0;
     for (const r of repos) {
       const existing = await this.repo.findOneBy({ full_name: r.full_name });
+      
+      // Normalize avatar_url: handle both flat property and nested owner object from GitHub API
+      const avatar_url = r.avatar_url || (r as any).owner?.avatar_url;
+
       if (!existing) {
         await this.repo.save({
           ...r,
+          avatar_url: typeof avatar_url === 'string' ? avatar_url : undefined,
           is_favorite: false,
           is_archived: false,
           has_new_release: false,
@@ -273,21 +278,27 @@ Rules for tags:
         });
         newCount++;
       } else {
-        // Update dynamic GitHub-sourced metadata while strictly preserving user state/preferences
-        await this.repo.update(
-          { full_name: r.full_name },
-          {
-            description: r.description,
-            html_url: r.html_url,
-            language: r.language,
-            avatar_url: r.avatar_url,
-            stars_total: r.stars_total,
-            stars_growth: r.stars_growth,
-            forks_total: r.forks_total,
-            trending_rank: r.trending_rank,
-            last_scraped_at: new Date(),
-          },
-        );
+        // Update dynamic GitHub-sourced metadata while strictly preserving user state/preferences.
+        // We construct the update object dynamically to only update fields that are provided
+        // and avoid overwriting existing valid data with undefined/null from partial Hermes payloads.
+        const updateData: any = {
+          last_scraped_at: new Date(),
+        };
+
+        if (r.description !== undefined) updateData.description = r.description;
+        if (r.html_url !== undefined) updateData.html_url = r.html_url;
+        if (r.language !== undefined) updateData.language = r.language;
+        if (r.stars_total !== undefined) updateData.stars_total = r.stars_total;
+        if (r.stars_growth !== undefined) updateData.stars_growth = r.stars_growth;
+        if (r.forks_total !== undefined) updateData.forks_total = r.forks_total;
+        if (r.trending_rank !== undefined) updateData.trending_rank = r.trending_rank;
+        
+        // Only update avatar_url if we found a valid string
+        if (typeof avatar_url === 'string' && avatar_url.length > 0) {
+          updateData.avatar_url = avatar_url;
+        }
+
+        await this.repo.update({ full_name: r.full_name }, updateData);
       }
     }
     return { received: repos.length, new: newCount };
