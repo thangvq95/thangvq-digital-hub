@@ -43,10 +43,10 @@ export class RepositoryEntity {
   is_archived: boolean;
 
   @Column({ type: 'text', nullable: true })
-  latest_release_tag: string;
+  latest_release_tag: string | null;
 
   @Column({ type: 'text', nullable: true })
-  latest_release_body: string;
+  latest_release_body: string | null;
 
   @Column({ default: false })
   has_new_release: boolean;

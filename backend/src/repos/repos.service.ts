@@ -384,7 +384,9 @@ Rules for tags:
       );
     }
 
-    return this.repo.findOneBy({ full_name: fullName });
+    const updated = await this.repo.findOneBy({ full_name: fullName });
+    if (!updated) throw new Error('Repo not found after sync');
+    return updated;
   }
 
   // ─── Batch check releases for favorite repos (from Hermes cron) ───────────
