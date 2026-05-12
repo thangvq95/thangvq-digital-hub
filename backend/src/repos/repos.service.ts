@@ -347,6 +347,46 @@ Rules for tags:
     return this.repo.save(newRepo);
   }
 
+  // ─── Sync latest release from GitHub API ────────────────────────────────
+  async syncRelease(fullName: string): Promise<RepositoryEntity> {
+    const repo = await this.repo.findOneBy({ full_name: fullName });
+    if (!repo) throw new NotFoundException(`Repo ${fullName} not found`);
+
+    const res = await fetch(
+      `https://api.github.com/repos/${fullName}/releases/latest`,
+      {
+        headers: {
+          Accept: 'application/vnd.github.v3+json',
+          'User-Agent': 'ThangVQ-Digital-Hub/1.0',
+        },
+      },
+    );
+
+    if (res.ok) {
+      const data = await res.json();
+      await this.repo.update(
+        { full_name: fullName },
+        {
+          latest_release_tag: data.tag_name,
+          latest_release_body: data.body,
+          has_new_release: false,
+        },
+      );
+    } else if (res.status === 404) {
+      // No releases found
+      await this.repo.update(
+        { full_name: fullName },
+        {
+          latest_release_tag: null,
+          latest_release_body: null,
+          has_new_release: false,
+        },
+      );
+    }
+
+    return this.repo.findOneBy({ full_name: fullName });
+  }
+
   // ─── Batch check releases for favorite repos (from Hermes cron) ───────────
   async checkReleases(
     releases: { full_name: string; tag_name: string }[],

@@ -48,6 +48,11 @@ export class ReposController {
     return this.reposService.triggerAnalyze(decodeURIComponent(fullName));
   }
 
+  @Post(':fullName/sync-release')
+  syncRelease(@Param('fullName') fullName: string) {
+    return this.reposService.syncRelease(decodeURIComponent(fullName));
+  }
+
   @Post('add')
   addRepo(@Body() body: { url: string }) {
     if (!body.url) throw new Error('URL is required');

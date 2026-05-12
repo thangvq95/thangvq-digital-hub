@@ -41,6 +41,12 @@ export const api = {
         `/api/repos/${encodeURIComponent(fullName)}/analyze`,
         { method: 'POST' },
       ),
+
+    syncRelease: (fullName: string) =>
+      apiFetch<import('./types').Repository>(
+        `/api/repos/${encodeURIComponent(fullName)}/sync-release`,
+        { method: 'POST' },
+      ),
   },
 
   sync: {

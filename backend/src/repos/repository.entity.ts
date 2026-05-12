@@ -45,6 +45,9 @@ export class RepositoryEntity {
   @Column({ type: 'text', nullable: true })
   latest_release_tag: string;
 
+  @Column({ type: 'text', nullable: true })
+  latest_release_body: string;
+
   @Column({ default: false })
   has_new_release: boolean;
 

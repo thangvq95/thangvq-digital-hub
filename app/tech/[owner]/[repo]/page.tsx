@@ -65,6 +65,7 @@ export default function RepoDetailPage() {
 
   const [repoData, setRepoData] = useState<Repository | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSyncingRelease, setIsSyncingRelease] = useState(false);
 
   // ─── Initial fetch ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -76,6 +77,14 @@ export default function RepoDetailPage() {
           api.repos.patch(fullName, { is_read: true }).then((updated) => {
             setRepoData((prev) => (prev ? { ...prev, is_read: true } : updated));
           });
+        }
+        // Auto-sync if no release tag yet
+        if (!data.latest_release_tag) {
+          setIsSyncingRelease(true);
+          api.repos.syncRelease(fullName)
+            .then(setRepoData)
+            .catch(console.error)
+            .finally(() => setIsSyncingRelease(false));
         }
       })
       .catch(console.error)
@@ -139,6 +148,19 @@ export default function RepoDetailPage() {
     // Open GitHub releases page
     window.open(`https://github.com/${fullName}/releases`, "_blank");
   }, [repoData, fullName]);
+
+  const handleSyncRelease = useCallback(async () => {
+    if (!repoData || isSyncingRelease) return;
+    setIsSyncingRelease(true);
+    try {
+      const updated = await api.repos.syncRelease(fullName);
+      setRepoData(updated);
+    } catch (err) {
+      console.error("Sync release failed:", err);
+    } finally {
+      setIsSyncingRelease(false);
+    }
+  }, [repoData, fullName, isSyncingRelease]);
 
   // ─── Loading state ────────────────────────────────────────────────────────
   if (loading) {
@@ -279,73 +301,120 @@ export default function RepoDetailPage() {
         style={{ border: "1px solid var(--border)" }}
       >
         <h2
-          className="text-lg font-semibold mb-4 flex items-center gap-2"
+          className="text-lg font-semibold mb-4 flex items-center justify-between"
           style={{ color: "var(--text-primary)" }}
         >
-          🏷️ Releases
-          {repoData.has_new_release && (
-            <span
-              className="px-2 py-0.5 text-xs font-medium rounded-full"
-              style={{ background: "hsl(142, 71%, 45%)", color: "#fff" }}
-            >
-              New!
-            </span>
-          )}
-        </h2>
-        {repoData.latest_release_tag ? (
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2">
+            🏷️ Releases
+            {repoData.has_new_release && (
               <span
-                className="text-sm font-mono px-3 py-1 rounded-lg border"
-                style={{
-                  background: "var(--bg-card)",
-                  color: "var(--text-primary)",
-                  borderColor: "var(--border)"
-                }}
+                className="px-2 py-0.5 text-xs font-medium rounded-full"
+                style={{ background: "hsl(142, 71%, 45%)", color: "#fff" }}
               >
-                {repoData.latest_release_tag}
+                New!
               </span>
-              <button
-                id="view-changelog-btn"
-                onClick={handleViewChangelog}
-                className="inline-flex items-center gap-1.5 text-sm cursor-pointer hover:underline"
-                style={{ color: "var(--accent)" }}
+            )}
+          </div>
+          <button
+            onClick={handleSyncRelease}
+            disabled={isSyncingRelease}
+            className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all disabled:opacity-50 cursor-pointer"
+            title="Sync latest release"
+          >
+            <svg 
+              className={`w-4 h-4 fill-none stroke-current ${isSyncingRelease ? 'animate-spin' : ''}`}
+              viewBox="0 0 24 24"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+            </svg>
+          </button>
+        </h2>
+
+        {isSyncingRelease && !repoData.latest_release_tag ? (
+          <div className="py-8 flex flex-col items-center justify-center gap-3">
+             <div className="w-6 h-6 border-2 border-t-transparent animate-spin rounded-full" style={{ borderColor: 'var(--accent)', borderTopColor: 'transparent' }} />
+             <p className="text-sm" style={{ color: "var(--text-muted)" }}>Syncing latest release...</p>
+          </div>
+        ) : repoData.latest_release_tag ? (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <span
+                  className="text-sm font-mono px-3 py-1 rounded-lg border"
+                  style={{
+                    background: "var(--bg-card)",
+                    color: "var(--text-primary)",
+                    borderColor: "var(--border)"
+                  }}
+                >
+                  {repoData.latest_release_tag}
+                </span>
+                <button
+                  id="view-changelog-btn"
+                  onClick={handleViewChangelog}
+                  className="inline-flex items-center gap-1.5 text-sm cursor-pointer hover:underline"
+                  style={{ color: "var(--accent)" }}
+                >
+                  View on GitHub →
+                </button>
+              </div>
+
+              <a
+                href={`${repoData.html_url}/releases/tag/${repoData.latest_release_tag}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all duration-200 flex-shrink-0 cursor-pointer border"
+                style={{ borderColor: "var(--border)" }}
+                title="Open Release on GitHub"
               >
-                View Changelog →
-              </button>
+                <svg
+                  className="w-5 h-5 fill-none stroke-current"
+                  viewBox="0 0 24 24"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                  <line x1="7" y1="7" x2="7.01" y2="7" />
+                </svg>
+              </a>
             </div>
 
-            <a
-              href={`${repoData.html_url}/releases`}
-              target="_blank"
-              rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
-              className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all duration-200 flex-shrink-0 cursor-pointer border"
-              style={{ borderColor: "var(--border)" }}
-              title="Open Releases on GitHub"
-            >
-              <svg
-                className="w-5 h-5 fill-none stroke-current"
-                viewBox="0 0 24 24"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                <line x1="7" y1="7" x2="7.01" y2="7" />
-              </svg>
-            </a>
+            {repoData.latest_release_body && (
+              <div className="space-y-4">
+                <div 
+                  className="p-4 rounded-xl bg-black/20 border border-white/5 text-xs max-h-96 overflow-y-auto prose prose-invert prose-sm max-w-none [&_h1]:text-base [&_h2]:text-sm [&_h3]:text-sm [&_p]:leading-relaxed [&_ul]:list-disc [&_ul]:pl-4 [&_ol]:list-decimal [&_ol]:pl-4 [&_code]:bg-white/10 [&_code]:px-1 [&_code]:rounded"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {repoData.latest_release_body}
+                  </ReactMarkdown>
+                </div>
+                <div className="flex justify-center">
+                  <a
+                    href={`${repoData.html_url}/releases`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[10px] uppercase tracking-wider font-bold py-2 px-6 rounded-full glass border border-white/5 hover:border-white/20 hover:bg-white/5 transition-all text-neutral-500 hover:text-neutral-200"
+                  >
+                    View full release history on GitHub →
+                  </a>
+                </div>
+              </div>
+            )}
           </div>
         ) : (
-          <a
-            href={`${repoData.html_url}/releases`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full py-10 flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed transition-all hover:bg-white/5 group"
+          <button
+            onClick={handleSyncRelease}
+            disabled={isSyncingRelease}
+            className="w-full py-10 flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed transition-all hover:bg-white/5 group cursor-pointer"
             style={{ borderColor: "var(--border)" }}
           >
             <div 
-              className="p-4 rounded-full glass group-hover:scale-110 transition-transform"
+              className={`p-4 rounded-full glass group-hover:scale-110 transition-transform ${isSyncingRelease ? 'animate-spin' : ''}`}
               style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
             >
               <svg
@@ -356,15 +425,14 @@ export default function RepoDetailPage() {
                 strokeLinejoin="round"
                 style={{ color: "var(--text-muted)" }}
               >
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                <line x1="7" y1="7" x2="7.01" y2="7" />
+                <path d="M23 4v6h-6M1 20v-6h6M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
               </svg>
             </div>
             <div className="text-center">
-              <p className="font-semibold text-lg" style={{ color: "var(--text-primary)" }}>No releases published yet</p>
-              <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>Check the releases page on GitHub →</p>
+              <p className="font-semibold text-lg" style={{ color: "var(--text-primary)" }}>{isSyncingRelease ? 'Syncing...' : 'No release info yet'}</p>
+              <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>{isSyncingRelease ? 'Fetching from GitHub...' : 'Click to sync latest release from GitHub'}</p>
             </div>
-          </a>
+          </button>
         )}
       </div>
 

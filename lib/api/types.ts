@@ -12,6 +12,7 @@ export interface Repository {
   is_archived: boolean;
   is_read: boolean;
   latest_release_tag: string | null;
+  latest_release_body: string | null;
   has_new_release: boolean;
   ai_summary: string | null; // Markdown format
   tags: string[]; // AI generated tags
