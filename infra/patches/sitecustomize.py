@@ -36,42 +36,21 @@ logger = logging.getLogger("hermes_patches")
 try:
     import httpx
     
-    # 1. Patch httpx.Client.__init__
-    original_client_init = httpx.Client.__init__
-
-    def patched_client_init(self, *args, **kwargs):
-        headers = kwargs.get('headers') or {}
-        # Ensure dict format
-        if not isinstance(headers, dict):
-            try:
-                headers = dict(headers)
-            except Exception:
-                headers = {}
-        
-        # Override User-Agent
-        headers['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        kwargs['headers'] = headers
-        original_client_init(self, *args, **kwargs)
+    # Patch httpx.Request.__init__ to globally intercept and override any User-Agent headers
+    # since request-specific headers in OpenAI/httpx override default client headers.
+    original_request_init = httpx.Request.__init__
     
-    httpx.Client.__init__ = patched_client_init
-    
-    # 2. Patch httpx.AsyncClient.__init__
-    original_async_client_init = httpx.AsyncClient.__init__
-    def patched_async_client_init(self, *args, **kwargs):
-        headers = kwargs.get('headers') or {}
-        if not isinstance(headers, dict):
-            try:
-                headers = dict(headers)
-            except Exception:
-                headers = {}
-        
-        headers['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        kwargs['headers'] = headers
-        original_async_client_init(self, *args, **kwargs)
-        
-    httpx.AsyncClient.__init__ = patched_async_client_init
-    logger.info("Successfully applied httpx User-Agent override monkeypatch!")
+    def patched_request_init(self, *args, **kwargs):
+        original_request_init(self, *args, **kwargs)
+        try:
+            self.headers['User-Agent'] = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        except Exception:
+            pass
+            
+    httpx.Request.__init__ = patched_request_init
+    logger.info("Successfully applied global httpx.Request User-Agent override monkeypatch!")
 except ImportError:
     pass
 except Exception as e:
     logger.error(f"Failed to apply httpx patch: {e}")
+
