@@ -72,7 +72,7 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=9119
-    command: [ "hermes", "gateway", "run" ]
+    command: [ "hermes", "dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open" ]
 
   # Cloudflare Tunnel — routes public traffic to internal services, no open ports needed
   cloudflared:

@@ -22,7 +22,8 @@ RUN git config --global --add safe.directory '*' \
     && git config --global http.version HTTP/1.1
 
 # Install official Hermes CLI from NousResearch
-RUN curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+RUN curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash \
+    && /root/.hermes/venv/bin/python3 -m pip install fastapi uvicorn ptyprocess || /usr/local/lib/hermes-agent/venv/bin/python3 -m pip install fastapi uvicorn ptyprocess || echo "Could not find venv"
 
 # Ensure Hermes is in the PATH environment variable
 ENV PATH="/root/.local/bin:/root/.cargo/bin:$PATH"
