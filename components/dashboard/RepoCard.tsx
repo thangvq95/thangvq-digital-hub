@@ -98,27 +98,6 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
           />
         )}
 
-        {/* GitHub Releases Link Icon */}
-        <a
-          href={`${repo.html_url}/releases`}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={(e) => e.stopPropagation()}
-          className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all duration-200 flex-shrink-0 cursor-pointer"
-          title="Open Releases on GitHub"
-          aria-label="Open Releases on GitHub"
-        >
-          <svg
-            className="w-4 h-4 fill-none stroke-current"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-            <line x1="7" y1="7" x2="7.01" y2="7" />
-          </svg>
-        </a>
 
         {/* GitHub Direct Link Icon */}
         <a

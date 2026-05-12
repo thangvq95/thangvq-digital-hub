@@ -270,29 +270,6 @@ export default function RepoDetailPage() {
             </svg>
             View on GitHub
           </a>
-          <a
-            href={`${repoData.html_url}/releases`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5 inline-flex items-center gap-2.5 border"
-            style={{ 
-              background: "var(--accent-glow)", 
-              color: "var(--accent)",
-              borderColor: "var(--accent-glow)"
-            }}
-          >
-            <svg
-              className="w-4 h-4 fill-none stroke-current"
-              viewBox="0 0 24 24"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-              <line x1="7" y1="7" x2="7.01" y2="7" />
-            </svg>
-            View Releases
-          </a>
         </div>
       </div>
 
@@ -316,29 +293,78 @@ export default function RepoDetailPage() {
           )}
         </h2>
         {repoData.latest_release_tag ? (
-          <div className="flex items-center gap-4">
-            <span
-              className="text-sm font-mono px-3 py-1 rounded-lg"
-              style={{
-                background: "var(--bg-card)",
-                color: "var(--text-primary)",
-              }}
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <span
+                className="text-sm font-mono px-3 py-1 rounded-lg border"
+                style={{
+                  background: "var(--bg-card)",
+                  color: "var(--text-primary)",
+                  borderColor: "var(--border)"
+                }}
+              >
+                {repoData.latest_release_tag}
+              </span>
+              <button
+                id="view-changelog-btn"
+                onClick={handleViewChangelog}
+                className="inline-flex items-center gap-1.5 text-sm cursor-pointer hover:underline"
+                style={{ color: "var(--accent)" }}
+              >
+                View Changelog →
+              </button>
+            </div>
+
+            <a
+              href={`${repoData.html_url}/releases`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all duration-200 flex-shrink-0 cursor-pointer border"
+              style={{ borderColor: "var(--border)" }}
+              title="Open Releases on GitHub"
             >
-              {repoData.latest_release_tag}
-            </span>
-            <button
-              id="view-changelog-btn"
-              onClick={handleViewChangelog}
-              className="inline-flex items-center gap-1.5 text-sm cursor-pointer hover:underline"
-              style={{ color: "var(--accent)" }}
-            >
-              View Changelog →
-            </button>
+              <svg
+                className="w-5 h-5 fill-none stroke-current"
+                viewBox="0 0 24 24"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                <line x1="7" y1="7" x2="7.01" y2="7" />
+              </svg>
+            </a>
           </div>
         ) : (
-          <p className="text-sm" style={{ color: "var(--text-muted)" }}>
-            No releases published
-          </p>
+          <a
+            href={`${repoData.html_url}/releases`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full py-10 flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed transition-all hover:bg-white/5 group"
+            style={{ borderColor: "var(--border)" }}
+          >
+            <div 
+              className="p-4 rounded-full glass group-hover:scale-110 transition-transform"
+              style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+            >
+              <svg
+                className="w-8 h-8 fill-none stroke-current"
+                viewBox="0 0 24 24"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                style={{ color: "var(--text-muted)" }}
+              >
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
+                <line x1="7" y1="7" x2="7.01" y2="7" />
+              </svg>
+            </div>
+            <div className="text-center">
+              <p className="font-semibold text-lg" style={{ color: "var(--text-primary)" }}>No releases published yet</p>
+              <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>Check the releases page on GitHub →</p>
+            </div>
+          </a>
         )}
       </div>
 
