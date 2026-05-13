@@ -254,6 +254,20 @@ Rules for tags:
     }
   }
 
+  // ─── Normalize avatar URL to use avatars.githubusercontent.com ────────────
+  // GitHub serves avatars at two URLs:
+  //   - https://github.com/{username}.png  (redirects, blocked by Next.js Image)
+  //   - https://avatars.githubusercontent.com/{username} (canonical, always works)
+  private normalizeAvatarUrl(url: unknown): string | undefined {
+    if (typeof url !== 'string' || !url) return undefined;
+    // Convert github.com/{user}.png → avatars.githubusercontent.com/{user}
+    const match = url.match(/^https?:\/\/github\.com\/([^/?#]+)\.png/i);
+    if (match) {
+      return `https://avatars.githubusercontent.com/${match[1]}`;
+    }
+    return url;
+  }
+
   // ─── Batch upsert from Hermes trending sync (append-only) ─────────────────
   async upsert(
     repos: Partial<RepositoryEntity>[],
@@ -263,7 +277,8 @@ Rules for tags:
       const existing = await this.repo.findOneBy({ full_name: r.full_name });
       
       // Normalize avatar_url: handle both flat property and nested owner object from GitHub API
-      const avatar_url = r.avatar_url || (r as any).owner?.avatar_url;
+      const rawAvatar = r.avatar_url || (r as any).owner?.avatar_url;
+      const avatar_url = this.normalizeAvatarUrl(rawAvatar);
 
       if (!existing) {
         await this.repo.save({

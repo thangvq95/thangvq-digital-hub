@@ -352,35 +352,7 @@ export default function RepoDetailPage() {
                 >
                   {repoData.latest_release_tag}
                 </span>
-                <button
-                  id="view-changelog-btn"
-                  onClick={handleViewChangelog}
-                  className="inline-flex items-center gap-1.5 text-sm cursor-pointer hover:underline"
-                  style={{ color: "var(--accent)" }}
-                >
-                  View on GitHub →
-                </button>
               </div>
-
-              <a
-                href={`${repoData.html_url}/releases/tag/${repoData.latest_release_tag}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-2 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all duration-200 flex-shrink-0 cursor-pointer border"
-                style={{ borderColor: "var(--border)" }}
-                title="Open Release on GitHub"
-              >
-                <svg
-                  className="w-5 h-5 fill-none stroke-current"
-                  viewBox="0 0 24 24"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
-                  <line x1="7" y1="7" x2="7.01" y2="7" />
-                </svg>
-              </a>
             </div>
 
             {repoData.latest_release_body && (
