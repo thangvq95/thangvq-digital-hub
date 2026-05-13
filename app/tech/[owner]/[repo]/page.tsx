@@ -186,28 +186,28 @@ export default function RepoDetailPage() {
 
   // ─── Render ───────────────────────────────────────────────────────────────
   return (
-    <main className="max-w-4xl mx-auto px-4 py-12">
+    <main className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
       <Link
         href="/tech"
         className="text-sm mb-6 inline-block cursor-pointer hover:underline"
         style={{ color: "var(--accent)" }}
       >
-        ← Back to Dashboard
+        ← Back
       </Link>
 
       {/* ─── Repo Info Card ──────────────────────────────────────────────── */}
       <div
-        className="p-6 rounded-2xl glass mb-6"
+        className="p-4 sm:p-6 rounded-2xl glass mb-4 sm:mb-6"
         style={{ border: "1px solid var(--border)" }}
       >
-        <div className="flex items-start justify-between mb-3">
+        <div className="flex items-start justify-between gap-2 mb-3">
           <h1
-            className="text-2xl font-bold"
+            className="text-xl sm:text-2xl font-bold leading-tight break-words min-w-0"
             style={{ color: "var(--text-primary)" }}
           >
             {repoData.full_name}
           </h1>
-          <div className="flex gap-3">
+          <div className="flex gap-3 flex-shrink-0">
             <button
               onClick={handleToggleFavorite}
               className="cursor-pointer transition-colors text-lg"
@@ -239,12 +239,12 @@ export default function RepoDetailPage() {
           </div>
         </div>
 
-        <p className="mb-4" style={{ color: "var(--text-secondary)" }}>
+        <p className="text-sm sm:text-base mb-4" style={{ color: "var(--text-secondary)" }}>
           {repoData.description ?? "No description available."}
         </p>
 
         <div
-          className="flex flex-wrap gap-4 text-sm mb-4"
+          className="flex flex-wrap gap-3 text-sm mb-4"
           style={{ color: "var(--text-muted)" }}
         >
           <span>⭐ {repoData.stars_total?.toLocaleString()} stars</span>
@@ -275,12 +275,12 @@ export default function RepoDetailPage() {
           </div>
         )}
 
-        <div className="flex flex-wrap gap-4 mt-6">
+        <div className="flex flex-wrap gap-3 mt-6">
           <a
             href={repoData.html_url}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5 inline-flex items-center gap-2.5 border"
+            className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5 inline-flex items-center justify-center gap-2.5 border"
             style={{ 
               background: "var(--bg-card)", 
               color: "var(--text-primary)",
@@ -297,7 +297,7 @@ export default function RepoDetailPage() {
 
       {/* ─── Release Section ─────────────────────────────────────────────── */}
       <div
-        className="p-6 rounded-2xl glass mb-6"
+        className="p-4 sm:p-6 rounded-2xl glass mb-4 sm:mb-6"
         style={{ border: "1px solid var(--border)" }}
       >
         <h2
@@ -358,7 +358,7 @@ export default function RepoDetailPage() {
             {repoData.latest_release_body && (
               <div className="space-y-6">
                 <div 
-                  className="p-8 rounded-2xl bg-[#0a0a0c]/40 border border-white/5 text-[13px] max-h-[600px] overflow-y-auto 
+                  className="p-4 sm:p-8 rounded-2xl bg-[#0a0a0c]/40 border border-white/5 text-[13px] max-h-[500px] sm:max-h-[600px] overflow-y-auto 
                              prose prose-invert prose-sm max-w-none 
                              scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent
                              [&_h1]:text-xl [&_h1]:font-bold [&_h1]:mb-6 [&_h1]:text-white [&_h1]:border-b [&_h1]:border-white/5 [&_h1]:pb-2
@@ -425,7 +425,7 @@ export default function RepoDetailPage() {
 
       {/* ─── AI Analysis Section ─────────────────────────────────────────── */}
       <div
-        className="p-6 rounded-2xl glass"
+        className="p-4 sm:p-6 rounded-2xl glass"
         style={{ border: "1px solid var(--border)" }}
       >
         <h2

@@ -1,6 +1,10 @@
 // backend/src/main.ts
+// ⚠️  instrument.ts MUST be the very first import — Sentry patches Node.js internals
+import './instrument';
+
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
+import { SentryGlobalFilter } from '@sentry/nestjs/setup';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -15,8 +19,13 @@ async function bootstrap() {
     credentials: true,
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
+
+  // Sentry global exception filter — reports unhandled exceptions to Sentry
+  app.useGlobalFilters(new SentryGlobalFilter());
+
   const port = process.env.PORT ?? 3001;
   await app.listen(port);
   console.log(`API running on port ${port}`);
 }
 bootstrap();
+

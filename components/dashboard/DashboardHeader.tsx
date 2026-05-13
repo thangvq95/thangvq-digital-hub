@@ -48,106 +48,111 @@ const DashboardHeader: React.FC = () => {
       className="sticky top-0 z-50 glass border-b"
       style={{ borderColor: "var(--border)" }}
     >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Link href="/tech" id="dashboard-home-link" className="flex items-center gap-2 group">
+      {/* Main row */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
+          {/* Logo */}
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <Link href="/tech" id="dashboard-home-link" className="flex items-center gap-2 group">
+              <span
+                className="text-lg sm:text-xl font-bold tracking-tight group-hover:opacity-80 transition-opacity"
+                style={{ color: "var(--text-primary)" }}
+              >
+                Tech<span className="gradient-text">Trend</span>
+              </span>
+            </Link>
             <span
-              className="text-xl font-bold tracking-tight group-hover:opacity-80 transition-opacity"
-              style={{ color: "var(--text-primary)" }}
+              className="hidden sm:inline text-xs px-2 py-0.5 rounded-full"
+              style={{
+                background: "var(--accent-glow)",
+                color: "var(--accent)",
+                border: "1px solid var(--accent-glow-strong)",
+              }}
             >
-              Tech<span className="gradient-text">Trend</span>
+              Live
             </span>
-          </Link>
-          <span
-            className="hidden sm:inline text-xs px-2 py-0.5 rounded-full"
-            style={{
-              background: "var(--accent-glow)",
-              color: "var(--accent)",
-              border: "1px solid var(--accent-glow-strong)",
-            }}
-          >
-            Live
-          </span>
-        </div>
+          </div>
 
-        {/* Tab navigation */}
-        <div className="flex gap-1 p-1 rounded-xl" style={{ background: "var(--bg-card)" }}>
-          {TABS.map((tab) => (
+          {/* Tab navigation — scrollable on mobile */}
+          <div className="flex gap-1 p-1 rounded-xl flex-shrink-0" style={{ background: "var(--bg-card)" }}>
+            {TABS.map((tab) => (
+              <button
+                key={tab.value}
+                id={tab.id}
+                onClick={() => setTab(tab.value)}
+                className="px-2.5 sm:px-4 py-1.5 text-[11px] sm:text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer whitespace-nowrap"
+                style={
+                  currentTab === tab.value
+                    ? { background: "var(--accent)", color: "#fff" }
+                    : { color: "var(--text-muted)" }
+                }
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Right actions */}
+          <nav className="flex items-center gap-2 sm:gap-4 relative flex-shrink-0">
             <button
-              key={tab.value}
-              id={tab.id}
-              onClick={() => setTab(tab.value)}
-              className="px-4 py-1.5 text-xs font-medium rounded-lg transition-all duration-200 cursor-pointer"
-              style={
-                currentTab === tab.value
-                  ? { background: "var(--accent)", color: "#fff" }
-                  : { color: "var(--text-muted)" }
-              }
+              onClick={() => setIsAdding(!isAdding)}
+              className="text-xs sm:text-sm px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors hover:bg-white/5 whitespace-nowrap"
+              style={{ color: "var(--text-primary)", border: "1px solid var(--border)" }}
             >
-              {tab.label}
+              + Add
             </button>
-          ))}
-        </div>
 
-        <nav className="flex items-center gap-4 relative">
-          <button
-            onClick={() => setIsAdding(!isAdding)}
-            className="text-sm px-3 py-1.5 rounded-lg transition-colors hover:bg-white/5"
-            style={{ color: "var(--text-primary)", border: "1px solid var(--border)" }}
-          >
-            + Add Repo
-          </button>
-          
-          <Link
-            href="/"
-            id="dashboard-portfolio-link"
-            className="text-sm transition-colors hover:underline"
-            style={{ color: "var(--text-secondary)" }}
-          >
-            Portfolio
-          </Link>
-
-          {isAdding && (
-            <div 
-              className="absolute top-full right-0 mt-3 p-4 rounded-xl glass shadow-xl min-w-[300px]"
-              style={{ border: "1px solid var(--border)", background: "var(--bg-card)" }}
+            <Link
+              href="/"
+              id="dashboard-portfolio-link"
+              className="hidden sm:block text-sm transition-colors hover:underline"
+              style={{ color: "var(--text-secondary)" }}
             >
-              <form onSubmit={handleAddRepo} className="flex flex-col gap-3">
-                <label className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
-                  Add Repository manually
-                </label>
-                <input
-                  type="text"
-                  placeholder="facebook/react or URL"
-                  value={addUrl}
-                  onChange={(e) => setAddUrl(e.target.value)}
-                  disabled={isSubmitting}
-                  autoFocus
-                  className="w-full px-3 py-2 rounded-lg text-sm bg-black/20 outline-none focus:ring-2 focus:ring-green-500/50 transition-all"
-                  style={{ border: "1px solid var(--border)", color: "var(--text-primary)" }}
-                />
-                <div className="flex justify-end gap-2 mt-1">
-                  <button
-                    type="button"
-                    onClick={() => setIsAdding(false)}
-                    className="text-xs px-3 py-1.5 rounded-lg hover:bg-white/5"
-                    style={{ color: "var(--text-muted)" }}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || !addUrl.trim()}
-                    className="text-xs px-4 py-1.5 rounded-lg transition-all cursor-pointer disabled:opacity-50"
-                    style={{ background: "var(--accent)", color: "#fff" }}
-                  >
-                    {isSubmitting ? "Adding..." : "Add"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          )}
-        </nav>
+              Portfolio
+            </Link>
+
+            {isAdding && (
+              <div
+                className="absolute top-full right-0 mt-3 p-4 rounded-xl glass shadow-xl w-[calc(100vw-2rem)] sm:min-w-[300px] sm:w-auto"
+                style={{ border: "1px solid var(--border)", background: "var(--bg-card)" }}
+              >
+                <form onSubmit={handleAddRepo} className="flex flex-col gap-3">
+                  <label className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+                    Add Repository
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="facebook/react or GitHub URL"
+                    value={addUrl}
+                    onChange={(e) => setAddUrl(e.target.value)}
+                    disabled={isSubmitting}
+                    autoFocus
+                    className="w-full px-3 py-2 rounded-lg text-sm bg-black/20 outline-none focus:ring-2 focus:ring-green-500/50 transition-all"
+                    style={{ border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                  />
+                  <div className="flex justify-end gap-2 mt-1">
+                    <button
+                      type="button"
+                      onClick={() => setIsAdding(false)}
+                      className="text-xs px-3 py-1.5 rounded-lg hover:bg-white/5"
+                      style={{ color: "var(--text-muted)" }}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || !addUrl.trim()}
+                      className="text-xs px-4 py-1.5 rounded-lg transition-all cursor-pointer disabled:opacity-50"
+                      style={{ background: "var(--accent)", color: "#fff" }}
+                    >
+                      {isSubmitting ? "Adding..." : "Add"}
+                    </button>
+                  </div>
+                </form>
+              </div>
+            )}
+          </nav>
+        </div>
       </div>
     </header>
   );
