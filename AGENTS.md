@@ -51,7 +51,7 @@ All skills are checked directly into the repository under `.agents/skills/` for 
 - `vercel-composition-patterns` (for designing scalable, maintainable React component architecture without prop drilling)
 - `codebase-migrate` (for large refactors and migrations)
 - `pr-review-ci-fix` (for automated PR review + CI autofix)
-- `sentry-triage` (for mapping Sentry errors to source)
+- `sentry-fix-issues` (for analyzing and fixing Sentry errors via API)
 - `grill-with-docs` (for stress-testing plans against existing domain architecture)
 - `to-prd` (for generating PRDs from the current conversation context)
 - `triage` (for managing and triaging issues through a structured workflow)

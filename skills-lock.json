@@ -37,6 +37,12 @@
       "skillPath": "pr-review-ci-fix/SKILL.md",
       "computedHash": "468ee837f798f5f6f423f763054c36aad21f09d301ae5dbc608e88554bd77d22"
     },
+    "sentry-fix-issues": {
+      "source": "getsentry/sentry-agent-skills",
+      "sourceType": "github",
+      "skillPath": "skills/sentry-fix-issues/SKILL.md",
+      "computedHash": "5673b169d2a0eb6e4651a57eba4263d1c04dce10e2955c97902f1e9f80109a52"
+    },
     "skill-creator": {
       "source": "anthropics/skills",
       "sourceType": "github",
