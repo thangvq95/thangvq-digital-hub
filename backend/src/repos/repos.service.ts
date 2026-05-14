@@ -349,7 +349,7 @@ Rules for tags:
         // Update dynamic GitHub-sourced metadata while strictly preserving user state/preferences.
         // We construct the update object dynamically to only update fields that are provided
         // and avoid overwriting existing valid data with undefined/null from partial Hermes payloads.
-        const updateData: Record<string, unknown> = {
+        const updateData: Partial<RepositoryEntity> = {
           last_scraped_at: new Date(),
         };
 
