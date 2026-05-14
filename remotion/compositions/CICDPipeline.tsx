@@ -4,7 +4,6 @@ import { COLORS, FONTS } from '../lib/constants';
 import { FadeIn } from '../components/FadeIn';
 import { GlassCard } from '../components/GlassCard';
 import { AnimatedArrow } from '../components/AnimatedArrow';
-import { TimelineStep } from '../components/TimelineStep';
 import { TypewriterText } from '../components/TypewriterText';
 
 const ciSteps = [

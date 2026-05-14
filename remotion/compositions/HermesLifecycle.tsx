@@ -5,7 +5,6 @@ import { FadeIn } from '../components/FadeIn';
 import { GlassCard } from '../components/GlassCard';
 import { AnimatedArrow } from '../components/AnimatedArrow';
 import { PulseEffect } from '../components/PulseEffect';
-import { TimelineStep } from '../components/TimelineStep';
 import { TypewriterText } from '../components/TypewriterText';
 
 // Pipeline steps (x positions for horizontal flow)
@@ -77,7 +76,6 @@ export const HermesLifecycle: React.FC = () => {
       {/* Pipeline steps */}
       {steps.map((step, i) => {
         const appearFrame = T.step0 + i * 20;
-        const isActive = i === 4; // Hermes is the star
         return (
           <React.Fragment key={i}>
             <GlassCard
