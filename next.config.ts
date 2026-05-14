@@ -29,7 +29,4 @@ export default withSentryConfig(nextConfig, {
 
   // Upload source maps — remove after confirming stack traces work
   widenClientFileUpload: true,
-
-  // Suppress verbose Sentry CLI output during builds
-  silent: !process.env.CI,
 });
