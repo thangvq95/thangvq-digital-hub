@@ -31,8 +31,36 @@ export class ReposService {
       qb.andWhere('r.is_archived = false');
     }
 
-    qb.orderBy('CASE WHEN r.last_scraped_at >= CURRENT_DATE THEN 0 ELSE 1 END', 'ASC');
-    qb.addOrderBy('CASE WHEN r.last_scraped_at >= CURRENT_DATE THEN r.trending_rank ELSE NULL END', 'ASC', 'NULLS LAST');
+    // 1. Group: Today (0) vs Older (1)
+    qb.orderBy(
+      'CASE WHEN r.last_scraped_at >= CURRENT_DATE THEN 0 ELSE 1 END',
+      'ASC',
+    );
+
+    // ─── TODAY'S REPOS ───
+    // 2. Order by trending rank (1, 2, 3...)
+    qb.addOrderBy(
+      'CASE WHEN r.last_scraped_at >= CURRENT_DATE THEN r.trending_rank ELSE NULL END',
+      'ASC',
+      'NULLS LAST',
+    );
+    // 3. Fallback for today: parse 'stars_growth' string to int (e.g., "1,234 stars this week" -> 1234)
+    qb.addOrderBy(
+      "CASE WHEN r.last_scraped_at >= CURRENT_DATE THEN CAST(NULLIF(regexp_replace(r.stars_growth, '[^0-9]', '', 'g'), '') AS INTEGER) ELSE NULL END",
+      'DESC',
+      'NULLS LAST',
+    );
+
+    // ─── OLDER REPOS ───
+    // 4. Order unread first (is_read = false)
+    qb.addOrderBy(
+      'CASE WHEN r.last_scraped_at < CURRENT_DATE THEN r.is_read ELSE NULL END',
+      'ASC',
+      'NULLS LAST',
+    );
+
+    // ─── GENERAL FALLBACK ───
+    // 5. Order by total stars
     qb.addOrderBy('r.stars_total', 'DESC');
 
     qb.skip((page - 1) * limit).take(limit);
@@ -100,20 +128,24 @@ export class ReposService {
         readmeContent = await readmeRes.text();
         // Truncate to ~8000 chars to stay within LLM context limits
         if (readmeContent.length > 8000) {
-          readmeContent = readmeContent.substring(0, 8000) + '\n\n[...truncated]';
+          readmeContent =
+            readmeContent.substring(0, 8000) + '\n\n[...truncated]';
         }
       } else {
         readmeContent = 'No README available for this repository.';
       }
 
       // 2. Call 9Router LLM
-      const NINE_ROUTER_API_KEY = process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || '';
-      
+      const NINE_ROUTER_API_KEY =
+        process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || '';
+
       const llmRes = await fetch(`${NINE_ROUTER_URL}/chat/completions`, {
         method: 'POST',
-        headers: { 
+        headers: {
           'Content-Type': 'application/json',
-          ...(NINE_ROUTER_API_KEY ? { 'Authorization': `Bearer ${NINE_ROUTER_API_KEY}` } : {}),
+          ...(NINE_ROUTER_API_KEY
+            ? { Authorization: `Bearer ${NINE_ROUTER_API_KEY}` }
+            : {}),
         },
         body: JSON.stringify({
           model: NINE_ROUTER_MODEL,
@@ -171,7 +203,7 @@ Rules for tags:
       try {
         const llmData = JSON.parse(rawText);
         contentStr = llmData.choices?.[0]?.message?.content ?? '{}';
-      } catch (e) {
+      } catch (_e) {
         // If it's somehow still returning SSE (some proxies force stream), accumulate the chunks
         if (rawText.includes('data: ')) {
           const lines = rawText.split('\\n');
@@ -185,7 +217,7 @@ Rules for tags:
                 } else if (chunk.choices?.[0]?.message?.content) {
                   fullContent += chunk.choices[0].message.content;
                 }
-              } catch (err) {}
+              } catch (_err) {}
             }
           }
           if (fullContent) {
@@ -194,19 +226,27 @@ Rules for tags:
             throw new Error(`Failed to extract content from SSE stream.`);
           }
         } else {
-          throw new Error(`Failed to parse LLM response JSON. Raw: ${rawText.substring(0, 100)}`);
+          throw new Error(
+            `Failed to parse LLM response JSON. Raw: ${rawText.substring(0, 100)}`,
+          );
         }
       }
-      
+
       let aiSummary = 'Analysis failed.';
       let tags: string[] = [];
       try {
         // Some models wrap the JSON output in markdown code blocks
         let cleanJson = contentStr.trim();
         if (cleanJson.startsWith('\`\`\`json')) {
-          cleanJson = cleanJson.replace(/^\`\`\`json/, '').replace(/\`\`\`$/, '').trim();
+          cleanJson = cleanJson
+            .replace(/^\`\`\`json/, '')
+            .replace(/\`\`\`$/, '')
+            .trim();
         } else if (cleanJson.startsWith('\`\`\`')) {
-          cleanJson = cleanJson.replace(/^\`\`\`/, '').replace(/\`\`\`$/, '').trim();
+          cleanJson = cleanJson
+            .replace(/^\`\`\`/, '')
+            .replace(/\`\`\`$/, '')
+            .trim();
         }
 
         const parsed = JSON.parse(cleanJson);
@@ -217,22 +257,25 @@ Rules for tags:
         // Try to salvage if it's completely broken (including truncation without closing quotes)
         const summaryMatch = contentStr.match(/"summary"\s*:\s*"([\s\S]*)/);
         if (summaryMatch && summaryMatch[1]) {
-           let extracted = summaryMatch[1];
-           // Remove trailing JSON artifacts if it wasn't completely truncated
-           extracted = extracted.replace(/"\s*(?:,|})\s*[\s\S]*$/, '');
-           if (extracted.endsWith('"')) {
-             extracted = extracted.slice(0, -1);
-           }
-           // Unescape literal \n to actual newlines
-           aiSummary = extracted.replace(/\\n/g, '\n').replace(/\\"/g, '"');
-           
-           // If we managed to salvage summary, try to salvage tags too
-           const tagsMatch = contentStr.match(/"tags"\s*:\s*\[(.*?)\]/);
-           if (tagsMatch && tagsMatch[1]) {
-             tags = tagsMatch[1].split(',').map(t => t.replace(/"/g, '').trim()).filter(Boolean);
-           }
+          let extracted = summaryMatch[1];
+          // Remove trailing JSON artifacts if it wasn't completely truncated
+          extracted = extracted.replace(/"\s*(?:,|})\s*[\s\S]*$/, '');
+          if (extracted.endsWith('"')) {
+            extracted = extracted.slice(0, -1);
+          }
+          // Unescape literal \n to actual newlines
+          aiSummary = extracted.replace(/\\n/g, '\n').replace(/\\"/g, '"');
+
+          // If we managed to salvage summary, try to salvage tags too
+          const tagsMatch = contentStr.match(/"tags"\s*:\s*\[(.*?)\]/);
+          if (tagsMatch && tagsMatch[1]) {
+            tags = tagsMatch[1]
+              .split(',')
+              .map((t) => t.replace(/"/g, '').trim())
+              .filter(Boolean);
+          }
         } else {
-           aiSummary = contentStr; // Absolute fallback
+          aiSummary = contentStr; // Absolute fallback
         }
       }
 
@@ -272,12 +315,22 @@ Rules for tags:
   async upsert(
     repos: Partial<RepositoryEntity>[],
   ): Promise<{ received: number; new: number }> {
+    // DEBUG: log first repo's trending fields to verify Hermes payload shape
+    if (repos.length > 0) {
+      const sample = repos[0];
+      this.logger.debug(
+        `[upsert] sample payload — full_name=${sample.full_name} stars_growth=${sample.stars_growth} trending_rank=${sample.trending_rank} stars_total=${sample.stars_total}`,
+      );
+    }
     let newCount = 0;
     for (const r of repos) {
       const existing = await this.repo.findOneBy({ full_name: r.full_name });
-      
+
       // Normalize avatar_url: handle both flat property and nested owner object from GitHub API
-      const rawAvatar = r.avatar_url || (r as any).owner?.avatar_url;
+      const rawAvatar =
+        r.avatar_url ||
+        (r as Partial<RepositoryEntity> & { owner?: { avatar_url?: string } })
+          .owner?.avatar_url;
       const avatar_url = this.normalizeAvatarUrl(rawAvatar);
 
       if (!existing) {
@@ -296,7 +349,7 @@ Rules for tags:
         // Update dynamic GitHub-sourced metadata while strictly preserving user state/preferences.
         // We construct the update object dynamically to only update fields that are provided
         // and avoid overwriting existing valid data with undefined/null from partial Hermes payloads.
-        const updateData: any = {
+        const updateData: Record<string, unknown> = {
           last_scraped_at: new Date(),
         };
 
@@ -304,10 +357,12 @@ Rules for tags:
         if (r.html_url !== undefined) updateData.html_url = r.html_url;
         if (r.language !== undefined) updateData.language = r.language;
         if (r.stars_total !== undefined) updateData.stars_total = r.stars_total;
-        if (r.stars_growth !== undefined) updateData.stars_growth = r.stars_growth;
+        if (r.stars_growth !== undefined)
+          updateData.stars_growth = r.stars_growth;
         if (r.forks_total !== undefined) updateData.forks_total = r.forks_total;
-        if (r.trending_rank !== undefined) updateData.trending_rank = r.trending_rank;
-        
+        if (r.trending_rank !== undefined)
+          updateData.trending_rank = r.trending_rank;
+
         // Only update avatar_url if we found a valid string
         if (typeof avatar_url === 'string' && avatar_url.length > 0) {
           updateData.avatar_url = avatar_url;
@@ -318,7 +373,6 @@ Rules for tags:
     }
     return { received: repos.length, new: newCount };
   }
-
 
   // ─── Manual Add Repo ──────────────────────────────────────────────────────
   async addManualRepo(urlOrFullName: string): Promise<RepositoryEntity> {
@@ -384,9 +438,15 @@ Rules for tags:
       // Only summarize if the body is long enough to warrant it
       if (data.body && data.body.length > 300) {
         try {
-          summarizedBody = await this.summarizeRelease(fullName, data.tag_name, data.body);
+          summarizedBody = await this.summarizeRelease(
+            fullName,
+            data.tag_name,
+            data.body,
+          );
         } catch (err) {
-          this.logger.error(`Failed to summarize release for ${fullName}: ${err.message}`);
+          this.logger.error(
+            `Failed to summarize release for ${fullName}: ${err.message}`,
+          );
           // Fallback to raw body if AI fails
         }
       }
@@ -416,8 +476,13 @@ Rules for tags:
     return updated;
   }
 
-  private async summarizeRelease(fullName: string, tag: string, body: string): Promise<string> {
-    const NINE_ROUTER_API_KEY = process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || '';
+  private async summarizeRelease(
+    fullName: string,
+    tag: string,
+    body: string,
+  ): Promise<string> {
+    const NINE_ROUTER_API_KEY =
+      process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || '';
     if (!NINE_ROUTER_API_KEY) return body;
 
     const res = await fetch(`${NINE_ROUTER_URL}/chat/completions`, {
