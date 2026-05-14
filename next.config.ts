@@ -24,18 +24,9 @@ export default withSentryConfig(nextConfig, {
   // Auth token for source map uploads (set in CI / Vercel env vars)
   authToken: process.env.SENTRY_AUTH_TOKEN,
 
-
   // Suppress verbose Sentry CLI output during builds
   silent: !process.env.CI,
 
   // Upload source maps — remove after confirming stack traces work
   widenClientFileUpload: true,
-
-  // Automatically tree-shake Sentry logger in production
-  disableLogger: true,
-
-  // Automatically instrument Next.js App Router
-  autoInstrumentServerFunctions: true,
-  autoInstrumentMiddleware: true,
-  autoInstrumentAppDirectory: true,
 });

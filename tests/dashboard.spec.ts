@@ -2,6 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test.describe("TechTrend Dashboard", () => {
   test.beforeEach(async ({ page }) => {
+    await page.route("**/api/repos*", async (route) => {
+      await route.fulfill({ json: { data: [], meta: { total: 0 } } });
+    });
     await page.goto("/tech");
   });
 
