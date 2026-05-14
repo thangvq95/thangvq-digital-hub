@@ -14,7 +14,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           release-type: node
           # this will ensure that the major version is not bumped automatically
           # unless you want that, then you can configure release-please further.
+
+      # Tự động enable auto-merge cho Release PR khi CI pass
+      # Chỉ chạy khi release-please vừa tạo/cập nhật một Release PR
+      - name: Auto-merge Release PR
+        if: ${{ steps.release.outputs.pr }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --squash "${{ steps.release.outputs.pr }}"
