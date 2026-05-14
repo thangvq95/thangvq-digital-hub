@@ -17,7 +17,7 @@ jobs:
         id: release
         with:
           release-type: node
-          token: ${{ secrets.PAT_TOKEN }}
+          token: ${{ secrets.GH_PAT }}
           # this will ensure that the major version is not bumped automatically
           # unless you want that, then you can configure release-please further.
 
@@ -26,5 +26,5 @@ jobs:
       - name: Auto-merge Release PR
         if: ${{ steps.release.outputs.pr }}
         env:
-          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_PAT }}
         run: gh pr merge --auto --squash "${{ fromJson(steps.release.outputs.pr).number }}" --repo "$GITHUB_REPOSITORY"
