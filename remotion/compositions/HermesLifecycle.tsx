@@ -71,6 +71,9 @@ export const HermesLifecycle: React.FC = () => {
         </div>
       </FadeIn>
 
+      {/* Hermes pulse */}
+      <PulseEffect x={steps[4].x + STEP_W / 2} y={STEPS_Y + STEP_H / 2} color={COLORS.purple} startFrame={T.pulse} periodFrames={45} radius={38} />
+
       {/* Pipeline steps */}
       {steps.map((step, i) => {
         const appearFrame = T.step0 + i * 20;
@@ -103,9 +106,6 @@ export const HermesLifecycle: React.FC = () => {
           </React.Fragment>
         );
       })}
-
-      {/* Hermes pulse */}
-      <PulseEffect x={steps[4].x + STEP_W / 2} y={STEPS_Y + STEP_H / 2} color={COLORS.purple} startFrame={T.pulse} periodFrames={45} radius={38} />
 
       {/* Code block — hermes command */}
       <Sequence from={T.codeBlock} layout="none">

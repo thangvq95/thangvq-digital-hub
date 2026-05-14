@@ -96,6 +96,12 @@ export const SentryAutoFix: React.FC = () => {
       {/* Error burst */}
       <ErrorBurst startFrame={T.burst} />
 
+      {/* Sentry pulse (red) */}
+      <PulseEffect x={steps[1].x + CARD_W / 2} y={STEPS_Y + CARD_H / 2} color={COLORS.red} startFrame={T.steps + 16} periodFrames={40} radius={38} />
+
+      {/* Green pulse on PR merged */}
+      <PulseEffect x={steps[6].x + CARD_W / 2} y={STEPS_Y + CARD_H / 2} color={COLORS.accent} startFrame={T.pulse} periodFrames={45} radius={38} />
+
       {/* Steps */}
       {steps.map((step, i) => {
         const appearFrame = T.steps + i * 16;
@@ -130,12 +136,6 @@ export const SentryAutoFix: React.FC = () => {
           </React.Fragment>
         );
       })}
-
-      {/* Sentry pulse (red) */}
-      <PulseEffect x={steps[1].x + CARD_W / 2} y={STEPS_Y + CARD_H / 2} color={COLORS.red} startFrame={T.steps + 16} periodFrames={40} radius={38} />
-
-      {/* Green pulse on PR merged */}
-      <PulseEffect x={steps[6].x + CARD_W / 2} y={STEPS_Y + CARD_H / 2} color={COLORS.accent} startFrame={T.pulse} periodFrames={45} radius={38} />
 
       {/* GitHub Issue detail box */}
       <Sequence from={T.steps + 3 * 16 + 10} layout="none">

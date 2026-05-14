@@ -118,6 +118,10 @@ export const ArchitectureOverview: React.FC = () => {
       <AnimatedArrow from={{ x: NODES.gitnexus.x + NODES.gitnexus.width, y: cy(NODES.gitnexus) }} to={{ x: NODES.github.x, y: cy(NODES.github) - 10 }} appearFrame={T.arrow8} durationFrames={18} color={COLORS.textMuted} dashed />
       <AnimatedArrow from={{ x: NODES.ninerouter.x + NODES.ninerouter.width, y: cy(NODES.ninerouter) }} to={{ x: NODES.github.x, y: cy(NODES.github) + 10 }} appearFrame={T.arrow8 + 5} durationFrames={18} color={COLORS.textMuted} dashed />
 
+      {/* Pulses on key nodes */}
+      <PulseEffect x={cx(NODES.hermes)} y={cy(NODES.hermes)} color={COLORS.purple} startFrame={T.pulseStart} periodFrames={50} />
+      <PulseEffect x={cx(NODES.cloudflare)} y={cy(NODES.cloudflare)} color={COLORS.amber} startFrame={T.pulseStart + 15} periodFrames={55} />
+
       {/* Nodes */}
       <GlassCard {...NODES.user} appearFrame={T.userAppear} accentColor={COLORS.textSecondary}>
         <NodeLabel text="User" sub="Browser" color={COLORS.textSecondary} />
@@ -154,10 +158,6 @@ export const ArchitectureOverview: React.FC = () => {
       <GlassCard {...NODES.github} appearFrame={T.ghAppear} accentColor={COLORS.textSecondary}>
         <NodeLabel text="GitHub" sub="Issues + PRs" color={COLORS.textSecondary} />
       </GlassCard>
-
-      {/* Pulses on key nodes */}
-      <PulseEffect x={cx(NODES.hermes)} y={cy(NODES.hermes)} color={COLORS.purple} startFrame={T.pulseStart} periodFrames={50} />
-      <PulseEffect x={cx(NODES.cloudflare)} y={cy(NODES.cloudflare)} color={COLORS.amber} startFrame={T.pulseStart + 15} periodFrames={55} />
 
       {/* Badge */}
       <Sequence from={T.badge} layout="none">

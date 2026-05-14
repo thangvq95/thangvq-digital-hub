@@ -150,6 +150,8 @@ export const DataPipelines: React.FC = () => {
         color={COLORS.amber}
       />
 
+      <PulseEffect x={1105} y={300} color={COLORS.accent} startFrame={T.pulse} periodFrames={50} radius={70} />
+
       {/* TechTrend Dashboard merged card */}
       <GlassCard x={990} y={230} width={230} height={140} appearFrame={T.dashboardCard} accentColor={COLORS.accent}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
@@ -161,8 +163,6 @@ export const DataPipelines: React.FC = () => {
           <span style={{ fontFamily: FONTS.body, fontSize: 11, color: COLORS.textSecondary }}>Auto-updated 2× daily</span>
         </div>
       </GlassCard>
-
-      <PulseEffect x={1105} y={300} color={COLORS.accent} startFrame={T.pulse} periodFrames={50} radius={70} />
     </AbsoluteFill>
   );
 };
