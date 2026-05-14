@@ -111,6 +111,15 @@ const DashboardHeader: React.FC = () => {
               Portfolio
             </Link>
 
+            <Link
+              href="/stack"
+              id="dashboard-stack-link"
+              className="hidden sm:block text-sm transition-colors hover:underline"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Architecture
+            </Link>
+
             {isAdding && (
               <div
                 className="absolute top-full right-0 mt-3 p-4 rounded-xl glass shadow-xl w-[calc(100vw-2rem)] sm:min-w-[300px] sm:w-auto"
