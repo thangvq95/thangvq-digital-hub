@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.3...v1.1.0) (2026-05-14)
+
+
+### Features
+
+* **stack:** add /stack page with Remotion videos, tech grid, and architecture animations ([#8](https://github.com/thangvq95/thangvq-digital-hub/issues/8)) ([ef2aca2](https://github.com/thangvq95/thangvq-digital-hub/commit/ef2aca2500a38a064746fae5fc6bf8031bedc388))
+
 ## [1.0.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.2...v1.0.3) (2026-05-14)
 
 
