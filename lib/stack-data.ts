@@ -161,7 +161,7 @@ export const techStack: Record<string, TechItem[]> = {
       role: 'Centralized LLM API Gateway',
       category: 'ai',
       url: 'https://9router.phieucaphe.com',
-      why: 'All LLM calls routed here. No local LLMs on VPS. Cloudflare WAF bypass via UA spoof.',
+      why: 'All LLM calls routed here. No local LLMs on VPS. Dedicated gateway for managing AI requests securely.',
     },
     {
       name: 'Superpowers Skills',

@@ -1,7 +1,7 @@
 # Stack Page + Remotion Videos — Design Spec
 
 > **Date:** 2026-05-14
-> **Status:** Draft (Pending User Approval)
+> **Status:** Approved (Shipped)
 > **Type:** Brainstorm / RFC
 > **Scope:** New `/stack` page showcasing tech stack, architecture, and workflows with Remotion animated videos
 
