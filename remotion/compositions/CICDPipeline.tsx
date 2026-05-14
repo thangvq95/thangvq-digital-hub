@@ -102,7 +102,7 @@ export const CICDPipeline: React.FC = () => {
 
       {/* Commit code block */}
       <Sequence from={T.commitBlock} layout="none">
-        <FadeIn from={T.commitBlock} durationFrames={15}>
+        <FadeIn from={0} durationFrames={15}>
           <div style={{
             position: 'absolute', top: CI_Y + STEP_H + 16, left: 50,
             background: 'rgba(15,23,42,0.9)', border: `1px solid ${COLORS.pink}30`,
@@ -111,7 +111,7 @@ export const CICDPipeline: React.FC = () => {
           }}>
             <TypewriterText
               text='git commit -m "feat: add stack page with Remotion videos"'
-              startFrame={T.commitBlock}
+              startFrame={0}
               charsPerFrame={0.9}
             />
           </div>
@@ -152,7 +152,7 @@ export const CICDPipeline: React.FC = () => {
 
       {/* Badge */}
       <Sequence from={T.badge} layout="none">
-        <FadeIn from={T.badge} durationFrames={20}>
+        <FadeIn from={0} durationFrames={20}>
           <div style={{
             position: 'absolute', bottom: 36, right: 60,
             background: `${COLORS.accent}15`,

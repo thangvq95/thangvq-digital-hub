@@ -109,7 +109,7 @@ export const HermesLifecycle: React.FC = () => {
 
       {/* Code block — hermes command */}
       <Sequence from={T.codeBlock} layout="none">
-        <FadeIn from={T.codeBlock} durationFrames={20}>
+        <FadeIn from={0} durationFrames={20}>
           <div style={{
             position: 'absolute', top: 380, left: 60, right: 60,
             background: 'rgba(15,23,42,0.95)',
@@ -120,7 +120,7 @@ export const HermesLifecycle: React.FC = () => {
             <span style={{ color: COLORS.textMuted }}>$ </span>
             <TypewriterText
               text='hermes -s tdd -c "Fix failing E2E test in RepoCard component"'
-              startFrame={T.codeBlock}
+              startFrame={0}
               charsPerFrame={0.8}
               style={{ color: COLORS.accent }}
             />
@@ -130,7 +130,7 @@ export const HermesLifecycle: React.FC = () => {
 
       {/* Cronjobs section */}
       <Sequence from={T.cronSection} layout="none">
-        <FadeIn from={T.cronSection} durationFrames={20}>
+        <FadeIn from={0} durationFrames={20}>
           <div style={{ position: 'absolute', bottom: 40, left: 60, right: 60, display: 'flex', gap: 16 }}>
             {[
               { time: '0 8,20 * * *', label: 'Weekly Trending Sync', sub: 'Scrape GitHub → POST /api/repos/upsert', color: COLORS.blue },

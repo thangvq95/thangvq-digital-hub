@@ -97,7 +97,7 @@ export const ArchitectureOverview: React.FC = () => {
 
       {/* Section labels */}
       <Sequence from={T.vercelAppear} layout="none">
-        <FadeIn from={T.vercelAppear} durationFrames={20}>
+        <FadeIn from={0} durationFrames={20}>
           <div style={{ position: 'absolute', top: 148, left: 390, fontFamily: FONTS.body, fontSize: 11, color: COLORS.blue, opacity: 0.7 }}>
             FRONTEND (VERCEL)
           </div>
@@ -161,7 +161,7 @@ export const ArchitectureOverview: React.FC = () => {
 
       {/* Badge */}
       <Sequence from={T.badge} layout="none">
-        <FadeIn from={T.badge} durationFrames={25}>
+        <FadeIn from={0} durationFrames={25}>
           <div style={{
             position: 'absolute', bottom: 40, right: 60,
             background: `${COLORS.accent}20`,

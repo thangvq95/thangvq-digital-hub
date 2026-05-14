@@ -139,7 +139,7 @@ export const SentryAutoFix: React.FC = () => {
 
       {/* GitHub Issue detail box */}
       <Sequence from={T.steps + 3 * 16 + 10} layout="none">
-        <FadeIn from={T.steps + 3 * 16 + 10} durationFrames={20}>
+        <FadeIn from={0} durationFrames={20}>
           <div style={{
             position: 'absolute', top: STEPS_Y + CARD_H + 20, left: steps[3].x - 10,
             background: 'rgba(15,23,42,0.95)', border: `1px solid ${COLORS.blue}40`,
@@ -155,7 +155,7 @@ export const SentryAutoFix: React.FC = () => {
 
       {/* Green badge */}
       <Sequence from={T.greenBadge} layout="none">
-        <FadeIn from={T.greenBadge} durationFrames={25}>
+        <FadeIn from={0} durationFrames={25}>
           <div style={{
             position: 'absolute', bottom: 40, right: 60,
             background: `${COLORS.accent}15`,

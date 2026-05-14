@@ -14,9 +14,16 @@ export const TechCard: React.FC<TechCardProps> = ({ item, accentColor = '#22C55E
 
   return (
     <div
-      className="glass card-hover rounded-xl p-4 cursor-pointer group relative"
-      style={{ borderColor: `${accentColor}30` }}
+      className="glass card-hover rounded-xl p-4 cursor-pointer group relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0F172A]"
+      style={{ borderColor: `${accentColor}30`, '--tw-ring-color': accentColor } as React.CSSProperties}
       onClick={() => setExpanded((e) => !e)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          setExpanded((prev) => !prev);
+        }
+      }}
+      tabIndex={0}
       role="button"
       aria-expanded={expanded}
     >
