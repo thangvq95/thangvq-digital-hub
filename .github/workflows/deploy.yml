@@ -1,0 +1,42 @@
+name: "Deploy: Production (VPS + Vercel)"
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy-backend:
+    name: Deploy Backend to VPS
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          # Mặc định nhảy vào thư mục dự án trên VPS, pull code và build
+          script: |
+            cd ${{ secrets.VPS_PROJECT_PATH }}
+            git fetch origin
+            git reset --hard origin/main
+            cd infra
+            docker compose up --build -d postgres api
+
+      - name: Health Check API
+        # Chờ tối đa 60s, ping liên tục vào API xem nó đã trả về 200 OK chưa
+        run: |
+          echo "Waiting for API to be healthy..."
+          timeout 60 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://api.thangvq95.page/repos)" != "200" ]]; do sleep 5; done' || false
+          echo "API is healthy! Proceeding to deploy Frontend."
+
+  deploy-frontend:
+    name: Trigger Vercel Frontend
+    needs: deploy-backend
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Vercel Deploy Hook
+        # Chỉ khi Backend (deploy-backend) chạy xong và API sống nhăn răng, ta mới gọi Vercel
+        run: |
+          curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
