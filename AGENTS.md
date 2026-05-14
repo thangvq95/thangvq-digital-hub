@@ -31,6 +31,13 @@
 - **Surgical Changes:** Touch only what you must. Don't refactor adjacent code unless asked. Clean up your own dead code, but leave pre-existing dead code alone.
 - **Goal-Driven Execution:** Define verifiable success criteria (e.g., tests) before coding, and loop until verified.
 
+### Git & PR Workflow (Crucial for Autonomous Agents)
+
+- **NEVER Push to Main:** The `main` branch is protected. Autonomous agents must never push directly to it.
+- **Branching:** When starting work on an issue, ALWAYS create a new branch: `git checkout -b fix/issue-<id>` or `feat/issue-<id>`.
+- **Pull Request:** After committing your changes and verifying tests pass, you MUST create a Pull Request using the GitHub CLI: `gh pr create --fill`.
+- **Completion:** Do not close the issue manually. Let the PR merge process close it automatically.
+
 ### Recommended skills (Universal)
 
 This repository uses [skills.sh](https://skills.sh/) to manage AI agent capabilities.

@@ -1,19 +1,28 @@
 # Triage Labels
 
-This repo uses the default vocabulary for issue triage:
+This repo uses labels not just for organization, but for **AI Smart Dispatch Routing**.
 
-- `needs-triage` — maintainer needs to evaluate. Apply to new untriaged issues.
-- `needs-info` — waiting on reporter. Apply when asking for clarification.
-- `ready-for-agent` — fully specified, AFK-ready. An agent can pick it up with no human context.
-- `ready-for-human` — needs human implementation.
-- `wontfix` — will not be actioned.
+The `infra/ai-developer-workspace/listener.py` webhook listens to GitHub Webhooks. When an issue is created or labeled, the listener parses the labels to automatically spawn Hermes with the appropriate skill in an isolated worktree.
 
-## AI Smart Dispatch Routing
+## Routing Logic (listener.py)
 
-The `infra/ai-developer-workspace/listener.py` webhook automatically dispatches the Hermes Agent based on GitHub Issue labels. When creating an issue (e.g., via Spec Kit), apply the appropriate label to trigger the correct skill:
+When an `issues` event is received, Hermes is dispatched based on the following labels:
 
-- `bug` or `sentry` → Triggers the `diagnose` skill. (Agent will reproduce, minimize, and fix the bug).
-- `feature` or `enhancement` → Triggers the `to-prd` or `writing-plans` skill. (Agent will create a PRD and break down the feature into a plan).
+- `bug` or `sentry` → Triggers the `diagnose` skill. (Agent will reproduce, minimize, and fix the bug in issue).
+- `feature` or `enhancement` → Triggers the `to-prd` skill. (Agent will generate PRDs and implement the feature).
 - `plan` → Triggers the `writing-plans` skill. (Agent will break down an epic or complex task into a plan).
 
-*If an issue lacks these specific routing labels, the listener defaults to the `triage` skill.*
+*If an issue lacks these specific routing labels, the listener defaults to the `triage` skill to analyze and organize it.*
+
+## PR & CI Routing
+
+The listener also handles CI and pull request events:
+- `pull_request`, `check_run`, `check_suite` → Triggers the `gh-fix-ci` skill to automatically fix failing PRs.
+
+## Human vs Agent States
+
+- `needs-triage` — Maintainer needs to evaluate.
+- `needs-info` — Waiting on reporter/context.
+- `ready-for-agent` — Fully specified, AFK-ready. Hermes can pick it up with no human context.
+- `ready-for-human` — Needs human implementation or review.
+- `wontfix` — Will not be actioned.
