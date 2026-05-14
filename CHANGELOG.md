@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.0.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.2...v1.0.3) (2026-05-14)
+
+
+### Bug Fixes
+
+* **ci:** add --repo flag to gh pr merge for no-checkout context ([c6e1433](https://github.com/thangvq95/thangvq-digital-hub/commit/c6e14337738ba3a0fb96bc83b3d5ba8c071b3540))
+* **ci:** extract PR number from JSON output for auto-merge ([b21cc7f](https://github.com/thangvq95/thangvq-digital-hub/commit/b21cc7f5bfd9b1835c599434aa79047e2dd465cd))
+* Use step output for Playwright version ([09795cb](https://github.com/thangvq95/thangvq-digital-hub/commit/09795cbc66d42640c68d44055db5621349735c64))
+
 ## [1.0.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.1...v1.0.2) (2026-05-14)
 
 
