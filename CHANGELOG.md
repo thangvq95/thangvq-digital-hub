@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.1...v1.0.2) (2026-05-14)
+
+
+### Bug Fixes
+
+* improve repo sorting and fix stars_growth display ([efb1478](https://github.com/thangvq95/thangvq-digital-hub/commit/efb14785722f51d4b43719f737098e63cc004393))
+* use Partial&lt;RepositoryEntity&gt; for upsert updateData type ([474df88](https://github.com/thangvq95/thangvq-digital-hub/commit/474df8825a2e2670c2b4a650b3b10c57e9b1ee3c))
+
 ## [1.0.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.0...v1.0.1) (2026-05-14)
 
 ### Bug Fixes
