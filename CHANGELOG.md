@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.0...v1.0.1) (2026-05-14)
+
+
+### Bug Fixes
+
+* resolve typescript unknown types in webhooks service ([22a4804](https://github.com/thangvq95/thangvq-digital-hub/commit/22a4804957813523f73b514ee23bf374abd7c28a))
+
 ## 1.0.0 (2026-05-14)
 
 
