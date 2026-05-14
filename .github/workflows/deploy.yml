@@ -28,7 +28,7 @@ jobs:
         # Chờ tối đa 60s, ping liên tục vào API xem nó đã trả về 200 OK chưa
         run: |
           echo "Waiting for API to be healthy..."
-          timeout 60 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://api.thangvq95.page/repos)" != "200" ]]; do sleep 5; done' || false
+          timeout 60 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://api.thangvq95.page/api/repos)" != "200" ]]; do sleep 5; done' || false
           echo "API is healthy! Proceeding to deploy Frontend."
 
   deploy-frontend:
