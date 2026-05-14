@@ -21,8 +21,8 @@ jobs:
           # this will ensure that the major version is not bumped automatically
           # unless you want that, then you can configure release-please further.
 
-      # Tự động enable auto-merge cho Release PR khi CI pass
-      # Chỉ chạy khi release-please vừa tạo/cập nhật một Release PR
+      # Automatically enable auto-merge for Release PRs when CI passes
+      # Only runs when release-please creates or updates a Release PR
       - name: Auto-merge Release PR
         if: ${{ steps.release.outputs.pr }}
         env:

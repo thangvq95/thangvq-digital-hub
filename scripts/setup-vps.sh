@@ -8,7 +8,7 @@ set -e
 echo "[INFO] Starting Docker-based setup..."
 
 REPO_URL="https://github.com/thangvq95/thangvq-digital-hub.git"
-# Thông thường trên VPS Linux, thư mục /opt/ hoặc /var/www/ là chuẩn nhất cho các ứng dụng web.
+# Usually on Linux VPS, /opt/ or /var/www/ are the standard directories for web applications.
 BASE_DIR="/opt/thangvq-digital-hub"
 
 # Check if Docker is available
@@ -26,7 +26,7 @@ fi
 if [ ! -d "$BASE_DIR" ]; then
     echo "[INFO] Cloning repository to $BASE_DIR"
     sudo mkdir -p "$(dirname "$BASE_DIR")"
-    sudo chown -R $USER:$USER "$(dirname "$BASE_DIR")" # Đảm bảo quyền truy cập cho user hiện tại
+    sudo chown -R $USER:$USER "$(dirname "$BASE_DIR")" # Ensure access permissions for the current user
     git clone "$REPO_URL" "$BASE_DIR"
 else
     echo "[INFO] Updating existing repository"
@@ -96,7 +96,7 @@ else
     echo "[INFO] Swap space already exists."
 fi
 
-# Dùng lệnh gộp này sẽ tối ưu hơn, nó tự build image mới nếu thấy Dockerfile thay đổi và chạy container.
+# Using this combined command is more optimal, it automatically builds a new image if the Dockerfile changes and runs the container.
 docker compose up --build -d
 
 echo "[INFO] Setup successful! 🚀 System is running in the background."
