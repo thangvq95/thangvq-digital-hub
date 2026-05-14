@@ -9,20 +9,20 @@ export class WebhooksService {
 
   constructor(private readonly httpService: HttpService) {}
 
-  async handleSentryAlert(payload: any) {
+  async handleSentryAlert(payload: Record<string, unknown>) {
     this.logger.log('Received Sentry alert');
-    
+
     // Check if it's an issue alert
     // Sentry Webhook payload structure: https://docs.sentry.io/product/integrations/integration-platform/webhooks/
     const { action, data } = payload;
-    
+
     if (action === 'created' && data?.issue) {
       const issue = data.issue;
       const project = data.issue.project?.slug || 'unknown-project';
-      
-      // Only create GitHub issue for "critical" or "error" level if specified, 
+
+      // Only create GitHub issue for "critical" or "error" level if specified,
       // but for now we'll process what Sentry sends (filtered by alert rules in Sentry UI)
-      
+
       const title = `[Sentry] ${issue.title}`;
       const body = `
 ## Sentry Issue Details
@@ -40,17 +40,19 @@ ${issue.culprit}
 
       await this.createGithubIssue(title, body);
     }
-    
+
     return { status: 'processed' };
   }
 
   private async createGithubIssue(title: string, body: string) {
-    const githubToken = process.env.GITHUB_TOKEN;
+    const githubToken = process.env.GH_PAT;
     const repoOwner = 'thangvq95';
     const repoName = 'thangvq-digital-hub';
 
     if (!githubToken) {
-      this.logger.error('GITHUB_TOKEN not found in environment variables');
+      // Return early if no token, don't crash
+      // But log a clear warning
+      this.logger.error('GH_PAT not found in environment variables');
       return;
     }
 
@@ -71,7 +73,9 @@ ${issue.culprit}
     } catch (error) {
       this.logger.error(`Failed to create GitHub issue: ${error.message}`);
       if (error.response) {
-        this.logger.error(`GitHub API Error: ${JSON.stringify(error.response.data)}`);
+        this.logger.error(
+          `GitHub API Error: ${JSON.stringify(error.response.data)}`,
+        );
       }
     }
   }

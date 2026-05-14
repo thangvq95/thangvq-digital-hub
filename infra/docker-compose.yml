@@ -29,7 +29,7 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY}
       SENTRY_DSN_BE: ${SENTRY_DSN_BE}
       SENTRY_PROJECT_BE: ${SENTRY_PROJECT_BE}
-      GITHUB_TOKEN: ${GITHUB_TOKEN}
+      GH_PAT: ${GH_PAT}
       PORT: 3001
     depends_on:
       - postgres
