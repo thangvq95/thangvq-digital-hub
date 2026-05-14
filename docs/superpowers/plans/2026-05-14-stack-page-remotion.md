@@ -15,12 +15,12 @@
 **Files:**
 - Create: `lib/stack-data.ts`
 
-- [ ] **Step 1: Create feature branch**
+- [x] **Step 1: Create feature branch**
 ```bash
 git checkout -b feat/stack-page
 ```
 
-- [ ] **Step 2: Create `lib/stack-data.ts`**
+- [x] **Step 2: Create `lib/stack-data.ts`**
 ```ts
 export interface TechItem {
   name: string;
@@ -84,7 +84,7 @@ export const categoryMeta: Record<string, { label: string; description: string; 
 };
 ```
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add lib/stack-data.ts
 git commit -m "feat(stack): add static tech stack data"
@@ -103,7 +103,7 @@ git commit -m "feat(stack): add static tech stack data"
 - Create: `remotion/components/TypewriterText.tsx`
 - Create: `remotion/components/TimelineStep.tsx`
 
-- [ ] **Step 1: Create `remotion/lib/constants.ts`**
+- [x] **Step 1: Create `remotion/lib/constants.ts`**
 ```ts
 export const COLORS = {
   bg: '#0F172A',
@@ -131,7 +131,7 @@ export const VIDEO_HEIGHT = 720;
 export const FPS = 30;
 ```
 
-- [ ] **Step 2: Create `remotion/components/FadeIn.tsx`**
+- [x] **Step 2: Create `remotion/components/FadeIn.tsx`**
 ```tsx
 import { interpolate, useCurrentFrame, Easing } from 'remotion';
 import React from 'react';
@@ -176,7 +176,7 @@ export const FadeIn: React.FC<FadeInProps> = ({
 };
 ```
 
-- [ ] **Step 3: Create `remotion/components/GlassCard.tsx`**
+- [x] **Step 3: Create `remotion/components/GlassCard.tsx`**
 ```tsx
 import React from 'react';
 import { interpolate, useCurrentFrame, Easing } from 'remotion';
@@ -233,7 +233,7 @@ export const GlassCard: React.FC<GlassCardProps> = ({
 };
 ```
 
-- [ ] **Step 4: Create `remotion/components/AnimatedArrow.tsx`**
+- [x] **Step 4: Create `remotion/components/AnimatedArrow.tsx`**
 ```tsx
 import React from 'react';
 import { interpolate, useCurrentFrame, Easing } from 'remotion';
@@ -294,7 +294,7 @@ export const AnimatedArrow: React.FC<AnimatedArrowProps> = ({
 };
 ```
 
-- [ ] **Step 5: Create `remotion/components/PulseEffect.tsx`**
+- [x] **Step 5: Create `remotion/components/PulseEffect.tsx`**
 ```tsx
 import React from 'react';
 import { interpolate, useCurrentFrame } from 'remotion';
@@ -324,7 +324,7 @@ export const PulseEffect: React.FC<PulseEffectProps> = ({
 };
 ```
 
-- [ ] **Step 6: Create `remotion/components/TypewriterText.tsx`**
+- [x] **Step 6: Create `remotion/components/TypewriterText.tsx`**
 ```tsx
 import React from 'react';
 import { useCurrentFrame } from 'remotion';
@@ -347,7 +347,7 @@ export const TypewriterText: React.FC<TypewriterTextProps> = ({
 };
 ```
 
-- [ ] **Step 7: Create `remotion/components/TimelineStep.tsx`**
+- [x] **Step 7: Create `remotion/components/TimelineStep.tsx`**
 ```tsx
 import React from 'react';
 import { interpolate, useCurrentFrame, Easing } from 'remotion';
@@ -398,7 +398,7 @@ export const TimelineStep: React.FC<TimelineStepProps> = ({
 };
 ```
 
-- [ ] **Step 8: Commit**
+- [x] **Step 8: Commit**
 ```bash
 git add remotion/
 git commit -m "feat(stack): add Remotion shared components and constants"
@@ -412,13 +412,13 @@ git commit -m "feat(stack): add Remotion shared components and constants"
 - Create: `remotion/compositions/ArchitectureOverview.tsx`
 - Create: `remotion/Root.tsx`
 
-- [ ] **Step 1: Create `remotion/compositions/ArchitectureOverview.tsx`**
+- [x] **Step 1: Create `remotion/compositions/ArchitectureOverview.tsx`**
 
 (Full composition — see implementation below)
 
-- [ ] **Step 2: Create `remotion/Root.tsx`** (Remotion Studio registry)
+- [x] **Step 2: Create `remotion/Root.tsx`** (Remotion Studio registry)
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 ```bash
 git add remotion/
 git commit -m "feat(stack): add Architecture Overview Remotion composition"
@@ -434,9 +434,9 @@ git commit -m "feat(stack): add Architecture Overview Remotion composition"
 - Create: `remotion/compositions/DataPipelines.tsx`
 - Create: `remotion/compositions/SentryAutoFix.tsx`
 
-- [ ] **Step 1: Implement all 4 remaining compositions**
-- [ ] **Step 2: Register all in `remotion/Root.tsx`**
-- [ ] **Step 3: Commit**
+- [x] **Step 1: Implement all 4 remaining compositions**
+- [x] **Step 2: Register all in `remotion/Root.tsx`**
+- [x] **Step 3: Commit**
 ```bash
 git commit -m "feat(stack): add Hermes, CI/CD, Data Pipelines, Sentry Remotion compositions"
 ```
@@ -452,9 +452,9 @@ git commit -m "feat(stack): add Hermes, CI/CD, Data Pipelines, Sentry Remotion c
 - Create: `components/stack/SectionBlock.tsx`
 - Create: `components/stack/StackHero.tsx`
 
-- [ ] **Step 1: Create all components**
-- [ ] **Step 2: Create `app/stack/page.tsx`**
-- [ ] **Step 3: Commit**
+- [x] **Step 1: Create all components**
+- [x] **Step 2: Create `app/stack/page.tsx`**
+- [x] **Step 3: Commit**
 ```bash
 git commit -m "feat(stack): add /stack page with tech grid and Remotion player"
 ```
@@ -463,13 +463,13 @@ git commit -m "feat(stack): add /stack page with tech grid and Remotion player"
 
 ## Task 6: Verify + PR
 
-- [ ] **Step 1: Run lint + build**
+- [x] **Step 1: Run lint + build**
 ```bash
 npm run lint && npm run build
 ```
 
-- [ ] **Step 2: Verify in dev server** (`npm run dev` → http://localhost:3000/stack)
-- [ ] **Step 3: Create PR**
+- [x] **Step 2: Verify in dev server** (`npm run dev` → http://localhost:3000/stack)
+- [x] **Step 3: Create PR**
 ```bash
 gh pr create --fill
 ```
