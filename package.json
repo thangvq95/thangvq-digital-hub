@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@radix-ui/react-icons": "^1.3.2",
+    "@remotion/player": "^4.0.461",
     "@sentry/nextjs": "^10.53.1",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
@@ -26,12 +27,14 @@
     "rehype-katex": "^7.0.1",
     "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
+    "remotion": "^4.0.461",
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.0.1",
     "@commitlint/config-conventional": "^21.0.1",
     "@playwright/test": "^1.59.1",
+    "@remotion/cli": "^4.0.461",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
