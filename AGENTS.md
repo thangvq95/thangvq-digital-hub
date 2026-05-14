@@ -30,6 +30,7 @@
 - **Simplicity First:** Minimum code that solves the problem. No speculative features or abstractions.
 - **Surgical Changes:** Touch only what you must. Don't refactor adjacent code unless asked. Clean up your own dead code, but leave pre-existing dead code alone.
 - **Goal-Driven Execution:** Define verifiable success criteria (e.g., tests) before coding, and loop until verified.
+- **Mandatory Validation Hook:** After generating or modifying code, ALWAYS use the `verify` skill or run `npm run lint` & `npm run build` locally to prove the code works before reporting back. If errors occur, auto-fix them immediately.
 
 ### Git & PR Workflow (Crucial for Autonomous Agents)
 
@@ -63,6 +64,7 @@ All skills are checked directly into the repository under `.agents/skills/` for 
 - `grill-with-docs` (for stress-testing plans against existing domain architecture)
 - `to-prd` (for generating PRDs from the current conversation context)
 - `triage` (for managing and triaging issues through a structured workflow)
+- `verify` (for verifying that a code change actually works by running the app and observing runtime behavior instead of just looking at code)
 
 ### Issue tracker
 
