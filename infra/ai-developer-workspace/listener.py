@@ -83,7 +83,7 @@ def _create_worktree(ref: str, run_id: str) -> str:
     # Append run_id to ensure concurrent issues (same branch) don't collide
     worktree_path = os.path.join(WORKTREES_DIR, f"{safe_ref}_{run_id}")
     _run(["git", "-C", BASE_REPO, "fetch", "origin", ref])
-    _run(["git", "-C", BASE_REPO, "worktree", "add", "--force", worktree_path, f"origin/{ref}"])
+    _run(["git", "-C", BASE_REPO, "worktree", "add", "-d", "--force", worktree_path, f"origin/{ref}"])
     return worktree_path
 
 
