@@ -25,6 +25,28 @@ User → Cloudflare → Vercel (Next.js 16)
 
 ---
 
+## System Flows
+
+### 1. Data Sync & Agent Execution Flow
+```text
+User/Cron → GitHub Issue → Hermes Webhook (VPS) → AI Task Execution → Git Commit & PR
+```
+
+### 2. Sentry Error Monitoring & Triage Flow
+```text
+Next.js/NestJS Exception → Sentry → Backend Webhook → Auto-creates GitHub Issue → Trigger Hermes
+```
+
+### 3. CI/CD Orchestrated Deployment Flow
+```text
+Merge to `main` → GitHub Actions
+  ├─ 1. SSH to VPS → Pull Code → Build & Restart Backend (Docker Compose)
+  ├─ 2. Health Check (`/api/repos` returns 200 OK)
+  └─ 3. Trigger Vercel CLI Deployment (Bypasses Ignored Build Step)
+```
+
+---
+
 ## Routes
 
 | Route                  | Description                                           |
@@ -99,30 +121,58 @@ npx playwright test tests/portfolio.spec.ts --project=chromium
 
 ---
 
-## Environment Variables
+## Environment Variables & Configuration
 
-### Frontend (Vercel)
+This project requires environment variables configured across GitHub, Vercel, and the VPS.
 
-```env
-NEXT_PUBLIC_API_URL=https://api.thangvq95.page
-SYNC_API_KEY=<secret>
-```
+### 1. GitHub Action Secrets (`.github/workflows/deploy.yml`)
 
-### VPS — `infra/.env` (create manually, never commit)
+The production deployment relies on the following secrets stored in **GitHub Repository > Settings > Secrets and variables > Actions**:
 
-```env
-SYNC_API_KEY=<secret>           # Must match Vercel + Hermes
-PORT=3001
-NODE_ENV=production
-POSTGRES_PASSWORD=<secret>
-WEBHOOK_SECRET=<secret>         # GitHub webhook HMAC
-HERMES_BIN=hermes
-BASE_REPO=/app/repo
-WORKTREES_DIR=/app/worktrees
-DEDUP_DB=/app/data/ai-workspace.db
-```
+**VPS & Deployment Auth:**
+- `VPS_HOST`: IP address of the VPS.
+- `VPS_USERNAME`: SSH username (`root` or `thang`).
+- `VPS_SSH_KEY`: Private SSH key for accessing the VPS.
+- `VPS_PROJECT_PATH`: Absolute path to the repository on the VPS (e.g., `/opt/thangvq-digital-hub`).
+- `VERCEL_TOKEN`: Vercel access token (Account Settings > Tokens).
+- `VERCEL_ORG_ID`: Vercel Organization/Team ID.
+- `VERCEL_PROJECT_ID`: Vercel Project ID.
 
-Generate secrets:
+**Backend / VPS Environment:** (Injected into `infra/.env` during deployment)
+- `WEBHOOK_SECRET`: HMAC secret for GitHub webhooks.
+- `SYNC_API_KEY`: API key for Hermes sync auth.
+- `POSTGRES_PASSWORD`: PostgreSQL database password.
+- `PORT`: Backend API port (e.g., `3001`).
+- `NODE_ENV`: e.g., `production`.
+- `GH_PAT`: GitHub Personal Access Token (for backend to create issues from Sentry alerts).
+- `CLOUDFLARE_TUNNEL_TOKEN`: Cloudflare Tunnel Token for exposing the VPS securely.
+
+**Sentry (Backend):**
+- `SENTRY_DSN_BE`: Sentry DSN for NestJS.
+- `SENTRY_PROJECT_BE`: Sentry Project name.
+
+**AI Routing / LLM:**
+- `NINE_ROUTER_URL`, `NINE_ROUTER_MODEL`, `NINE_ROUTER_API_KEY`, `OPENAI_API_KEY`
+
+### 2. Frontend (Vercel)
+
+Configure these in the **Vercel Project Settings > Environment Variables**:
+
+- `NEXT_PUBLIC_API_URL`: Backend URL (e.g., `https://api.thangvq95.page`).
+- `NEXT_PUBLIC_ENV`: `production`.
+
+**Sentry (Frontend):**
+- `NEXT_PUBLIC_SENTRY_DSN`: Sentry DSN for Next.js.
+- `SENTRY_ORG`: Sentry Organization slug.
+- `SENTRY_PROJECT`: Sentry Project name.
+- `SENTRY_AUTH_TOKEN`: Token for sourcemap uploading during Vercel build.
+
+### 3. VPS Configuration (`infra/.env`)
+
+For local Docker-Compose testing, or manual setup, create `infra/.env` from `infra/.env.example`.
+*Note: In production, the CI/CD pipeline automatically populates `infra/.env` using GitHub Secrets (see above). You do not need to manually configure the `.env` file on the VPS if deploying via GitHub Actions.*
+
+Generate secrets manually if needed:
 
 ```bash
 openssl rand -hex 32   # for SYNC_API_KEY, WEBHOOK_SECRET
@@ -147,22 +197,12 @@ To prevent deployment race conditions between the Frontend (Vercel) and Backend 
 
 When code is merged into `main`:
 
-1. **Backend First:** GitHub Actions SSHes into the VPS, pulls the latest code, and builds the API using Docker Compose.
-2. **Health Check:** The pipeline waits and pings `/repos` until the API returns HTTP 200 OK.
+
+1. **Backend First:** GitHub Actions SSHes into the VPS, pulls the latest code, and builds the API using Docker Compose. It automatically recreates the `.env` file from GitHub Secrets.
+2. **Health Check:** The pipeline waits and pings `/api/repos` until the API returns HTTP 200 OK.
 3. **Frontend Second:** Only after the API is healthy, the pipeline triggers Vercel to build the Frontend directly using the Vercel CLI (bypassing the ignored build step).
 
-**Required GitHub Secrets:**
-
-- `VPS_HOST`: IP address of the VPS.
-- `VPS_USERNAME`: SSH username (e.g., `root` or `thang`).
-- `VPS_SSH_KEY`: Private SSH key for accessing the VPS.
-- `VPS_PROJECT_PATH`: Absolute path to the repository on the VPS (e.g., `/home/thang/Development/thangvq-digital-hub`).
-- `VERCEL_TOKEN`: Vercel access token (Account Settings > Tokens).
-- `VERCEL_ORG_ID`: Vercel Organization/Team ID.
-- `VERCEL_PROJECT_ID`: Vercel Project ID.
-
-_Note: Vercel automatic deployments for the `main` branch are disabled via the "Ignored Build Step" setting to allow this pipeline to act as the sole orchestrator. The Vercel CLI action bypasses this ignore rule._
-
+*Note: Vercel automatic deployments for the `main` branch are disabled via the "Ignored Build Step" setting to allow this pipeline to act as the sole orchestrator. The Vercel CLI action bypasses this ignore rule.*
 ---
 
 ## Release Process (Automated)
