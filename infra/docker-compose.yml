@@ -61,6 +61,7 @@ services:
       - WORKTREES_DIR=${WORKTREES_DIR:-/app/worktrees}
       - DEDUP_DB=${DEDUP_DB:-/app/data/ai-workspace.db}
       - PORT=8080
+      - GH_TOKEN=${GH_PAT}
       - HERMES_BIN=${HERMES_BIN:-hermes}
       - NINE_ROUTER_API_KEY=${NINE_ROUTER_API_KEY}
       - NINE_ROUTER_URL=${NINE_ROUTER_URL}
