@@ -80,3 +80,4 @@ Icon
 /playwright/.cache/
 /playwright/.auth/
 .gitnexus
+.vercel
