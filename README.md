@@ -197,12 +197,12 @@ To prevent deployment race conditions between the Frontend (Vercel) and Backend 
 
 When code is merged into `main`:
 
+
 1. **Backend First:** GitHub Actions SSHes into the VPS, pulls the latest code, and builds the API using Docker Compose. It automatically recreates the `.env` file from GitHub Secrets.
 2. **Health Check:** The pipeline waits and pings `/api/repos` until the API returns HTTP 200 OK.
 3. **Frontend Second:** Only after the API is healthy, the pipeline triggers Vercel to build the Frontend directly using the Vercel CLI (bypassing the ignored build step).
 
 *Note: Vercel automatic deployments for the `main` branch are disabled via the "Ignored Build Step" setting to allow this pipeline to act as the sole orchestrator. The Vercel CLI action bypasses this ignore rule.*
-
 ---
 
 ## Release Process (Automated)
