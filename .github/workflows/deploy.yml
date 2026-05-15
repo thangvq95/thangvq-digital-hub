@@ -16,14 +16,14 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
-          # Mặc định nhảy vào thư mục dự án trên VPS, pull code và build
+          # Default to project directory on VPS, pull code and build
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
             git fetch origin
             git reset --hard origin/main
             cd infra
             
-            # Tự động tạo file .env từ GitHub Secrets
+            # Automatically create .env file from GitHub Secrets
             rm -f .env
             echo "WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}" >> .env
             echo "SYNC_API_KEY=${{ secrets.SYNC_API_KEY }}" >> .env
@@ -39,13 +39,13 @@ jobs:
             echo "SENTRY_PROJECT_BE=${{ secrets.SENTRY_PROJECT_BE }}" >> .env
             echo "GH_PAT=${{ secrets.GH_PAT }}" >> .env
             
-            # Cấp quyền bảo mật
+            # Set secure permissions
             chmod 600 .env
             
             docker compose up --build -d postgres api
 
       - name: Health Check API
-        # Chờ tối đa 60s, ping liên tục vào API xem nó đã trả về 200 OK chưa
+        # Wait up to 60s, continuously pinging the API until it returns 200 OK
         run: |
           echo "Waiting for API to be healthy..."
           timeout 60 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://api.thangvq95.page/api/repos)" != "200" ]]; do sleep 5; done' || false
@@ -56,7 +56,14 @@ jobs:
     needs: deploy-backend
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Vercel Deploy Hook
-        # Chỉ khi Backend (deploy-backend) chạy xong và API sống nhăn răng, ta mới gọi Vercel
-        run: |
-          curl -X POST ${{ secrets.VERCEL_DEPLOY_HOOK_URL }}
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Vercel (Bypass Ignore Build Step)
+        uses: amondnet/vercel-action@v20
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          vercel-args: '--prod'

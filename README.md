@@ -149,7 +149,7 @@ When code is merged into `main`:
 
 1. **Backend First:** GitHub Actions SSHes into the VPS, pulls the latest code, and builds the API using Docker Compose.
 2. **Health Check:** The pipeline waits and pings `/repos` until the API returns HTTP 200 OK.
-3. **Frontend Second:** Only after the API is healthy, the pipeline triggers Vercel to build the Frontend via a Deploy Hook.
+3. **Frontend Second:** Only after the API is healthy, the pipeline triggers Vercel to build the Frontend directly using the Vercel CLI (bypassing the ignored build step).
 
 **Required GitHub Secrets:**
 
@@ -157,9 +157,11 @@ When code is merged into `main`:
 - `VPS_USERNAME`: SSH username (e.g., `root` or `thang`).
 - `VPS_SSH_KEY`: Private SSH key for accessing the VPS.
 - `VPS_PROJECT_PATH`: Absolute path to the repository on the VPS (e.g., `/home/thang/Development/thangvq-digital-hub`).
-- `VERCEL_DEPLOY_HOOK_URL`: The Deploy Hook URL from Vercel (Project Settings > Git > Deploy Hooks).
+- `VERCEL_TOKEN`: Vercel access token (Account Settings > Tokens).
+- `VERCEL_ORG_ID`: Vercel Organization/Team ID.
+- `VERCEL_PROJECT_ID`: Vercel Project ID.
 
-_Note: You MUST disable automatic deployments for the `main` branch in Vercel to allow this pipeline to act as the sole orchestrator._
+_Note: Vercel automatic deployments for the `main` branch are disabled via the "Ignored Build Step" setting to allow this pipeline to act as the sole orchestrator. The Vercel CLI action bypasses this ignore rule._
 
 ---
 

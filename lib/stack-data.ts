@@ -119,7 +119,7 @@ export const techStack: Record<string, TechItem[]> = {
       role: 'Frontend hosting (edge)',
       category: 'infrastructure',
       url: 'https://vercel.com',
-      why: 'SSG/ISR, global CDN, zero-config Next.js deploy. Triggered via Deploy Hook from CI/CD.',
+      why: 'SSG/ISR, global CDN, zero-config Next.js deploy. Triggered via Vercel CLI from CI/CD.',
     },
     {
       name: 'Cloudflare',
@@ -187,7 +187,7 @@ export const techStack: Record<string, TechItem[]> = {
       role: 'CI/CD orchestration',
       category: 'cicd',
       url: 'https://github.com/features/actions',
-      why: 'Backend-first deploy: SSH → VPS → health check → Vercel Deploy Hook. Prevents race conditions.',
+      why: 'Backend-first deploy: SSH → VPS → health check → Vercel CLI. Prevents race conditions.',
     },
     {
       name: 'Husky',

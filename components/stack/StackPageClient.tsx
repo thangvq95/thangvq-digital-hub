@@ -265,8 +265,8 @@ export const StackPageClient: React.FC = () => {
                 color: '#F472B6',
               },
               {
-                label: 'GitHub Actions — Deploy',
-                detail: 'SSH → VPS → docker compose pull → health check /api/repos → trigger Vercel Deploy Hook.',
+                label: 'Merge to Main',
+                detail: 'SSH → VPS → docker compose pull → health check /api/repos → deploy via Vercel CLI.',
                 color: '#60A5FA',
               },
               {
