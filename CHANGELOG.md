@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.1.0...v1.2.0) (2026-05-15)
+
+
+### Features
+
+* improve documentation and secure webhook listener execution ([8369cec](https://github.com/thangvq95/thangvq-digital-hub/commit/8369cec73ea9a20054b069cfd77e178dce88a736))
+* improve documentation and secure webhook listener execution ([e4efc1e](https://github.com/thangvq95/thangvq-digital-hub/commit/e4efc1ec3a6f8f6d3340f6905668cc1437b72637))
+
 ## [1.1.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.3...v1.1.0) (2026-05-14)
 
 
