@@ -109,7 +109,7 @@ export const techStack: Record<string, TechItem[]> = {
       role: "Containerization",
       category: "infrastructure",
       url: "https://docker.com",
-      why: "5 containers: postgres, api, hermes-gateway, hermes-gateway, cloudflared. 100% reproducible.",
+      why: "4 containers: postgres, api, hermes-gateway, cloudflared. 100% reproducible.",
     },
     {
       name: "DigitalOcean VPS",
@@ -151,7 +151,7 @@ export const techStack: Record<string, TechItem[]> = {
       role: "Autonomous AI worker on VPS",
       category: "ai",
       url: "https://hermes.ai",
-      why: "Runs cronjobs, writes code, fixes PRs. Webhook listener + SQLite dedup + git worktrees.",
+      why: "Runs cronjobs, writes code, fixes PRs. Native cron poller + SQLite dedup + git worktrees.",
     },
     {
       name: "GitNexus",

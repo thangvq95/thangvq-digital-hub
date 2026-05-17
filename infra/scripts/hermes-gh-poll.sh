@@ -22,14 +22,22 @@ sqlite3 "$DEDUP_DB" "CREATE TABLE IF NOT EXISTS seen_events (event_id TEXT PRIMA
 
 seen_before() {
     local event_id="$1"
+    
+    # Sanitize inputs to prevent SQL injection or breakage
+    local safe_id
+    safe_id=$(echo "$event_id" | sed "s/'/''/g")
+    
     local count
-    count=$(sqlite3 "$DEDUP_DB" "SELECT COUNT(*) FROM seen_events WHERE event_id = '$event_id';")
+    count=$(sqlite3 "$DEDUP_DB" "SELECT COUNT(*) FROM seen_events WHERE event_id = '$safe_id';")
     [ "$count" -gt 0 ]
 }
 
 mark_seen() {
     local event_id="$1"
-    sqlite3 "$DEDUP_DB" "INSERT OR IGNORE INTO seen_events (event_id, created_at) VALUES ('$event_id', $(date +%s));"
+    local safe_id
+    safe_id=$(echo "$event_id" | sed "s/'/''/g")
+    
+    sqlite3 "$DEDUP_DB" "INSERT OR IGNORE INTO seen_events (event_id, created_at) VALUES ('$safe_id', $(date +%s));"
 }
 
 cd "$REPO_DIR"
@@ -66,11 +74,14 @@ gh issue list --state open --json number,labels,updatedAt --limit 20 | jq -c '.[
     fi
     
     # Run in worktree
-    branch=$(git rev-parse --abbrev-ref origin/main || echo "main")
+    branch="main"
     safe_ref="main"
     worktree="$WORKTREES_DIR/${safe_ref}_${event_id}"
     
-    git worktree add -d --force "$worktree" "origin/$branch" || true
+    git worktree add -d --force "$worktree" "origin/$branch" || {
+        echo "[ERROR] Failed to create worktree at $worktree for $event_id"
+        continue
+    }
     
     echo "[INFO] Running hermes with skill: $skill on worktree: $worktree"
     (
@@ -102,7 +113,10 @@ gh pr list --state open --json number,headRefName,updatedAt --limit 20 | jq -c '
     worktree="$WORKTREES_DIR/${safe_ref}_${event_id}"
     
     git fetch origin "$ref" || true
-    git worktree add -d --force "$worktree" "origin/$ref" || true
+    git worktree add -d --force "$worktree" "origin/$ref" || {
+        echo "[ERROR] Failed to create worktree at $worktree for $event_id"
+        continue
+    }
     
     echo "[INFO] Running hermes on PR #$num worktree"
     (
