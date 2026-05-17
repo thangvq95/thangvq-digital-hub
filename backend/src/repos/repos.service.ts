@@ -297,18 +297,18 @@ Rules for tags:
     }
   }
 
-  // ─── Normalize avatar URL to use avatars.githubusercontent.com ────────────
-  // GitHub serves avatars at two URLs:
-  //   - https://github.com/{username}.png  (redirects, blocked by Next.js Image)
-  //   - https://avatars.githubusercontent.com/{username} (canonical, always works)
   private normalizeAvatarUrl(url: unknown): string | undefined {
     if (typeof url !== 'string' || !url) return undefined;
-    // Convert github.com/{user}.png → avatars.githubusercontent.com/{user}
     const match = url.match(/^https?:\/\/github\.com\/([^/?#]+)\.png/i);
     if (match) {
       return `https://avatars.githubusercontent.com/${match[1]}`;
     }
     return url;
+  }
+
+  private sanitizeStarsGrowth(val: string | null | undefined): string | null {
+    if (typeof val !== 'string') return null;
+    return val.replace(/.*?\/svg>\s*/, '');
   }
 
   // ─── Batch upsert from Hermes trending sync (append-only) ─────────────────
@@ -333,9 +333,14 @@ Rules for tags:
           .owner?.avatar_url;
       const avatar_url = this.normalizeAvatarUrl(rawAvatar);
 
+      const stars_growth = r.stars_growth !== undefined
+        ? this.sanitizeStarsGrowth(r.stars_growth)
+        : undefined;
+
       if (!existing) {
         await this.repo.save({
           ...r,
+          stars_growth: stars_growth !== undefined ? (stars_growth ?? undefined) : undefined,
           avatar_url: typeof avatar_url === 'string' ? avatar_url : undefined,
           is_favorite: false,
           is_archived: false,
@@ -357,8 +362,8 @@ Rules for tags:
         if (r.html_url !== undefined) updateData.html_url = r.html_url;
         if (r.language !== undefined) updateData.language = r.language;
         if (r.stars_total !== undefined) updateData.stars_total = r.stars_total;
-        if (r.stars_growth !== undefined)
-          updateData.stars_growth = r.stars_growth;
+        if (stars_growth !== undefined)
+          updateData.stars_growth = stars_growth ?? undefined;
         if (r.forks_total !== undefined) updateData.forks_total = r.forks_total;
         if (r.trending_rank !== undefined)
           updateData.trending_rank = r.trending_rank;
