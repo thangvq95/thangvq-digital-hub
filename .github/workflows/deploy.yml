@@ -19,20 +19,16 @@ jobs:
           # Default to project directory on VPS, pull code and build
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
-            # Check if index.lock is stale (> 5 minutes old) and remove it, otherwise fail fast
             if [ -f .git/index.lock ]; then
-              FILE_AGE=$(stat -c %Y .git/index.lock 2>/dev/null)
-              if [ -z "$FILE_AGE" ]; then
-                echo "Warning: Could not determine age of index.lock. Proceeding safely by not removing it."
-                echo "Deploy failed. Please check VPS git process manually."
+              if lsof .git/index.lock > /dev/null 2>&1 || fuser .git/index.lock > /dev/null 2>&1; then
+                echo "Error: Active process holds .git/index.lock. Aborting deploy."
                 exit 1
               fi
-              LOCK_AGE=$(expr $(date +%s) - $FILE_AGE)
-              if [ "$LOCK_AGE" -gt 300 ]; then
-                echo "Removing stale index.lock (age: ${LOCK_AGE}s)"
+              if find .git/index.lock -mmin +5 | grep -q .; then
+                echo "Removing stale index.lock (older than 5 minutes)."
                 rm -f .git/index.lock
               else
-                echo "Git lock is fresh (${LOCK_AGE}s). Assuming active git process."
+                echo "Error: index.lock exists and is not stale (< 5 mins). Aborting deploy to prevent corruption."
                 exit 1
               fi
             fi
