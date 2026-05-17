@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.19](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.18...v1.3.19) (2026-05-17)
+
+
+### Bug Fixes
+
+* resolve hermes-dashboard crash by using uv to install fastapi/uvicorn ([#81](https://github.com/thangvq95/thangvq-digital-hub/issues/81)) ([540748f](https://github.com/thangvq95/thangvq-digital-hub/commit/540748f5fdd82291d283a68b7ef573385b4353ef))
+
 ## [1.3.18](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.17...v1.3.18) (2026-05-17)
 
 
