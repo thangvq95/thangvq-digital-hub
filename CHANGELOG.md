@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.1...v1.3.2) (2026-05-17)
+
+
+### Bug Fixes
+
+* add listener phase logs and guaranteed worktree cleanup ([93e7f63](https://github.com/thangvq95/thangvq-digital-hub/commit/93e7f633632562f237875e07845ed070240b1869))
+* add listener phase logs and guaranteed worktree cleanup ([7d773d8](https://github.com/thangvq95/thangvq-digital-hub/commit/7d773d8d60ae13b54a36aeccab277a69c89db66d))
+* address copilot review comments for redelivery ([baa7c3c](https://github.com/thangvq95/thangvq-digital-hub/commit/baa7c3c7c9348983798eead744640126bd2c0400))
+
 ## [1.3.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.0...v1.3.1) (2026-05-17)
 
 
