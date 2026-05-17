@@ -19,6 +19,7 @@ jobs:
           # Default to project directory on VPS, pull code and build
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
+            rm -f .git/index.lock
             git fetch origin
             git reset --hard origin/main
             cd infra
