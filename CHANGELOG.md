@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.8](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.7...v1.3.8) (2026-05-17)
+
+
+### Bug Fixes
+
+* split hermes gateway and dashboard into separate services ([260c237](https://github.com/thangvq95/thangvq-digital-hub/commit/260c23768f45301de6516ed17435ccbfc67b691c))
+
 ## [1.3.7](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.6...v1.3.7) (2026-05-17)
 
 
