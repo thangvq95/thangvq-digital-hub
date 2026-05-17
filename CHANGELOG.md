@@ -1,11 +1,35 @@
 # Changelog
 
+## [1.3.7](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.6...v1.3.7) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR [#51](https://github.com/thangvq95/thangvq-digital-hub/issues/51) review comment by fixing [#42](https://github.com/thangvq95/thangvq-digital-hub/issues/42) link ([#53](https://github.com/thangvq95/thangvq-digital-hub/issues/53)) ([d709af6](https://github.com/thangvq95/thangvq-digital-hub/commit/d709af6e6a460ee2fc1c994fc01ead4b9aca7c77))
+
+## [1.3.6](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.5...v1.3.6) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR [#42](https://github.com/thangvq95/thangvq-digital-hub/pull/42) review comments from Copilot ([984ed1e](https://github.com/thangvq95/thangvq-digital-hub/commit/984ed1ec94b6a6e0122bbd86240f6bedc8b8167f))
+* resolve merge conflicts ([5837cb4](https://github.com/thangvq95/thangvq-digital-hub/commit/5837cb466cbab7520486e1cfd15e7c15ee2a854a))
+
+## [1.3.5](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.4...v1.3.5) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR 41 review comments for index.lock handling and changelog ([d46d431](https://github.com/thangvq95/thangvq-digital-hub/commit/d46d431d30fa2be66824672c07ae4320210411af))
+* address PR 41 review comments for index.lock handling and changelog ([588796c](https://github.com/thangvq95/thangvq-digital-hub/commit/588796c8cc158853a3603f190d9cfcab6be356b0))
+
 ## [1.3.4](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.3...v1.3.4) (2026-05-17)
 
 
 ### Bug Fixes
 
 * add staleness and active-process check before removing index.lock in deploy workflow ([#42](https://github.com/thangvq95/thangvq-digital-hub/pull/42))
+* add deploy workflow staleness check for git index.lock to prevent deployment failures ([#41](https://github.com/thangvq95/thangvq-digital-hub/pull/41))
 * address PR [#35](https://github.com/thangvq95/thangvq-digital-hub/issues/35) review comments from Copilot ([#38](https://github.com/thangvq95/thangvq-digital-hub/issues/38)) ([c0912f6](https://github.com/thangvq95/thangvq-digital-hub/commit/c0912f69c796e60ec566e4f102a65cf9e45ccc38))
 
 ## [1.3.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.2...v1.3.3) (2026-05-17)

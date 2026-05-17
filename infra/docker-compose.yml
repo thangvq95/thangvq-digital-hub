@@ -43,7 +43,37 @@ services:
     volumes:
       - ../:/app/repo
       - hermes_data:/root/.hermes
+      - gitnexus_data:/root/.gitnexus
+      - ~/.ssh:/root/.ssh:ro
       - /root/.config/gh:/root/.config/gh
+    environment:
+      - HOST=0.0.0.0
+      - PORT=9119
+      - GH_TOKEN=${GH_PAT}
+      - NINE_ROUTER_API_KEY=${NINE_ROUTER_API_KEY}
+      - NINE_ROUTER_URL=${NINE_ROUTER_URL}
+      - NINE_ROUTER_MODEL=${NINE_ROUTER_MODEL}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - PYTHONPATH=/app/repo/infra/patches
+      - BASE_REPO=/app/repo
+      - WORKTREES_DIR=/app/worktrees
+      - DEDUP_DB=/app/data/ai-workspace.db
+    command: [ "hermes", "gateway", "run" ]
+
+  hermes-dashboard:
+    build:
+      context: ../
+      dockerfile: infra/hermes-gateway/Dockerfile
+    container_name: hermes-dashboard
+    restart: always
+    depends_on:
+      - hermes-gateway
+    ports:
+      - "127.0.0.1:9119:9119"
+    volumes:
+      - ../:/app/repo
+      - hermes_data:/root/.hermes
+      - gitnexus_data:/root/.gitnexus
     environment:
       - HOST=0.0.0.0
       - PORT=9119
@@ -70,3 +100,4 @@ services:
 volumes:
   pgdata:
   hermes_data:
+  gitnexus_data:
