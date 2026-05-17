@@ -25,7 +25,7 @@ seen_before() {
     
     # Sanitize inputs to prevent SQL injection or breakage
     local safe_id
-    safe_id=$(echo "$event_id" | sed "s/'/''/g")
+    safe_id=$(printf '%s' "$event_id" | sed "s/'/''/g")
     
     local count
     count=$(sqlite3 "$DEDUP_DB" "SELECT COUNT(*) FROM seen_events WHERE event_id = '$safe_id';")
@@ -35,7 +35,7 @@ seen_before() {
 mark_seen() {
     local event_id="$1"
     local safe_id
-    safe_id=$(echo "$event_id" | sed "s/'/''/g")
+    safe_id=$(printf '%s' "$event_id" | sed "s/'/''/g")
     
     sqlite3 "$DEDUP_DB" "INSERT OR IGNORE INTO seen_events (event_id, created_at) VALUES ('$safe_id', $(date +%s));"
 }
@@ -112,8 +112,8 @@ gh pr list --state open --json number,headRefName,updatedAt --limit 20 | jq -c '
     safe_ref=$(echo "$ref" | sed 's/[^a-zA-Z0-9]/_/g')
     worktree="$WORKTREES_DIR/${safe_ref}_${event_id}"
     
-    git fetch origin "$ref" || true
-    git worktree add -d --force "$worktree" "origin/$ref" || {
+    git fetch origin -- "$ref" || true
+    git worktree add -d --force "$worktree" -- "origin/$ref" || {
         echo "[ERROR] Failed to create worktree at $worktree for $event_id"
         continue
     }

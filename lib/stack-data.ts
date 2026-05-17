@@ -159,7 +159,7 @@ export const techStack: Record<string, TechItem[]> = {
       role: "Code knowledge graph (MCP)",
       category: "ai",
       url: "https://gitnexus.dev",
-      why: "Provides unified codebase context (548 symbols, 678 relationships) to all agents via MCP.",
+      why: "Provides unified codebase context to all agents via MCP.",
     },
     {
       name: "9Router",

@@ -43,7 +43,7 @@ services:
     volumes:
       - ../:/app/repo
       - hermes_data:/root/.hermes
-      - /root/.config/gh:/root/.config/gh
+      - /root/.config/gh:/root/.config/gh:ro
     environment:
       - HOST=0.0.0.0
       - PORT=9119
@@ -70,3 +70,5 @@ services:
 volumes:
   pgdata:
   hermes_data:
+  gitnexus_data:
+  worktrees_data:

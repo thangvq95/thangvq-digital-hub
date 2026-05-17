@@ -6,7 +6,7 @@ The Hermes autonomous orchestrator polls GitHub. When an issue is created or lab
 
 ## Routing Logic (Polling Orchestrator)
 
-When an `issues` event is received, Hermes is dispatched based on the following labels:
+On each polling cycle, Hermes inspects open issues and dispatches based on the following labels:
 
 - `bug` or `sentry` → Triggers the `diagnose` skill. (Agent will reproduce, minimize, and fix the bug in issue).
 - `feature` or `enhancement` → Triggers the `to-prd` skill. (Agent will generate PRDs and implement the feature).

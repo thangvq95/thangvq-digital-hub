@@ -269,9 +269,9 @@ export const StackPageClient: React.FC = () => {
                 color: "#A78BFA",
               },
               {
-                label: "🧠 GitNexus Context",
+                label: "GitNexus Graph",
                 detail:
-                  "548 symbols · 678 relationships. Agents never grep — they query the knowledge graph.",
+                  "Dynamic codebase index. Agents never grep — they query the knowledge graph.",
                 color: "#A78BFA",
               },
               {
