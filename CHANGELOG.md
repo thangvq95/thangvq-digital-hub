@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.11](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.10...v1.3.11) (2026-05-17)
+
+
+### Bug Fixes
+
+* cleanup package-lock.json from pr 60 ([bbfca5b](https://github.com/thangvq95/thangvq-digital-hub/commit/bbfca5b939a5fd5bbd4ba4fcb6d554d292741dd8))
+* cleanup package-lock.json from pr 60 ([c949a70](https://github.com/thangvq95/thangvq-digital-hub/commit/c949a70e2752e56560fa93786b66bc59cec84571))
+
 ## [1.3.10](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.9...v1.3.10) (2026-05-17)
 
 
