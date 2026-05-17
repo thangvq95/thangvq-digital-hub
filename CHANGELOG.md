@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.4](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.3...v1.3.4) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR [#35](https://github.com/thangvq95/thangvq-digital-hub/issues/35) review comments from Copilot ([#38](https://github.com/thangvq95/thangvq-digital-hub/issues/38)) ([c0912f6](https://github.com/thangvq95/thangvq-digital-hub/commit/c0912f69c796e60ec566e4f102a65cf9e45ccc38))
+
 ## [1.3.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.2...v1.3.3) (2026-05-17)
 
 
