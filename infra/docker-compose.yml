@@ -69,13 +69,11 @@ services:
     depends_on:
       - hermes-gateway
     ports:
-      - "9119:9119"
+      - "127.0.0.1:9119:9119"
     volumes:
       - ../:/app/repo
       - hermes_data:/root/.hermes
       - gitnexus_data:/root/.gitnexus
-      - ~/.ssh:/root/.ssh:ro
-      - /root/.config/gh:/root/.config/gh
     environment:
       - HOST=0.0.0.0
       - PORT=9119
