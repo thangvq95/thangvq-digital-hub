@@ -19,7 +19,7 @@ jobs:
           # Default to project directory on VPS, pull code and build
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
-            # Check if an active git process is holding the lock (max 5 minutes stale)
+            # Check if an active git process is holding the lock (based on age staleness heuristic > 5 minutes)
             if [ -f .git/index.lock ]; then
               FILE_AGE=$(stat -c %Y .git/index.lock 2>/dev/null)
               if [ -z "$FILE_AGE" ]; then
