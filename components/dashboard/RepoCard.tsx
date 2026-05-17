@@ -205,7 +205,7 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
         </span>
         {isScrapedToday() && repo.stars_growth && (
           <span style={{ color: "hsl(142, 71%, 55%)" }}>
-            ↑ {repo.stars_growth}
+            ↑ {repo.stars_growth.replace(/.*?\/svg>\s*/, '')}
           </span>
         )}
         {repo.language && <span>· {repo.language}</span>}
