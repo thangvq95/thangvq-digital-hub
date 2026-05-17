@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.13](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.12...v1.3.13) (2026-05-17)
+
+
+### Bug Fixes
+
+* prevent hermes infinite loop on PRs by adding guards and skipping non-CI failing/release PRs ([#66](https://github.com/thangvq95/thangvq-digital-hub/issues/66)) ([e15d236](https://github.com/thangvq95/thangvq-digital-hub/commit/e15d23688834a763f576242b8b1af5f8cf01e22d))
+
 ## [1.3.12](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.11...v1.3.12) (2026-05-17)
 
 
