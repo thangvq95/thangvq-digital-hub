@@ -25,8 +25,16 @@ RUN git config --global --add safe.directory '*' \
     && git config --global http.version HTTP/1.1
 
 # Install official Hermes CLI from NousResearch
-RUN curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash \
-    && /root/.hermes/venv/bin/python3 -m pip install fastapi uvicorn ptyprocess || /usr/local/lib/hermes-agent/venv/bin/python3 -m pip install fastapi uvicorn ptyprocess || echo "Could not find venv"
+RUN curl -fsSL https://raw.githubusercontent.com/NousResearch/hermes-agent/main/scripts/install.sh | bash
+
+# Install dashboard dependencies (fastapi, uvicorn, ptyprocess) inside the Hermes virtual environment using uv
+RUN if [ -d /usr/local/lib/hermes-agent/venv ]; then \
+      /root/.local/bin/uv pip install --python /usr/local/lib/hermes-agent/venv fastapi uvicorn ptyprocess; \
+    elif [ -d /root/.hermes/venv ]; then \
+      /root/.local/bin/uv pip install --python /root/.hermes/venv fastapi uvicorn ptyprocess; \
+    else \
+      echo "Error: Virtual environment not found!" && exit 1; \
+    fi
 
 # Copy the custom User-Agent monkeypatch into the virtual environment's site-packages to bypass Cloudflare WAF blocks on 9router
 # This ensures it is loaded by all python processes inside the venv, even if PYTHONPATH is cleared or ignored.
