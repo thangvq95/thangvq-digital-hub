@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.0...v1.3.1) (2026-05-17)
+
+
+### Bug Fixes
+
+* force hermes to use gh CLI first to start tool chain ([0f49821](https://github.com/thangvq95/thangvq-digital-hub/commit/0f4982176b6d1d3a351519a6f59a759af2dfb710))
+* force hermes to use gh CLI first to start tool chain ([901272c](https://github.com/thangvq95/thangvq-digital-hub/commit/901272ca62d905a0d8341e2ea593c50ca063f526))
+* force hermes to use gh CLI first to start tool chain ([a8410b3](https://github.com/thangvq95/thangvq-digital-hub/commit/a8410b36e0027cd502aabfb05b209aaa40af98f0))
+
 ## [1.3.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.2...v1.3.0) (2026-05-17)
 
 
