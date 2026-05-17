@@ -16,28 +16,31 @@ User → Cloudflare → Vercel (Next.js 16)
               PostgreSQL ← Hermes Agent (VPS)
 ```
 
-| Layer            | Tech                                  | Hosting                     |
-| ---------------- | ------------------------------------- | --------------------------- |
-| Frontend         | Next.js 16, Tailwind CSS v4, ShadcnUI | Vercel                      |
-| Backend API      | NestJS, TypeORM, PostgreSQL 16        | VPS (Docker)                |
-| AI Agent & Graph | Hermes + GitNexus MCP Server + Skills | VPS (Docker `ai-workspace`) |
-| DNS / Security   | Cloudflare WAF + Tunnel               | Cloudflare                  |
+| Layer            | Tech                                  | Hosting                       |
+| ---------------- | ------------------------------------- | ----------------------------- |
+| Frontend         | Next.js 16, Tailwind CSS v4, ShadcnUI | Vercel                        |
+| Backend API      | NestJS, TypeORM, PostgreSQL 16        | VPS (Docker)                  |
+| AI Agent & Graph | Hermes + GitNexus MCP Server + Skills | VPS (Docker `hermes-gateway`) |
+| DNS / Security   | Cloudflare WAF + Tunnel               | Cloudflare                    |
 
 ---
 
 ## System Flows
 
 ### 1. Data Sync & Agent Execution Flow
+
 ```text
 User/Cron → GitHub Issue → Hermes Webhook (VPS) → AI Task Execution → Git Commit & PR
 ```
 
 ### 2. Sentry Error Monitoring & Triage Flow
+
 ```text
 Next.js/NestJS Exception → Sentry → Backend Webhook → Auto-creates GitHub Issue → Trigger Hermes
 ```
 
 ### 3. CI/CD Orchestrated Deployment Flow
+
 ```text
 Merge to `main` → GitHub Actions
   ├─ 1. SSH to VPS → Pull Code → Build & Restart Backend (Docker Compose)
@@ -106,9 +109,8 @@ npx playwright test tests/portfolio.spec.ts --project=chromium
 │   └── dashboard/              # TechTrend dashboard components
 ├── lib/api/                    # Frontend API client + types
 ├── infra/
-│   ├── docker-compose.yml      # postgres + api + ai-workspace
+│   ├── docker-compose.yml      # postgres + api + hermes-gateway
 │   ├── .env                    # Secrets (gitignored — create manually)
-│   └── ai-developer-workspace/ # Hermes webhook listener (Docker)
 ├── .agents/skills/             # Superpowers AI skills (offline)
 ├── docs/
 │   ├── PRD.md                  # Product requirements
@@ -130,6 +132,7 @@ This project requires environment variables configured across GitHub, Vercel, an
 The production deployment relies on the following secrets stored in **GitHub Repository > Settings > Secrets and variables > Actions**:
 
 **VPS & Deployment Auth:**
+
 - `VPS_HOST`: IP address of the VPS.
 - `VPS_USERNAME`: SSH username (`root` or `thang`).
 - `VPS_SSH_KEY`: Private SSH key for accessing the VPS.
@@ -139,7 +142,7 @@ The production deployment relies on the following secrets stored in **GitHub Rep
 - `VERCEL_PROJECT_ID`: Vercel Project ID.
 
 **Backend / VPS Environment:** (Injected into `infra/.env` during deployment)
-- `WEBHOOK_SECRET`: HMAC secret for GitHub webhooks.
+
 - `SYNC_API_KEY`: API key for Hermes sync auth.
 - `POSTGRES_PASSWORD`: PostgreSQL database password.
 - `PORT`: Backend API port (e.g., `3001`).
@@ -148,10 +151,12 @@ The production deployment relies on the following secrets stored in **GitHub Rep
 - `CLOUDFLARE_TUNNEL_TOKEN`: Cloudflare Tunnel Token for exposing the VPS securely.
 
 **Sentry (Backend):**
+
 - `SENTRY_DSN_BE`: Sentry DSN for NestJS.
 - `SENTRY_PROJECT_BE`: Sentry Project name.
 
 **AI Routing / LLM:**
+
 - `NINE_ROUTER_URL`, `NINE_ROUTER_MODEL`, `NINE_ROUTER_API_KEY`, `OPENAI_API_KEY`
 
 ### 2. Frontend (Vercel)
@@ -162,6 +167,7 @@ Configure these in the **Vercel Project Settings > Environment Variables**:
 - `NEXT_PUBLIC_ENV`: `production`.
 
 **Sentry (Frontend):**
+
 - `NEXT_PUBLIC_SENTRY_DSN`: Sentry DSN for Next.js.
 - `SENTRY_ORG`: Sentry Organization slug.
 - `SENTRY_PROJECT`: Sentry Project name.
@@ -170,12 +176,12 @@ Configure these in the **Vercel Project Settings > Environment Variables**:
 ### 3. VPS Configuration (`infra/.env`)
 
 For local Docker-Compose testing, or manual setup, create `infra/.env` from `infra/.env.example`.
-*Note: In production, the CI/CD pipeline automatically populates `infra/.env` using GitHub Secrets (see above). You do not need to manually configure the `.env` file on the VPS if deploying via GitHub Actions.*
+_Note: In production, the CI/CD pipeline automatically populates `infra/.env` using GitHub Secrets (see above). You do not need to manually configure the `.env` file on the VPS if deploying via GitHub Actions._
 
 Generate secrets manually if needed:
 
 ```bash
-openssl rand -hex 32   # for SYNC_API_KEY, WEBHOOK_SECRET
+openssl rand -hex 32   # for SYNC_API_KEY
 openssl rand -hex 16   # for POSTGRES_PASSWORD
 ```
 
@@ -197,12 +203,12 @@ To prevent deployment race conditions between the Frontend (Vercel) and Backend 
 
 When code is merged into `main`:
 
-
 1. **Backend First:** GitHub Actions SSHes into the VPS, pulls the latest code, and builds the API using Docker Compose. It automatically recreates the `.env` file from GitHub Secrets.
 2. **Health Check:** The pipeline waits and pings `/api/repos` until the API returns HTTP 200 OK.
 3. **Frontend Second:** Only after the API is healthy, the pipeline triggers Vercel to build the Frontend directly using the Vercel CLI (bypassing the ignored build step).
 
-*Note: Vercel automatic deployments for the `main` branch are disabled via the "Ignored Build Step" setting to allow this pipeline to act as the sole orchestrator. The Vercel CLI action bypasses this ignore rule.*
+_Note: Vercel automatic deployments for the `main` branch are disabled via the "Ignored Build Step" setting to allow this pipeline to act as the sole orchestrator. The Vercel CLI action bypasses this ignore rule._
+
 ---
 
 ## Release Process (Automated)

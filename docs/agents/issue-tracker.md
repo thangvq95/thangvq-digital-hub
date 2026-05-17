@@ -1,17 +1,18 @@
 # Issue Tracker
 
-This repo tracks issues using **GitHub Issues** and **GitHub Projects**. 
+This repo tracks issues using **GitHub Issues** and **GitHub Projects**.
 
 GitHub is not just for human developers; it serves as the **Runtime State and Task DAG Orchestrator** for the autonomous AI architecture.
 
 ## The Issue Pipeline
 
 Issues can be created from multiple sources:
+
 1. **Automated Sentry Errors**: Sentry alerts hit the NestJS backend (`/webhooks/sentry`), which automatically creates a GitHub Issue.
 2. **Human Definition**: Using Spec Kit or manually creating an issue on GitHub.
 3. **Automated Testing**: Playwright tests failing could theoretically generate issues.
 
-Regardless of the source, once an issue is created on GitHub, it triggers the Hermes Agent webhook (`infra/ai-developer-workspace/listener.py`).
+Regardless of the source, once an issue is created on GitHub, it triggers the Hermes Agent polling orchestrator.
 
 ## Reading
 
@@ -22,6 +23,6 @@ Regardless of the source, once an issue is created on GitHub, it triggers the He
 ## Writing
 
 - When creating issues, include a clear title prefix, context/links, and a checklist.
-- **Crucial**: Always apply the correct **Triage Labels** (e.g., `bug`, `feature`, `plan`). The Hermes `listener.py` relies strictly on these labels to determine which skill to execute.
+- **Crucial**: Always apply the correct **Triage Labels** (e.g., `bug`, `feature`, `plan`). The Hermes orchestrator relies strictly on these labels to determine which skill to execute.
 
 See `docs/agents/triage-labels.md` for routing details.

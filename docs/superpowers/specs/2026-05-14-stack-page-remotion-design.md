@@ -62,14 +62,14 @@ Subtitle: "A Developer Intelligence Platform built with AI-first autonomous work
 
 Interactive card grid showing every technology used. Cards organized by category with SVG icons.
 
-| Category | Technologies |
-|---|---|
-| **Frontend** | Next.js 16, React, TypeScript, Tailwind CSS v4, ShadcnUI |
-| **Backend** | NestJS, TypeORM, PostgreSQL 16 |
-| **Infrastructure** | Docker, Docker Compose, DigitalOcean VPS, Vercel, Cloudflare (WAF + Tunnel) |
-| **AI & Automation** | Hermes Agent, GitNexus, 9Router, Superpowers Skills, Remotion |
-| **CI/CD** | GitHub Actions, Husky, release-please, Conventional Commits, Playwright |
-| **Observability** | Sentry, GitHub Issues, GitHub Projects |
+| Category            | Technologies                                                                |
+| ------------------- | --------------------------------------------------------------------------- |
+| **Frontend**        | Next.js 16, React, TypeScript, Tailwind CSS v4, ShadcnUI                    |
+| **Backend**         | NestJS, TypeORM, PostgreSQL 16                                              |
+| **Infrastructure**  | Docker, Docker Compose, DigitalOcean VPS, Vercel, Cloudflare (WAF + Tunnel) |
+| **AI & Automation** | Hermes Agent, GitNexus, 9Router, Superpowers Skills, Remotion               |
+| **CI/CD**           | GitHub Actions, Husky, release-please, Conventional Commits, Playwright     |
+| **Observability**   | Sentry, GitHub Issues, GitHub Projects                                      |
 
 Each card: icon + name + role. Click to expand: version, why chosen, external link.
 
@@ -77,27 +77,27 @@ Each card: icon + name + role. Click to expand: version, why chosen, external li
 
 **Remotion Video (45s, 30fps = 1350 frames):**
 
-| Time | Animation |
-|---|---|
-| 0-5s | Title card "ThangVQ Digital Hub — Architecture" fades in |
-| 5-15s | User icon → arrow to Cloudflare shield → arrow to Vercel → "Frontend: Next.js 16" text |
+| Time   | Animation                                                                                        |
+| ------ | ------------------------------------------------------------------------------------------------ |
+| 0-5s   | Title card "ThangVQ Digital Hub — Architecture" fades in                                         |
+| 5-15s  | User icon → arrow to Cloudflare shield → arrow to Vercel → "Frontend: Next.js 16" text           |
 | 15-25s | Arrow to NestJS API → PostgreSQL cylinder → Docker outline wraps both → "Backend: Docker on VPS" |
-| 25-35s | Hermes Agent box appears → arrows to GitHub (sync) and 9Router (LLM) → GitNexus brain connects |
-| 35-45s | Full diagram visible, lines pulse green, "100% Autonomous" badge |
+| 25-35s | Hermes Agent box appears → arrows to GitHub (sync) and 9Router (LLM) → GitNexus brain connects   |
+| 35-45s | Full diagram visible, lines pulse green, "100% Autonomous" badge                                 |
 
-**Static content below:** Expandable Docker Compose services breakdown (5 containers: postgres, api, ai-workspace, hermes-gateway, cloudflared)
+**Static content below:** Expandable Docker Compose services breakdown (4 containers: postgres, api, hermes-gateway, cloudflared)
 
 ### Section 3: AI & Autonomous Workflows (+ Remotion Video #2)
 
 **Remotion Video (40s) — "Hermes Agent Lifecycle":**
 
-| Time | Animation |
-|---|---|
-| 0-5s | Title "Hermes — Autonomous AI Agent" |
-| 5-15s | GitHub webhook → listener.py → HMAC verify ✓ → SQLite dedup |
+| Time   | Animation                                                             |
+| ------ | --------------------------------------------------------------------- |
+| 0-5s   | Title "Hermes — Autonomous AI Agent"                                  |
+| 5-15s  | GitHub polling → SQLite dedup                                         |
 | 15-25s | Git worktree branch → Hermes coding → Playwright tests → green checks |
-| 25-35s | `git push` → PR card → "Auto-fix complete" |
-| 35-40s | Cronjob clocks: "8AM/8PM Trending Sync" + "10AM Release Monitor" |
+| 25-35s | `git push` → PR card → "Auto-fix complete"                            |
+| 35-40s | Cronjob clocks: "8AM/8PM Trending Sync" + "10AM Release Monitor"      |
 
 **Static content:** Cards for Hermes, GitNexus, 9Router, Superpowers Skills with role descriptions
 
@@ -105,13 +105,13 @@ Each card: icon + name + role. Click to expand: version, why chosen, external li
 
 **Remotion Video (35s) — "From Commit to Production":**
 
-| Time | Animation |
-|---|---|
-| 0-5s | Title "CI/CD Pipeline" |
-| 5-12s | Developer types → Husky catches → lint-staged → Conventional Commit format |
-| 12-20s | `develop` branch → PR to `main` → GitHub Actions spins |
+| Time   | Animation                                                                    |
+| ------ | ---------------------------------------------------------------------------- |
+| 0-5s   | Title "CI/CD Pipeline"                                                       |
+| 5-12s  | Developer types → Husky catches → lint-staged → Conventional Commit format   |
+| 12-20s | `develop` branch → PR to `main` → GitHub Actions spins                       |
 | 20-28s | "Backend Deploy (SSH → VPS)" → "Health Check ✓" → "Frontend Deploy (Vercel)" |
-| 28-35s | release-please bot → version bump → GitHub Release `v1.x.x` → CHANGELOG |
+| 28-35s | release-please bot → version bump → GitHub Release `v1.x.x` → CHANGELOG      |
 
 **Static content:** Cards for GitHub Actions, Husky, release-please, Conventional Commits, Playwright
 
@@ -119,24 +119,24 @@ Each card: icon + name + role. Click to expand: version, why chosen, external li
 
 **Remotion Video (40s) — Dual-lane "Data Pipelines":**
 
-| Time | Animation |
-|---|---|
-| 0-5s | Split title "Data Pipelines" |
-| 5-20s | **Left lane:** Clock "8AM" → Hermes scrapes Trending → repos flow into upsert API → DB → Dashboard "NEW" badges |
+| Time   | Animation                                                                                                                 |
+| ------ | ------------------------------------------------------------------------------------------------------------------------- |
+| 0-5s   | Split title "Data Pipelines"                                                                                              |
+| 5-20s  | **Left lane:** Clock "8AM" → Hermes scrapes Trending → repos flow into upsert API → DB → Dashboard "NEW" badges           |
 | 20-35s | **Right lane:** Clock "10AM" → Favorite repos → GitHub Releases API check → tag compare → `has_new_release` → badge glows |
-| 35-40s | Both lanes merge into polished TechTrend dashboard view |
+| 35-40s | Both lanes merge into polished TechTrend dashboard view                                                                   |
 
 ### Section 6: Observability & Error Recovery (+ Remotion Video #5)
 
 **Remotion Video (30s) — "Self-Healing":**
 
-| Time | Animation |
-|---|---|
-| 0-5s | Title "Self-Healing — Error to Fix in Minutes" |
-| 5-12s | Red error burst → Sentry catches → webhook fires |
-| 12-20s | NestJS handler → auto-creates GitHub Issue with stack trace |
+| Time   | Animation                                                         |
+| ------ | ----------------------------------------------------------------- |
+| 0-5s   | Title "Self-Healing — Error to Fix in Minutes"                    |
+| 5-12s  | Red error burst → Sentry catches → webhook fires                  |
+| 12-20s | NestJS handler → auto-creates GitHub Issue with stack trace       |
 | 20-27s | Hermes picks up → GitNexus locates code → fix → Playwright passes |
-| 27-30s | PR merged → issue closed → green cascade |
+| 27-30s | PR merged → issue closed → green cascade                          |
 
 **Visual style:** Red-to-green gradient transition
 
@@ -146,15 +146,15 @@ Each card: icon + name + role. Click to expand: version, why chosen, external li
 
 ### Shared Components (reusable across all 5 videos)
 
-| Component | Purpose |
-|---|---|
-| `GlassCard` | Glassmorphism card with backdrop-blur, used for tech nodes |
-| `AnimatedArrow` | SVG path that draws itself from point A to B with customizable timing |
-| `PulseEffect` | Green glow pulse animation for connection lines |
-| `TechIcon` | Renders technology logos/icons (SVG) at specified positions |
-| `TimelineStep` | Horizontal step indicator for pipeline animations |
-| `TypewriterText` | Text that types itself character by character |
-| `FadeIn` | Wrapper for opacity + translateY entrance animation |
+| Component        | Purpose                                                               |
+| ---------------- | --------------------------------------------------------------------- |
+| `GlassCard`      | Glassmorphism card with backdrop-blur, used for tech nodes            |
+| `AnimatedArrow`  | SVG path that draws itself from point A to B with customizable timing |
+| `PulseEffect`    | Green glow pulse animation for connection lines                       |
+| `TechIcon`       | Renders technology logos/icons (SVG) at specified positions           |
+| `TimelineStep`   | Horizontal step indicator for pipeline animations                     |
+| `TypewriterText` | Text that types itself character by character                         |
+| `FadeIn`         | Wrapper for opacity + translateY entrance animation                   |
 
 ### File Structure
 
@@ -206,12 +206,18 @@ lib/
 ```typescript
 interface TechItem {
   name: string;
-  icon: string;        // Simple Icons slug or Lucide icon name
-  role: string;        // One-line description
-  category: 'frontend' | 'backend' | 'infrastructure' | 'ai' | 'cicd' | 'observability';
-  url: string;         // External link
-  version?: string;    // e.g., "16", "v4"
-  why?: string;        // Why this technology was chosen (expandable)
+  icon: string; // Simple Icons slug or Lucide icon name
+  role: string; // One-line description
+  category:
+    | "frontend"
+    | "backend"
+    | "infrastructure"
+    | "ai"
+    | "cicd"
+    | "observability";
+  url: string; // External link
+  version?: string; // e.g., "16", "v4"
+  why?: string; // Why this technology was chosen (expandable)
 }
 ```
 
@@ -221,12 +227,12 @@ No database changes needed. All data is static/hardcoded.
 
 ## Responsive Design
 
-| Breakpoint | Layout |
-|---|---|
-| **Mobile (375px)** | Video full-width, cards 1-column, videos lazy-loaded |
-| **Tablet (768px)** | Video full-width, cards 2-column grid |
-| **Desktop (1024px)** | Side-by-side: video left (60%) + cards right (40%) |
-| **Wide (1440px)** | Centered max-width container, same as 1024 layout |
+| Breakpoint           | Layout                                               |
+| -------------------- | ---------------------------------------------------- |
+| **Mobile (375px)**   | Video full-width, cards 1-column, videos lazy-loaded |
+| **Tablet (768px)**   | Video full-width, cards 2-column grid                |
+| **Desktop (1024px)** | Side-by-side: video left (60%) + cards right (40%)   |
+| **Wide (1440px)**    | Centered max-width container, same as 1024 layout    |
 
 Mobile optimization: Remotion Player loads only when scrolled into view (Intersection Observer + `React.lazy`).
 
@@ -245,11 +251,11 @@ Mobile optimization: Remotion Player loads only when scrolled into view (Interse
 
 ## Dependencies Added
 
-| Package | Type | Purpose |
-|---|---|---|
-| `remotion` | production | Core Remotion framework |
-| `@remotion/player` | production | Embed compositions as `<Player>` in Next.js |
-| `@remotion/cli` | devDependency | Remotion Studio for development preview |
+| Package            | Type          | Purpose                                     |
+| ------------------ | ------------- | ------------------------------------------- |
+| `remotion`         | production    | Core Remotion framework                     |
+| `@remotion/player` | production    | Embed compositions as `<Player>` in Next.js |
+| `@remotion/cli`    | devDependency | Remotion Studio for development preview     |
 
 Already installed by user on 2026-05-14.
 

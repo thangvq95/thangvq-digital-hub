@@ -8,11 +8,14 @@ RUN apt-get update && apt-get install -y curl git gnupg build-essential \
     && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
     && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list \
-    && apt-get update && apt-get install -y nodejs gh pipx ripgrep ffmpeg \
+    && apt-get update && apt-get install -y nodejs gh pipx ripgrep ffmpeg unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install GitNexus as the global codebase knowledge graph MCP server
 RUN npm install -g gitnexus
+
+# Install Composio CLI globally
+RUN curl -fsSL https://composio.dev/install | bash
 
 
 
@@ -34,13 +37,9 @@ COPY infra/patches/sitecustomize.py /usr/local/lib/hermes-agent/venv/lib/python3
 ENV PATH="/root/.local/bin:/root/.cargo/bin:$PATH"
 
 WORKDIR /app
-COPY infra/ai-developer-workspace/listener.py /app/listener.py
 
 ENV BASE_REPO=/app/repo
 ENV WORKTREES_DIR=/app/worktrees
 ENV DEDUP_DB=/app/data/ai-workspace.db
-ENV PORT=8080
 
-EXPOSE 8080
-
-CMD ["python", "/app/listener.py"]
+CMD ["hermes", "dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--insecure"]
