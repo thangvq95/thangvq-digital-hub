@@ -37,10 +37,10 @@ def _ensure_db():
 
 
 def _seen_before(event_id: str) -> bool:
-    if ALLOW_REDELIVERY:
-        return False
     if not event_id:
         return True
+    if ALLOW_REDELIVERY:
+        return False
     conn = sqlite3.connect(DEDUP_DB)
     with conn:
         row = conn.execute(
@@ -72,8 +72,25 @@ def _verify_signature(body: bytes, signature: str) -> bool:
     return hmac.compare_digest(expected, signature)
 
 
+def _format_cmd_for_log(cmd: list[str]) -> str:
+    sanitized = cmd.copy()
+
+    # Redact headless Hermes prompt payload (can be large/user-derived)
+    if sanitized and os.path.basename(sanitized[0]) == os.path.basename(HERMES_BIN):
+        if "-z" in sanitized:
+            idx = sanitized.index("-z")
+            if idx + 1 < len(sanitized):
+                prompt = sanitized[idx + 1]
+                sanitized[idx + 1] = f"<redacted:{len(prompt)} chars>"
+
+    # Keep logs readable
+    max_arg_len = 120
+    truncated = [arg if len(arg) <= max_arg_len else f"{arg[:max_arg_len]}..." for arg in sanitized]
+    return " ".join(truncated)
+
+
 def _run(cmd: list[str], cwd: str | None = None):
-    print(f"  -> Executing: {' '.join(cmd)}")
+    print(f"  -> Executing: {_format_cmd_for_log(cmd)}")
     subprocess.run(cmd, cwd=cwd, check=True)
 
 
