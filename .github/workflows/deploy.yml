@@ -42,7 +42,7 @@ jobs:
             # Set secure permissions
             chmod 600 .env
             
-            docker compose up --build -d postgres api
+            docker compose up --build -d postgres api ai-workspace hermes-gateway
 
       - name: Health Check API
         # Wait up to 60s, continuously pinging the API until it returns 200 OK
