@@ -19,7 +19,13 @@ jobs:
           # Default to project directory on VPS, pull code and build
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
-            find .git/index.lock -mmin +5 -delete 2>/dev/null || true
+            if [ -f .git/index.lock ]; then
+              if fuser .git/index.lock >/dev/null 2>&1 || lsof .git/index.lock >/dev/null 2>&1; then
+                echo "Error: Active git process detected for this project. Aborting deploy."
+                exit 1
+              fi
+              rm -f .git/index.lock
+            fi
             git fetch origin
             git reset --hard origin/main
             cd infra
