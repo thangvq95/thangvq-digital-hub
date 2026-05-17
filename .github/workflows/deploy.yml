@@ -56,7 +56,11 @@ jobs:
             # Set secure permissions
             chmod 600 .env
             
-            docker compose up --build -d postgres api hermes-gateway hermes-dashboard
+            # Stop and clean up old/orphan containers to prevent Docker name registration conflicts
+            docker compose down --remove-orphans
+            
+            # Rebuild and start all services
+            docker compose up --build -d postgres api hermes-gateway hermes-dashboard cloudflared
 
       - name: Health Check API
         # Wait up to 60s, continuously pinging the API until it returns 200 OK
