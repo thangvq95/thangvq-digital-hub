@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.18](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.17...v1.3.18) (2026-05-17)
+
+
+### Bug Fixes
+
+* increase command timeout for vps deploy to 30m ([#76](https://github.com/thangvq95/thangvq-digital-hub/issues/76)) ([86b3208](https://github.com/thangvq95/thangvq-digital-hub/commit/86b3208fe5cb0a030212b330f167a94bfdfec133))
+
 ## [1.3.17](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.16...v1.3.17) (2026-05-17)
 
 
