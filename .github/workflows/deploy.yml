@@ -25,7 +25,6 @@ jobs:
             
             # Automatically create .env file from GitHub Secrets
             rm -f .env
-            echo "WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}" >> .env
             echo "SYNC_API_KEY=${{ secrets.SYNC_API_KEY }}" >> .env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
             echo "PORT=${{ secrets.PORT }}" >> .env
@@ -42,7 +41,7 @@ jobs:
             # Set secure permissions
             chmod 600 .env
             
-            docker compose up --build -d postgres api ai-workspace hermes-gateway
+            docker compose up --build -d postgres api hermes-gateway
 
       - name: Health Check API
         # Wait up to 60s, continuously pinging the API until it returns 200 OK
