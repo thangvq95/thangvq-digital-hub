@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.5](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.4...v1.3.5) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR 41 review comments for index.lock handling and changelog ([d46d431](https://github.com/thangvq95/thangvq-digital-hub/commit/d46d431d30fa2be66824672c07ae4320210411af))
+* address PR 41 review comments for index.lock handling and changelog ([588796c](https://github.com/thangvq95/thangvq-digital-hub/commit/588796c8cc158853a3603f190d9cfcab6be356b0))
+
 ## [1.3.4](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.3...v1.3.4) (2026-05-17)
 
 
