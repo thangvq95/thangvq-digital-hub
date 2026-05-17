@@ -34,46 +34,10 @@ services:
     depends_on:
       - postgres
 
-  ai-workspace:
-    build:
-      context: ../
-      dockerfile: infra/ai-developer-workspace/Dockerfile
-    container_name: ai-developer-workspace
-    restart: always
-    ports:
-      - "127.0.0.1:8085:8080"
-    volumes:
-      # Mount the host directory where all your projects live (for multi-repo)
-      # On VPS, change this to where you clone your repos, e.g., /var/www or /opt
-      - ../:/app/repo
-      # Mount data volume to store the SQLite deduplication DB
-      - listener_data:/app/data
-      # Use Named Volumes for AI Brains (persistent on VPS)
-      - hermes_data:/root/.hermes
-      - gitnexus_data:/root/.gitnexus
-      # Mount SSH keys from the Host so the bot can push code to GitHub (if needed)
-      - ~/.ssh:/root/.ssh:ro
-      # Mount GitHub CLI config (if using `gh auth login` instead of SSH)
-      - ~/.config/gh:/root/.config/gh:ro
-    environment:
-      - WEBHOOK_SECRET=${WEBHOOK_SECRET}
-      - BASE_REPO=${BASE_REPO:-/app/repo}
-      - WORKTREES_DIR=${WORKTREES_DIR:-/app/worktrees}
-      - DEDUP_DB=${DEDUP_DB:-/app/data/ai-workspace.db}
-      - ALLOW_REDELIVERY=${ALLOW_REDELIVERY:-false}
-      - PORT=8080
-      - GH_TOKEN=${GH_PAT}
-      - HERMES_BIN=${HERMES_BIN:-hermes}
-      - NINE_ROUTER_API_KEY=${NINE_ROUTER_API_KEY}
-      - NINE_ROUTER_URL=${NINE_ROUTER_URL}
-      - NINE_ROUTER_MODEL=${NINE_ROUTER_MODEL}
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - PYTHONPATH=/app/repo/infra/patches
-
   hermes-gateway:
     build:
       context: ../
-      dockerfile: infra/ai-developer-workspace/Dockerfile
+      dockerfile: infra/hermes-gateway/Dockerfile
     container_name: hermes-gateway
     restart: always
     volumes:
@@ -98,10 +62,8 @@ services:
     command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
     depends_on:
       - api
-      - ai-workspace
 
 volumes:
   pgdata:
-  listener_data:
   hermes_data:
   gitnexus_data:
