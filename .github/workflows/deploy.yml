@@ -27,7 +27,7 @@ jobs:
                 echo "Deploy failed. Please check VPS git process manually."
                 exit 1
               fi
-              LOCK_AGE=$(expr $(date +%s) - $FILE_AGE)
+              LOCK_AGE=$(expr $(date +%s) - "$FILE_AGE")
               if [ "$LOCK_AGE" -gt 300 ]; then
                 echo "Removing stale index.lock (age: ${LOCK_AGE}s)"
                 rm -f .git/index.lock
