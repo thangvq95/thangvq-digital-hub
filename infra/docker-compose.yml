@@ -60,6 +60,7 @@ services:
       - BASE_REPO=${BASE_REPO:-/app/repo}
       - WORKTREES_DIR=${WORKTREES_DIR:-/app/worktrees}
       - DEDUP_DB=${DEDUP_DB:-/app/data/ai-workspace.db}
+      - ALLOW_REDELIVERY=${ALLOW_REDELIVERY:-false}
       - PORT=8080
       - GH_TOKEN=${GH_PAT}
       - HERMES_BIN=${HERMES_BIN:-hermes}

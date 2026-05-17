@@ -15,6 +15,7 @@ HERMES_BIN = os.environ.get("HERMES_BIN", "hermes")
 WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "")
 DEDUP_DB = os.environ.get("DEDUP_DB", "/home/thang/.cache/ai-workspace.db")
 PORT = int(os.environ.get("PORT", "8080"))
+ALLOW_REDELIVERY = os.environ.get("ALLOW_REDELIVERY", "false").lower() == "true"
 
 EVENTS_ALLOWLIST = {"check_run", "check_suite", "pull_request", "issues", "push"}
 ACTION_ALLOWLIST = {"completed", "rerequested", "requested", "synchronize", "opened", "reopened", "labeled"}
@@ -38,6 +39,8 @@ def _ensure_db():
 def _seen_before(event_id: str) -> bool:
     if not event_id:
         return True
+    if ALLOW_REDELIVERY:
+        return False
     conn = sqlite3.connect(DEDUP_DB)
     with conn:
         row = conn.execute(
@@ -69,7 +72,25 @@ def _verify_signature(body: bytes, signature: str) -> bool:
     return hmac.compare_digest(expected, signature)
 
 
+def _format_cmd_for_log(cmd: list[str]) -> str:
+    sanitized = cmd.copy()
+
+    # Redact headless Hermes prompt payload (can be large/user-derived)
+    if sanitized and os.path.basename(sanitized[0]) == os.path.basename(HERMES_BIN):
+        if "-z" in sanitized:
+            idx = sanitized.index("-z")
+            if idx + 1 < len(sanitized):
+                prompt = sanitized[idx + 1]
+                sanitized[idx + 1] = f"<redacted:{len(prompt)} chars>"
+
+    # Keep logs readable
+    max_arg_len = 120
+    truncated = [arg if len(arg) <= max_arg_len else f"{arg[:max_arg_len]}..." for arg in sanitized]
+    return " ".join(truncated)
+
+
 def _run(cmd: list[str], cwd: str | None = None):
+    print(f"  -> Executing: {_format_cmd_for_log(cmd)}")
     subprocess.run(cmd, cwd=cwd, check=True)
 
 
@@ -243,13 +264,28 @@ class Handler(BaseHTTPRequestHandler):
             return
 
         def _process_background():
+            worktree = None
             try:
-                # Use delivery ID (unique GitHub Webhook ID) as run_id
+                print(f"\n[{delivery}] [PHASE 1] Starting background processing for ref '{ref}' with skill '{skill}'")
+                
+                print(f"[{delivery}] [PHASE 2] Creating git worktree...")
                 worktree = _create_worktree(ref, delivery)
+                print(f"[{delivery}] [PHASE 2] Worktree created at: {worktree}")
+                
+                print(f"[{delivery}] [PHASE 3] Running Hermes agent...")
                 _run_hermes(worktree, skill, target_desc)
-                _remove_worktree(worktree)
+                print(f"[{delivery}] [PHASE 3] Hermes agent finished successfully.")
+                
             except Exception as e:
-                print(f"Background processing error for {delivery}: {e}")
+                print(f"[{delivery}] [ERROR] Background processing failed: {e}")
+            finally:
+                if worktree:
+                    print(f"[{delivery}] [PHASE 4] Cleaning up worktree: {worktree}")
+                    try:
+                        _remove_worktree(worktree)
+                        print(f"[{delivery}] [PHASE 4] Cleanup complete.\n")
+                    except Exception as cleanup_error:
+                        print(f"[{delivery}] [ERROR] Worktree cleanup failed: {cleanup_error}\n")
 
         # Run Hermes in a background thread to avoid blocking the HTTP Server
         threading.Thread(target=_process_background, daemon=True).start()
