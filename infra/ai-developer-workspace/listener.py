@@ -92,8 +92,9 @@ def _remove_worktree(worktree_path: str):
 
 
 def _run_hermes(worktree_path: str, skill: str, target_desc: str):
-    # Skills are directly committed to the repo, so the cloned worktree already has them available
-    _run([HERMES_BIN, "-w", worktree_path, "-s", skill, "-c", target_desc])
+    # Run hermes in oneshot mode (-z) with the given skill (-s).
+    # We set cwd to the worktree so hermes operates on the isolated code.
+    _run([HERMES_BIN, "-s", skill, "-z", target_desc], cwd=worktree_path)
 
 
 def _extract_pr_number(payload: dict) -> int | None:
