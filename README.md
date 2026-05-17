@@ -16,12 +16,12 @@ User → Cloudflare → Vercel (Next.js 16)
               PostgreSQL ← Hermes Agent (VPS)
 ```
 
-| Layer            | Tech                                  | Hosting                     |
-| ---------------- | ------------------------------------- | --------------------------- |
-| Frontend         | Next.js 16, Tailwind CSS v4, ShadcnUI | Vercel                      |
-| Backend API      | NestJS, TypeORM, PostgreSQL 16        | VPS (Docker)                |
-| AI Agent & Graph | Hermes + GitNexus MCP Server + Skills | VPS (Docker `ai-workspace`) |
-| DNS / Security   | Cloudflare WAF + Tunnel               | Cloudflare                  |
+| Layer            | Tech                                  | Hosting                       |
+| ---------------- | ------------------------------------- | ----------------------------- |
+| Frontend         | Next.js 16, Tailwind CSS v4, ShadcnUI | Vercel                        |
+| Backend API      | NestJS, TypeORM, PostgreSQL 16        | VPS (Docker)                  |
+| AI Agent & Graph | Hermes + GitNexus MCP Server + Skills | VPS (Docker `hermes-gateway`) |
+| DNS / Security   | Cloudflare WAF + Tunnel               | Cloudflare                    |
 
 ---
 
@@ -109,7 +109,7 @@ npx playwright test tests/portfolio.spec.ts --project=chromium
 │   └── dashboard/              # TechTrend dashboard components
 ├── lib/api/                    # Frontend API client + types
 ├── infra/
-│   ├── docker-compose.yml      # postgres + api + ai-workspace
+│   ├── docker-compose.yml      # postgres + api + hermes-gateway
 │   ├── .env                    # Secrets (gitignored — create manually)
 ├── .agents/skills/             # Superpowers AI skills (offline)
 ├── docs/

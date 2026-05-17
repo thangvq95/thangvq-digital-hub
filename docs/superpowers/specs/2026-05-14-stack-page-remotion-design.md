@@ -85,7 +85,7 @@ Each card: icon + name + role. Click to expand: version, why chosen, external li
 | 25-35s | Hermes Agent box appears → arrows to GitHub (sync) and 9Router (LLM) → GitNexus brain connects   |
 | 35-45s | Full diagram visible, lines pulse green, "100% Autonomous" badge                                 |
 
-**Static content below:** Expandable Docker Compose services breakdown (5 containers: postgres, api, ai-workspace, hermes-gateway, cloudflared)
+**Static content below:** Expandable Docker Compose services breakdown (4 containers: postgres, api, hermes-gateway, cloudflared)
 
 ### Section 3: AI & Autonomous Workflows (+ Remotion Video #2)
 
