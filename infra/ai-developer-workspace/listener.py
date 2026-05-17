@@ -137,7 +137,7 @@ def _determine_skill_and_target(event: str, payload: dict) -> tuple[str, str] | 
     if event in ("check_run", "check_suite", "pull_request"):
         pr_number = _extract_pr_number(payload)
         if pr_number:
-            return "gh-fix-ci", f"fix PR {pr_number}" + headless_prompt
+            return "gh-fix-ci", f"Fix PR {pr_number}. FIRST, view the PR details using 'gh pr view {pr_number}'. THEN proceed." + headless_prompt
             
     elif event == "issues":
         issue = payload.get("issue", {})
@@ -145,14 +145,17 @@ def _determine_skill_and_target(event: str, payload: dict) -> tuple[str, str] | 
         if issue_number:
             labels = [l.get("name", "").lower() for l in issue.get("labels", [])]
             
+            # Explicitly force the LLM to use the gh CLI tool so it doesn't just exit with a text response
+            base_prompt = f"FIRST, use the 'gh issue view {issue_number}' command to read the issue description. THEN, "
+            
             if "bug" in labels or "sentry" in labels:
-                return "diagnose", f"fix bug in issue #{issue_number}" + headless_prompt
+                return "diagnose", base_prompt + f"fix the bug in issue #{issue_number}." + headless_prompt
             elif "feature" in labels or "enhancement" in labels:
-                return "to-prd", f"implement feature for issue #{issue_number}" + headless_prompt
+                return "to-prd", base_prompt + f"implement the feature for issue #{issue_number}." + headless_prompt
             elif "plan" in labels:
-                return "writing-plans", f"create plan for issue #{issue_number}" + headless_prompt
+                return "writing-plans", base_prompt + f"create a plan for issue #{issue_number}." + headless_prompt
             else:
-                return "triage", f"triage issue #{issue_number}" + headless_prompt
+                return "triage", base_prompt + f"triage issue #{issue_number}." + headless_prompt
                 
     return None, None
 
