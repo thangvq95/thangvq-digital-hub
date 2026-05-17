@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.0...v1.2.1) (2026-05-17)
+
+
+### Bug Fixes
+
+* correct hermes CLI arguments in listener ([76c784b](https://github.com/thangvq95/thangvq-digital-hub/commit/76c784b3e604aa939542013801c2ad16e5e2401d))
+* correct hermes CLI arguments in listener ([7460bc7](https://github.com/thangvq95/thangvq-digital-hub/commit/7460bc7457b20165937e1516553faaee442a5f16))
+* correct hermes CLI arguments in listener ([dc9cc98](https://github.com/thangvq95/thangvq-digital-hub/commit/dc9cc981b0d837870e903d87af1eaa4121a1e852))
+
 ## [1.2.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.1.0...v1.2.0) (2026-05-15)
 
 
