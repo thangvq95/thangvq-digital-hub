@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.3.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.2...v1.3.0) (2026-05-17)
+
+
+### Features
+
+* add headless prompt to hermes targets to prevent blocking ([71f631d](https://github.com/thangvq95/thangvq-digital-hub/commit/71f631d6ef570b65fe4f548d652d9b42c867ea3d))
+* add headless prompt to hermes targets to prevent blocking ([c15988d](https://github.com/thangvq95/thangvq-digital-hub/commit/c15988de6097e7d55110823d8acc97e743c60124))
+* add headless prompt to hermes targets to prevent blocking ([3167f1a](https://github.com/thangvq95/thangvq-digital-hub/commit/3167f1aa98c59c7785c63e2ed88b557531d374ec))
+
 ## [1.2.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.1...v1.2.2) (2026-05-17)
 
 
