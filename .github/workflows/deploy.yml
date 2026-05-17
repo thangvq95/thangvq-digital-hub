@@ -19,7 +19,17 @@ jobs:
           # Default to project directory on VPS, pull code and build
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
-            rm -f .git/index.lock
+            # Check if an active git process is holding the lock (max 5 minutes stale)
+            if [ -f .git/index.lock ]; then
+              LOCK_AGE=$(expr $(date +%s) - $(stat -c %Y .git/index.lock 2>/dev/null || echo $(date +%s)))
+              if [ $LOCK_AGE -gt 300 ]; then
+                echo "Removing stale index.lock (age: ${LOCK_AGE}s)"
+                rm -f .git/index.lock
+              else
+                echo "Git lock is fresh (${LOCK_AGE}s). Assuming active git process."
+                exit 1
+              fi
+            fi
             git fetch origin
             git reset --hard origin/main
             cd infra
