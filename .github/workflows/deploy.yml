@@ -20,8 +20,8 @@ jobs:
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
             if [ -f .git/index.lock ]; then
-              if pgrep git > /dev/null; then
-                echo "Error: Active git process detected. Aborting deploy."
+              if pgrep -f "git.*${{ secrets.VPS_PROJECT_PATH }}" > /dev/null; then
+                echo "Error: Active git process detected for this project. Aborting deploy."
                 exit 1
               fi
               rm -f .git/index.lock
