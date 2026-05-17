@@ -5,7 +5,7 @@
 
 ### Bug Fixes
 
-* address PR [#42](https://github.com/thangvq95/thangvq-digital-hub/issues/42) review comments from Copilot ([984ed1e](https://github.com/thangvq95/thangvq-digital-hub/commit/984ed1ec94b6a6e0122bbd86240f6bedc8b8167f))
+* address PR [#42](https://github.com/thangvq95/thangvq-digital-hub/pull/42) review comments from Copilot ([984ed1e](https://github.com/thangvq95/thangvq-digital-hub/commit/984ed1ec94b6a6e0122bbd86240f6bedc8b8167f))
 * resolve merge conflicts ([5837cb4](https://github.com/thangvq95/thangvq-digital-hub/commit/5837cb466cbab7520486e1cfd15e7c15ee2a854a))
 
 ## [1.3.5](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.4...v1.3.5) (2026-05-17)
