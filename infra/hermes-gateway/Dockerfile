@@ -8,7 +8,7 @@ RUN apt-get update && apt-get install -y curl git gnupg build-essential \
     && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
     && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
     && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list \
-    && apt-get update && apt-get install -y nodejs gh pipx ripgrep ffmpeg \
+    && apt-get update && apt-get install -y nodejs gh pipx ripgrep ffmpeg unzip \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Install GitNexus as the global codebase knowledge graph MCP server
