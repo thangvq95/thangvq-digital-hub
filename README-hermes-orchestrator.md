@@ -106,7 +106,7 @@ Routes:
 
 - `thangvq95.page` → Vercel (frontend)
 - `api.thangvq95.page` → `http://api:3001` (NestJS API)
-- `kanban.thangvq95.page` → `http://hermes-gateway:9119` (Hermes Kanban)
+- `kanban.thangvq95.page` → `http://hermes-dashboard:9119` (Hermes Kanban)
 
 ---
 
