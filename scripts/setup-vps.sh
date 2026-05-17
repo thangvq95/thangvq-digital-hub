@@ -42,9 +42,6 @@ if [ ! -f "$BASE_DIR/infra/.env" ]; then
     echo "No .env file found. Let's configure it now."
     
     # Auto-generate secure secrets if user skips
-    read -p "Enter WEBHOOK_SECRET (Press Enter to auto-generate): " input_webhook < /dev/tty || input_webhook=""
-    input_webhook=${input_webhook:-$(openssl rand -hex 32)}
-    
     read -p "Enter SYNC_API_KEY (Press Enter to auto-generate): " input_sync < /dev/tty || input_sync=""
     input_sync=${input_sync:-$(openssl rand -hex 32)}
 
@@ -58,7 +55,6 @@ if [ ! -f "$BASE_DIR/infra/.env" ]; then
 
     cat <<EOF > "$BASE_DIR/infra/.env"
 # 🔒 Security & Database
-WEBHOOK_SECRET=$input_webhook
 SYNC_API_KEY=$input_sync
 POSTGRES_PASSWORD=$input_pg
 

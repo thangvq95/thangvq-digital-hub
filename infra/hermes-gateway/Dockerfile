@@ -34,13 +34,9 @@ COPY infra/patches/sitecustomize.py /usr/local/lib/hermes-agent/venv/lib/python3
 ENV PATH="/root/.local/bin:/root/.cargo/bin:$PATH"
 
 WORKDIR /app
-COPY infra/ai-developer-workspace/listener.py /app/listener.py
 
 ENV BASE_REPO=/app/repo
 ENV WORKTREES_DIR=/app/worktrees
 ENV DEDUP_DB=/app/data/ai-workspace.db
-ENV PORT=8080
 
-EXPOSE 8080
-
-CMD ["python", "/app/listener.py"]
+CMD ["hermes", "dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--insecure"]

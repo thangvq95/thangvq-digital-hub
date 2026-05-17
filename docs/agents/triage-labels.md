@@ -2,9 +2,9 @@
 
 This repo uses labels not just for organization, but for **AI Smart Dispatch Routing**.
 
-The `infra/ai-developer-workspace/listener.py` webhook listens to GitHub Webhooks. When an issue is created or labeled, the listener parses the labels to automatically spawn Hermes with the appropriate skill in an isolated worktree.
+The Hermes autonomous orchestrator polls GitHub. When an issue is created or labeled, the orchestrator parses the labels to automatically spawn Hermes with the appropriate skill in an isolated worktree.
 
-## Routing Logic (listener.py)
+## Routing Logic (Polling Orchestrator)
 
 When an `issues` event is received, Hermes is dispatched based on the following labels:
 
@@ -12,11 +12,12 @@ When an `issues` event is received, Hermes is dispatched based on the following 
 - `feature` or `enhancement` → Triggers the `to-prd` skill. (Agent will generate PRDs and implement the feature).
 - `plan` → Triggers the `writing-plans` skill. (Agent will break down an epic or complex task into a plan).
 
-*If an issue lacks these specific routing labels, the listener defaults to the `triage` skill to analyze and organize it.*
+_If an issue lacks these specific routing labels, the listener defaults to the `triage` skill to analyze and organize it._
 
 ## PR & CI Routing
 
 The listener also handles CI and pull request events:
+
 - `pull_request`, `check_run`, `check_suite` → Triggers the `gh-fix-ci` skill to automatically fix failing PRs.
 
 ## Human vs Agent States
