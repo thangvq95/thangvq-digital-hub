@@ -21,8 +21,14 @@ jobs:
             cd ${{ secrets.VPS_PROJECT_PATH }}
             # Check if an active git process is holding the lock (max 5 minutes stale)
             if [ -f .git/index.lock ]; then
-              LOCK_AGE=$(expr $(date +%s) - $(stat -c %Y .git/index.lock 2>/dev/null || echo $(date +%s)))
-              if [ $LOCK_AGE -gt 300 ]; then
+              FILE_AGE=$(stat -c %Y .git/index.lock 2>/dev/null)
+              if [ -z "$FILE_AGE" ]; then
+                echo "Warning: Could not determine age of index.lock. Proceeding safely by not removing it."
+                echo "Deploy failed. Please check VPS git process manually."
+                exit 1
+              fi
+              LOCK_AGE=$(expr $(date +%s) - $FILE_AGE)
+              if [ "$LOCK_AGE" -gt 300 ]; then
                 echo "Removing stale index.lock (age: ${LOCK_AGE}s)"
                 rm -f .git/index.lock
               else
