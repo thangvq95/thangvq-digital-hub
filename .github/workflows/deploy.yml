@@ -25,7 +25,7 @@ jobs:
                 exit 1
               fi
               if find .git/index.lock -mmin +5 | grep -q .; then
-                echo "Removing stale index.lock (older than 5 minutes)."
+                echo "Removing stale index.lock (older than 5 minutes, no active process detected)."
                 rm -f .git/index.lock
               else
                 echo "Error: index.lock exists and is not stale (< 5 mins). Aborting deploy to prevent corruption."
