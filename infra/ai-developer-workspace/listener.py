@@ -132,10 +132,12 @@ def _extract_ref(payload: dict, event: str) -> str | None:
 
 def _determine_skill_and_target(event: str, payload: dict) -> tuple[str, str] | tuple[None, None]:
     """Parse payload to determine which skill to assign to Hermes"""
+    headless_prompt = " (CRITICAL: You are running in a headless automated environment. Do NOT use ask_user tools. Do NOT ask for clarification. Make safe assumptions and proceed. Ensure all CLI commands use non-interactive flags like --yes or --fill. If you must, guess the best approach and create a PR.)"
+    
     if event in ("check_run", "check_suite", "pull_request"):
         pr_number = _extract_pr_number(payload)
         if pr_number:
-            return "gh-fix-ci", f"fix PR {pr_number}"
+            return "gh-fix-ci", f"fix PR {pr_number}" + headless_prompt
             
     elif event == "issues":
         issue = payload.get("issue", {})
@@ -144,14 +146,13 @@ def _determine_skill_and_target(event: str, payload: dict) -> tuple[str, str] | 
             labels = [l.get("name", "").lower() for l in issue.get("labels", [])]
             
             if "bug" in labels or "sentry" in labels:
-                return "diagnose", f"fix bug in issue #{issue_number}"
+                return "diagnose", f"fix bug in issue #{issue_number}" + headless_prompt
             elif "feature" in labels or "enhancement" in labels:
-                # You can customize the skill name here based on your AGENTS.md
-                return "to-prd", f"implement feature for issue #{issue_number}"
+                return "to-prd", f"implement feature for issue #{issue_number}" + headless_prompt
             elif "plan" in labels:
-                return "writing-plans", f"create plan for issue #{issue_number}"
+                return "writing-plans", f"create plan for issue #{issue_number}" + headless_prompt
             else:
-                return "triage", f"triage issue #{issue_number}"
+                return "triage", f"triage issue #{issue_number}" + headless_prompt
                 
     return None, None
 
