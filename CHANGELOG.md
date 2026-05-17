@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.7](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.6...v1.3.7) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR [#51](https://github.com/thangvq95/thangvq-digital-hub/issues/51) review comment by fixing [#42](https://github.com/thangvq95/thangvq-digital-hub/issues/42) link ([#53](https://github.com/thangvq95/thangvq-digital-hub/issues/53)) ([d709af6](https://github.com/thangvq95/thangvq-digital-hub/commit/d709af6e6a460ee2fc1c994fc01ead4b9aca7c77))
+
 ## [1.3.6](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.5...v1.3.6) (2026-05-17)
 
 
