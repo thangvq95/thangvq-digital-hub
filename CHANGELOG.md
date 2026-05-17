@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.15](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.14...v1.3.15) (2026-05-17)
+
+
+### Bug Fixes
+
+* automate composio setup by installing in docker and passing env api key ([#70](https://github.com/thangvq95/thangvq-digital-hub/issues/70)) ([adb16f8](https://github.com/thangvq95/thangvq-digital-hub/commit/adb16f8119eb9702b4a440dca4096cd73a4cc047))
+
 ## [1.3.14](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.13...v1.3.14) (2026-05-17)
 
 
