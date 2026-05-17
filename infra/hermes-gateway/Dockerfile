@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y curl git gnupg build-essential \
 # Install GitNexus as the global codebase knowledge graph MCP server
 RUN npm install -g gitnexus
 
+# Install Composio CLI globally
+RUN pipx install composio-cli
+
 
 
 # Bypass Git's "dubious ownership" error when mounting volumes from the Host

@@ -57,6 +57,7 @@ services:
       - BASE_REPO=/app/repo
       - WORKTREES_DIR=/app/worktrees
       - DEDUP_DB=/app/data/ai-workspace.db
+      - COMPOSIO_API_KEY=${COMPOSIO_API_KEY}
     command: [ "hermes", "gateway", "run" ]
 
   hermes-dashboard:
@@ -83,6 +84,7 @@ services:
       - BASE_REPO=/app/repo
       - WORKTREES_DIR=/app/worktrees
       - DEDUP_DB=/app/data/ai-workspace.db
+      - COMPOSIO_API_KEY=${COMPOSIO_API_KEY}
     command: [ "hermes", "dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--insecure" ]
 
   # Cloudflare Tunnel — routes public traffic to internal services, no open ports needed
