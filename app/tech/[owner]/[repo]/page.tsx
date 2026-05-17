@@ -250,7 +250,7 @@ export default function RepoDetailPage() {
           <span>⭐ {repoData.stars_total?.toLocaleString()} stars</span>
           {repoData.stars_growth && (
             <span style={{ color: "hsl(142, 71%, 55%)" }}>
-              ↑ {repoData.stars_growth}
+              ↑ {repoData.stars_growth.replace(/.*?\/svg>\s*/, '')}
             </span>
           )}
           <span>🍴 {repoData.forks_total?.toLocaleString()} forks</span>
