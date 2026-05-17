@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.12](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.11...v1.3.12) (2026-05-17)
+
+
+### Bug Fixes
+
+* deduplicate changelog entry from pr 63 ([4b9eb20](https://github.com/thangvq95/thangvq-digital-hub/commit/4b9eb20db21714861b141cef0e2d0491b8a4ae75))
+
 ## [1.3.11](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.10...v1.3.11) (2026-05-17)
 
 ### Bug Fixes
