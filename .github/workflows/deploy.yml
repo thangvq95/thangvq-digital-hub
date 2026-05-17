@@ -24,7 +24,13 @@ jobs:
                 echo "Error: Active git process detected for this project. Aborting deploy."
                 exit 1
               fi
-              rm -f .git/index.lock
+              if find .git/index.lock -mmin +5 | grep -q .; then
+                echo "Removing stale index.lock (older than 5 minutes)."
+                rm -f .git/index.lock
+              else
+                echo "Error: index.lock exists and is not stale (< 5 mins). Aborting deploy to prevent corruption."
+                exit 1
+              fi
             fi
             git fetch origin
             git reset --hard origin/main
