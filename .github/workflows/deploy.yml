@@ -20,11 +20,17 @@ jobs:
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
             if [ -f .git/index.lock ]; then
-              if fuser .git/index.lock >/dev/null 2>&1 || lsof .git/index.lock >/dev/null 2>&1; then
-                echo "Error: Active git process detected for this project. Aborting deploy."
+              if lsof .git/index.lock > /dev/null 2>&1 || fuser .git/index.lock > /dev/null 2>&1; then
+                echo "Error: Active process holds .git/index.lock. Aborting deploy."
                 exit 1
               fi
-              rm -f .git/index.lock
+              if find .git/index.lock -mmin +5 | grep -q .; then
+                echo "Removing stale index.lock (older than 5 minutes)."
+                rm -f .git/index.lock
+              else
+                echo "Error: index.lock exists and is not stale (< 5 mins). Aborting deploy to prevent corruption."
+                exit 1
+              fi
             fi
             git fetch origin
             git reset --hard origin/main
