@@ -93,40 +93,65 @@ gh issue list --state open --json number,labels,updatedAt --limit 20 | jq -c '.[
     mark_seen "$event_id"
 done
 
-echo "[INFO] Polling GitHub for open PRs..."
-gh pr list --state open --json number,headRefName,updatedAt --limit 20 | jq -c '.[]' | while read -r pr; do
+echo "[INFO] Polling GitHub for open PRs with failing CI..."
+gh pr list --state open --json number,headRefName,updatedAt,title,author --limit 20 | jq -c '.[]' | while read -r pr; do
     num=$(echo "$pr" | jq -r '.number')
     ref=$(echo "$pr" | jq -r '.headRefName')
     updated=$(echo "$pr" | jq -r '.updatedAt' | tr -d ':-')
+    title=$(echo "$pr" | jq -r '.title')
+    author=$(echo "$pr" | jq -r '.author.login')
     event_id="pr_${num}_${updated}"
-    
+
     if seen_before "$event_id"; then
         continue
     fi
-    
-    echo "[INFO] Processing PR #$num"
-    
-    skill="gh-fix-ci"
-    target_desc="Fix PR $num. FIRST, view the PR details using 'gh pr view $num'. THEN proceed.$headless_prompt"
-    
+
+    # --- GUARD: Skip release-please PRs (they are auto-managed) ---
+    if echo "$title" | grep -qiE "^chore\(main\): release"; then
+        echo "[SKIP] PR #$num is a release-please PR. Skipping."
+        mark_seen "$event_id"
+        continue
+    fi
+
+    # --- GUARD: Skip PRs authored by Hermes itself (prevent infinite loop) ---
+    if echo "$author" | grep -qiE "hermes|bot"; then
+        echo "[SKIP] PR #$num was authored by bot/Hermes ($author). Skipping to prevent loop."
+        mark_seen "$event_id"
+        continue
+    fi
+
+    # --- GUARD: Only act if CI checks are actually failing ---
+    ci_status=$(gh pr view "$num" --json statusCheckRollup --jq '.statusCheckRollup[].conclusion' 2>/dev/null | grep -c "FAILURE" || true)
+    if [ "$ci_status" -eq 0 ]; then
+        echo "[SKIP] PR #$num has no failing CI checks. Skipping."
+        mark_seen "$event_id"
+        continue
+    fi
+
+    echo "[INFO] Processing PR #$num ($title) — $ci_status failing check(s)"
+
+    skill="pr-review-ci-fix"
+    target_desc="PR #$num has failing CI checks. FIRST, run 'gh pr view $num' to read the PR. THEN, fix only the failing CI checks by patching the source code. Do NOT create new branches or new PRs. Push fixes to the existing branch '$ref' directly.$headless_prompt"
+
     safe_ref=$(echo "$ref" | sed 's/[^a-zA-Z0-9]/_/g')
     worktree="$WORKTREES_DIR/${safe_ref}_${event_id}"
-    
+
     git fetch origin "$ref" || true
     git worktree add -d --force "$worktree" "origin/$ref" || {
         echo "[ERROR] Failed to create worktree at $worktree for $event_id"
         continue
     }
-    
+
     echo "[INFO] Running hermes on PR #$num worktree"
     (
         cd "$worktree"
         timeout 45m hermes -s "$skill" -z "$target_desc" || echo "[WARN] Hermes run failed or timed out."
     )
-    
+
     git worktree remove --force "$worktree" || true
     mark_seen "$event_id"
 done
+
 
 # Check if main changed, if so run gitnexus analyze
 echo "[INFO] Checking if main branch updated..."
