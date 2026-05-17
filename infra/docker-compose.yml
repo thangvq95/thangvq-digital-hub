@@ -81,6 +81,7 @@ services:
     environment:
       - HOST=0.0.0.0
       - PORT=9119
+      - GH_TOKEN=${GH_PAT}
       - NINE_ROUTER_API_KEY=${NINE_ROUTER_API_KEY}
       - NINE_ROUTER_URL=${NINE_ROUTER_URL}
       - NINE_ROUTER_MODEL=${NINE_ROUTER_MODEL}
