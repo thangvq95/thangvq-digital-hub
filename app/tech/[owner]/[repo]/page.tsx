@@ -13,6 +13,7 @@ import rehypeKatex from "rehype-katex";
 import { Check, Copy } from "lucide-react";
 import mermaid from "mermaid";
 import { useRef } from "react";
+import { sanitizeStarsGrowth } from "@/lib/utils";
 
 const PreWithCopy = ({ children, ...props }: any) => {
   const preRef = useRef<HTMLPreElement>(null);
@@ -250,7 +251,7 @@ export default function RepoDetailPage() {
           <span>⭐ {repoData.stars_total?.toLocaleString()} stars</span>
           {repoData.stars_growth && (
             <span style={{ color: "hsl(142, 71%, 55%)" }}>
-              ↑ {repoData.stars_growth}
+              ↑ {sanitizeStarsGrowth(repoData.stars_growth)}
             </span>
           )}
           <span>🍴 {repoData.forks_total?.toLocaleString()} forks</span>

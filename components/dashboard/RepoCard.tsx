@@ -1,11 +1,11 @@
 "use client";
 
 import Image from "next/image";
-
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { api } from "@/lib/api/client";
 import type { Repository } from "@/lib/api/types";
+import { sanitizeStarsGrowth } from "@/lib/utils";
 
 interface RepoCardProps {
   repo: Repository;
@@ -205,7 +205,7 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
         </span>
         {isScrapedToday() && repo.stars_growth && (
           <span style={{ color: "hsl(142, 71%, 55%)" }}>
-            ↑ {repo.stars_growth}
+            ↑ {sanitizeStarsGrowth(repo.stars_growth)}
           </span>
         )}
         {repo.language && <span>· {repo.language}</span>}
