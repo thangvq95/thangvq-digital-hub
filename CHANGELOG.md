@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.17](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.16...v1.3.17) (2026-05-17)
+
+
+### Bug Fixes
+
+* add unzip dependency required by composio installer ([#74](https://github.com/thangvq95/thangvq-digital-hub/issues/74)) ([141e484](https://github.com/thangvq95/thangvq-digital-hub/commit/141e484012ef3130186a9eff23db7663a0274202))
+
 ## [1.3.16](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.15...v1.3.16) (2026-05-17)
 
 
