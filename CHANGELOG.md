@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.9](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.8...v1.3.9) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR 45 review comments by removing insecure port binding and ssh keys from dashboard ([#57](https://github.com/thangvq95/thangvq-digital-hub/issues/57)) ([3f0e574](https://github.com/thangvq95/thangvq-digital-hub/commit/3f0e574ac8b78146fb955620c2b5f042953a0a06))
+
 ## [1.3.8](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.7...v1.3.8) (2026-05-17)
 
 
