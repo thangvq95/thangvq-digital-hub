@@ -1,5 +1,26 @@
 # Changelog
 
+## [1.3.10](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.9...v1.3.10) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR [#42](https://github.com/thangvq95/thangvq-digital-hub/issues/42) review comments from Copilot (staleness check) ([#48](https://github.com/thangvq95/thangvq-digital-hub/issues/48)) ([7b4a159](https://github.com/thangvq95/thangvq-digital-hub/commit/7b4a159dc72e6c0a755886be1ba57b1328984b3e))
+
+## [1.3.9](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.8...v1.3.9) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR 45 review comments by removing insecure port binding and ssh keys from dashboard ([#57](https://github.com/thangvq95/thangvq-digital-hub/issues/57)) ([3f0e574](https://github.com/thangvq95/thangvq-digital-hub/commit/3f0e574ac8b78146fb955620c2b5f042953a0a06))
+
+## [1.3.8](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.7...v1.3.8) (2026-05-17)
+
+
+### Bug Fixes
+
+* split hermes gateway and dashboard into separate services ([260c237](https://github.com/thangvq95/thangvq-digital-hub/commit/260c23768f45301de6516ed17435ccbfc67b691c))
+
 ## [1.3.7](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.6...v1.3.7) (2026-05-17)
 
 
