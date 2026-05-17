@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y curl git gnupg build-essential \
 RUN npm install -g gitnexus
 
 # Install Composio CLI globally
-RUN pipx install composio-cli
+RUN curl -fsSL https://composio.dev/install | bash
 
 
 
