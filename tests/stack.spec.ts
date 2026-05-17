@@ -7,7 +7,7 @@ test.describe('Stack Architecture Page', () => {
 
   test('renders hero section and stats', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /how this was built/i })).toBeVisible();
-    await expect(page.getByText('5', { exact: true })).toBeVisible(); // 5 Docker containers
+    await expect(page.getByText('4', { exact: true })).toBeVisible(); // 4 Docker containers
     await expect(page.getByText('100%', { exact: true })).toBeVisible(); // 100% Autonomous
   });
 
