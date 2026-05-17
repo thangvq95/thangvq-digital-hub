@@ -99,7 +99,7 @@ export const StackPageClient: React.FC = () => {
           {/* Stats row */}
           <div className="flex flex-wrap gap-8 mb-12">
             {[
-              { value: "5", label: "Docker containers" },
+              { value: "4", label: "Docker containers" },
               { value: "2×", label: "Daily trending syncs" },
               { value: "100%", label: "Autonomous CI/CD" },
               { value: "0", label: "Manual deployments" },
@@ -199,7 +199,7 @@ export const StackPageClient: React.FC = () => {
               {
                 label: "Containerized",
                 detail:
-                  "5 Docker services: postgres · api · hermes-gateway · hermes-gateway · cloudflared",
+                  "4 Docker services: postgres · api · hermes-gateway · cloudflared",
                 color: "#60A5FA",
               },
               {
@@ -263,9 +263,9 @@ export const StackPageClient: React.FC = () => {
                 color: "#34D399",
               },
               {
-                label: "🔧 Webhook-Triggered Fix",
+                label: "🔧 Cron-Polled Fix",
                 detail:
-                  "GitHub event → HMAC verify → SQLite dedup → git worktree → hermes skill → push PR",
+                  "GitHub issue/pr poll → SQLite dedup → git worktree → hermes skill → push PR",
                 color: "#A78BFA",
               },
               {
