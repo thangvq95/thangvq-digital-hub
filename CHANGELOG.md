@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.16](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.15...v1.3.16) (2026-05-17)
+
+
+### Bug Fixes
+
+* change composio-cli installation to official curl installer script ([#72](https://github.com/thangvq95/thangvq-digital-hub/issues/72)) ([7d6d0c0](https://github.com/thangvq95/thangvq-digital-hub/commit/7d6d0c082d9cab8009e869e0c26039f3e6b40c0d))
+
 ## [1.3.15](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.14...v1.3.15) (2026-05-17)
 
 
