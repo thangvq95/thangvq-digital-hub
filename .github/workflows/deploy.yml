@@ -16,16 +16,29 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USERNAME }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          command_timeout: 30m
           # Default to project directory on VPS, pull code and build
           script: |
             cd ${{ secrets.VPS_PROJECT_PATH }}
+            if [ -f .git/index.lock ]; then
+              if lsof .git/index.lock > /dev/null 2>&1 || fuser .git/index.lock > /dev/null 2>&1; then
+                echo "Error: Active process holds .git/index.lock. Aborting deploy."
+                exit 1
+              fi
+              if find .git/index.lock -mmin +5 | grep -q .; then
+                echo "Removing stale index.lock (older than 5 minutes)."
+                rm -f .git/index.lock
+              else
+                echo "Error: index.lock exists and is not stale (< 5 mins). Aborting deploy to prevent corruption."
+                exit 1
+              fi
+            fi
             git fetch origin
             git reset --hard origin/main
             cd infra
             
             # Automatically create .env file from GitHub Secrets
             rm -f .env
-            echo "WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}" >> .env
             echo "SYNC_API_KEY=${{ secrets.SYNC_API_KEY }}" >> .env
             echo "POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}" >> .env
             echo "PORT=${{ secrets.PORT }}" >> .env
@@ -38,11 +51,12 @@ jobs:
             echo "SENTRY_DSN_BE=${{ secrets.SENTRY_DSN_BE }}" >> .env
             echo "SENTRY_PROJECT_BE=${{ secrets.SENTRY_PROJECT_BE }}" >> .env
             echo "GH_PAT=${{ secrets.GH_PAT }}" >> .env
+            echo "COMPOSIO_API_KEY=${{ secrets.COMPOSIO_API_KEY }}" >> .env
             
             # Set secure permissions
             chmod 600 .env
             
-            docker compose up --build -d postgres api ai-workspace hermes-gateway
+            docker compose up --build -d postgres api hermes-gateway hermes-dashboard
 
       - name: Health Check API
         # Wait up to 60s, continuously pinging the API until it returns 200 OK

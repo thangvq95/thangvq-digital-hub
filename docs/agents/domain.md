@@ -14,7 +14,7 @@ The project is structured around a "Stateless AI & Stateful Repo" philosophy:
 
 ## Agent Roles
 
-- **Hermes (Remote Agent)**: Runs on the VPS. Autonomous worker executing cronjobs, handling issue dispatches via `listener.py`, and running `gitnexus`.
+- **Hermes (Remote Agent)**: Runs on the VPS. Autonomous worker executing cronjobs, handling issue dispatches via polling scheduler, and running `gitnexus`.
 - **Local Agents**: Cursor, Claude Code, Antigravity. They operate statelessly locally and sync 100% via GitHub. They connect to the remote Hermes MCP to interact with the project state.
 
 ## Rules
