@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.2...v1.3.3) (2026-05-17)
+
+
+### Bug Fixes
+
+* remove ai-workspace and webhook secret from deploy workflow ([#36](https://github.com/thangvq95/thangvq-digital-hub/issues/36)) ([63c052d](https://github.com/thangvq95/thangvq-digital-hub/commit/63c052d523f02160216f959e9e52aaeb28b52a01))
+
 ## [1.3.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.1...v1.3.2) (2026-05-17)
 
 
