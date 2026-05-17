@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.20](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.19...v1.3.20) (2026-05-17)
+
+
+### Bug Fixes
+
+* forcefully purge containers by name to resolve deploy conflicts ([#83](https://github.com/thangvq95/thangvq-digital-hub/issues/83)) ([c3608ae](https://github.com/thangvq95/thangvq-digital-hub/commit/c3608ae93454a84b25983c7c79d7de11e70fac0e))
+
 ## [1.3.19](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.18...v1.3.19) (2026-05-17)
 
 
