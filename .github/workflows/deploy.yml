@@ -50,11 +50,12 @@ jobs:
             echo "SENTRY_DSN_BE=${{ secrets.SENTRY_DSN_BE }}" >> .env
             echo "SENTRY_PROJECT_BE=${{ secrets.SENTRY_PROJECT_BE }}" >> .env
             echo "GH_PAT=${{ secrets.GH_PAT }}" >> .env
+            echo "COMPOSIO_API_KEY=${{ secrets.COMPOSIO_API_KEY }}" >> .env
             
             # Set secure permissions
             chmod 600 .env
             
-            docker compose up --build -d postgres api hermes-gateway
+            docker compose up --build -d postgres api hermes-gateway hermes-dashboard
 
       - name: Health Check API
         # Wait up to 60s, continuously pinging the API until it returns 200 OK
