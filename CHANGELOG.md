@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.14](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.13...v1.3.14) (2026-05-17)
+
+
+### Bug Fixes
+
+* resolve lint errors in next.js app and webhooks controller ([#68](https://github.com/thangvq95/thangvq-digital-hub/issues/68)) ([432905b](https://github.com/thangvq95/thangvq-digital-hub/commit/432905b3ed79aaa3ef0ce41a9f4b24ced89c078f))
+
 ## [1.3.13](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.12...v1.3.13) (2026-05-17)
 
 
