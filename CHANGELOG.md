@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.1...v1.2.2) (2026-05-17)
+
+
+### Bug Fixes
+
+* include ai-workspace and gateway in CI deploy targets ([340d5b7](https://github.com/thangvq95/thangvq-digital-hub/commit/340d5b7b75869d5a9cbcc9937157e34e3277898b))
+* include ai-workspace and gateway in CI deploy targets ([df2861c](https://github.com/thangvq95/thangvq-digital-hub/commit/df2861c48de23b4f9bb10756c197287a862ccb02))
+* include ai-workspace and gateway in CI deploy targets ([178dc7e](https://github.com/thangvq95/thangvq-digital-hub/commit/178dc7eac69a79ac6a23c1adcfb9c4c75e232fc4))
+
 ## [1.2.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.0...v1.2.1) (2026-05-17)
 
 
