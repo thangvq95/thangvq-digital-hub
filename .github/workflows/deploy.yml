@@ -59,6 +59,9 @@ jobs:
             # Stop and clean up old/orphan containers to prevent Docker name registration conflicts
             docker compose down --remove-orphans
             
+            # Forcefully remove conflicting containers by name if they are stuck or belong to a different project
+            docker rm -f hermes-gateway hermes-dashboard digitalhub-api digitalhub-tunnel digitalhub-postgres || true
+            
             # Rebuild and start all services
             docker compose up --build -d postgres api hermes-gateway hermes-dashboard cloudflared
 
