@@ -1,12 +1,19 @@
 # Changelog
 
+## [1.3.5](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.4...v1.3.5) (2026-05-17)
+
+
+### Bug Fixes
+
+* address PR 41 review comments for index.lock handling and changelog ([d46d431](https://github.com/thangvq95/thangvq-digital-hub/commit/d46d431d30fa2be66824672c07ae4320210411af))
+* address PR 41 review comments for index.lock handling and changelog ([588796c](https://github.com/thangvq95/thangvq-digital-hub/commit/588796c8cc158853a3603f190d9cfcab6be356b0))
+
 ## [1.3.4](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.3...v1.3.4) (2026-05-17)
 
 
 ### Bug Fixes
 
-* add active-process check before removing index.lock in deploy workflow ([#41](https://github.com/thangvq95/thangvq-digital-hub/issues/41)) ([#42](https://github.com/thangvq95/thangvq-digital-hub/pull/42))
-* address PR [#35](https://github.com/thangvq95/thangvq-digital-hub/issues/35) review comments from Copilot ([#38](https://github.com/thangvq95/thangvq-digital-hub/issues/38)) ([c0912f6](https://github.com/thangvq95/thangvq-digital-hub/commit/c0912f69c796e60ec566e4f102a65cf9e45ccc38))
+* add deploy workflow staleness check for git index.lock to prevent deployment failures ([#41](https://github.com/thangvq95/thangvq-digital-hub/pull/41))
 
 ## [1.3.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.2...v1.3.3) (2026-05-17)
 
