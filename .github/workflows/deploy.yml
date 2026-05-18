@@ -32,8 +32,8 @@ jobs:
                 exit 1
               fi
             fi
-            git fetch origin
-            git reset --hard origin/main
+            git fetch --tags origin
+            git checkout ${{ github.event.release.tag_name }}
             cd infra
             
             # Automatically create .env file from GitHub Secrets
