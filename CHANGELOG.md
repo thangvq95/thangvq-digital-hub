@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.21](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.20...v1.3.21) (2026-05-18)
+
+
+### Bug Fixes
+
+* add jq and sync api key environment to hermes gateway ([#86](https://github.com/thangvq95/thangvq-digital-hub/issues/86)) ([83830cb](https://github.com/thangvq95/thangvq-digital-hub/commit/83830cb74f3303770bdb53c1f8ac815c9611a455))
+
 ## [1.3.20](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.19...v1.3.20) (2026-05-17)
 
 
