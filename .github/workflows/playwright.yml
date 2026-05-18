@@ -4,12 +4,19 @@ on:
     types: [published]
   pull_request:
     branches: [ main, master ]
+    paths:
+      - 'app/**'
+      - 'components/**'
+      - 'lib/**'
+      - 'hooks/**'
+      - 'tests/**'
+      - '**.ts'
+      - '**.tsx'
+      - 'playwright.config.*'
 jobs:
   test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    # Skip on release-please PRs (version bump only, no code change)
-    if: ${{ !startsWith(github.head_ref, 'release-please--') }}
     steps:
     - uses: actions/checkout@v4
     - uses: actions/setup-node@v4
