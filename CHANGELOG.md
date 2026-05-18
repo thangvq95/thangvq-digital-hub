@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.23](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.22...v1.3.23) (2026-05-18)
+
+
+### Bug Fixes
+
+* skip playwright on release-please version bump PRs ([#90](https://github.com/thangvq95/thangvq-digital-hub/issues/90)) ([8affde0](https://github.com/thangvq95/thangvq-digital-hub/commit/8affde022ef63f2c987e0969c58a369565282226))
+
 ## [1.3.22](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.21...v1.3.22) (2026-05-18)
 
 
