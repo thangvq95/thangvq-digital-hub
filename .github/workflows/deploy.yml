@@ -1,9 +1,8 @@
 name: "Deploy: Production (VPS + Vercel)"
 
 on:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 
 jobs:
   deploy-backend:
