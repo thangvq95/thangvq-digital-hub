@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.22](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.21...v1.3.22) (2026-05-18)
+
+
+### Bug Fixes
+
+* optimize CI workflows to trigger on release instead of push to main ([#88](https://github.com/thangvq95/thangvq-digital-hub/issues/88)) ([7020788](https://github.com/thangvq95/thangvq-digital-hub/commit/7020788dc96e80d67a944353d1929a5be7650d1d))
+
 ## [1.3.21](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.20...v1.3.21) (2026-05-18)
 
 
