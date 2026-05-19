@@ -1,72 +1,202 @@
 # Changelog
 
-## [1.3.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.0...v1.3.1) (2026-05-17)
-
+## [1.3.23](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.22...v1.3.23) (2026-05-18)
 
 ### Bug Fixes
 
-* force hermes to use gh CLI first to start tool chain ([0f49821](https://github.com/thangvq95/thangvq-digital-hub/commit/0f4982176b6d1d3a351519a6f59a759af2dfb710))
-* force hermes to use gh CLI first to start tool chain ([901272c](https://github.com/thangvq95/thangvq-digital-hub/commit/901272ca62d905a0d8341e2ea593c50ca063f526))
-* force hermes to use gh CLI first to start tool chain ([a8410b3](https://github.com/thangvq95/thangvq-digital-hub/commit/a8410b36e0027cd502aabfb05b209aaa40af98f0))
+- skip playwright on release-please version bump PRs ([#90](https://github.com/thangvq95/thangvq-digital-hub/issues/90)) ([8affde0](https://github.com/thangvq95/thangvq-digital-hub/commit/8affde022ef63f2c987e0969c58a369565282226))
+
+## [1.3.22](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.21...v1.3.22) (2026-05-18)
+
+### Bug Fixes
+
+- optimize CI workflows to trigger on release instead of push to main ([#88](https://github.com/thangvq95/thangvq-digital-hub/issues/88)) ([7020788](https://github.com/thangvq95/thangvq-digital-hub/commit/7020788dc96e80d67a944353d1929a5be7650d1d))
+
+## [1.3.21](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.20...v1.3.21) (2026-05-18)
+
+### Bug Fixes
+
+- add jq and sync api key environment to hermes gateway ([#86](https://github.com/thangvq95/thangvq-digital-hub/issues/86)) ([83830cb](https://github.com/thangvq95/thangvq-digital-hub/commit/83830cb74f3303770bdb53c1f8ac815c9611a455))
+
+## [1.3.20](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.19...v1.3.20) (2026-05-17)
+
+### Bug Fixes
+
+- forcefully purge containers by name to resolve deploy conflicts ([#83](https://github.com/thangvq95/thangvq-digital-hub/issues/83)) ([c3608ae](https://github.com/thangvq95/thangvq-digital-hub/commit/c3608ae93454a84b25983c7c79d7de11e70fac0e))
+
+## [1.3.19](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.18...v1.3.19) (2026-05-17)
+
+### Bug Fixes
+
+- resolve hermes-dashboard crash by using uv to install fastapi/uvicorn ([#81](https://github.com/thangvq95/thangvq-digital-hub/issues/81)) ([540748f](https://github.com/thangvq95/thangvq-digital-hub/commit/540748f5fdd82291d283a68b7ef573385b4353ef))
+
+## [1.3.18](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.17...v1.3.18) (2026-05-17)
+
+### Bug Fixes
+
+- increase command timeout for vps deploy to 30m ([#76](https://github.com/thangvq95/thangvq-digital-hub/issues/76)) ([86b3208](https://github.com/thangvq95/thangvq-digital-hub/commit/86b3208fe5cb0a030212b330f167a94bfdfec133))
+
+## [1.3.17](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.16...v1.3.17) (2026-05-17)
+
+### Bug Fixes
+
+- add unzip dependency required by composio installer ([#74](https://github.com/thangvq95/thangvq-digital-hub/issues/74)) ([141e484](https://github.com/thangvq95/thangvq-digital-hub/commit/141e484012ef3130186a9eff23db7663a0274202))
+
+## [1.3.16](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.15...v1.3.16) (2026-05-17)
+
+### Bug Fixes
+
+- change composio-cli installation to official curl installer script ([#72](https://github.com/thangvq95/thangvq-digital-hub/issues/72)) ([7d6d0c0](https://github.com/thangvq95/thangvq-digital-hub/commit/7d6d0c082d9cab8009e869e0c26039f3e6b40c0d))
+
+## [1.3.15](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.14...v1.3.15) (2026-05-17)
+
+### Bug Fixes
+
+- automate composio setup by installing in docker and passing env api key ([#70](https://github.com/thangvq95/thangvq-digital-hub/issues/70)) ([adb16f8](https://github.com/thangvq95/thangvq-digital-hub/commit/adb16f8119eb9702b4a440dca4096cd73a4cc047))
+
+## [1.3.14](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.13...v1.3.14) (2026-05-17)
+
+### Bug Fixes
+
+- resolve lint errors in next.js app and webhooks controller ([#68](https://github.com/thangvq95/thangvq-digital-hub/issues/68)) ([432905b](https://github.com/thangvq95/thangvq-digital-hub/commit/432905b3ed79aaa3ef0ce41a9f4b24ced89c078f))
+
+## [1.3.13](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.12...v1.3.13) (2026-05-17)
+
+### Bug Fixes
+
+- prevent hermes infinite loop on PRs by adding guards and skipping non-CI failing/release PRs ([#66](https://github.com/thangvq95/thangvq-digital-hub/issues/66)) ([e15d236](https://github.com/thangvq95/thangvq-digital-hub/commit/e15d23688834a763f576242b8b1af5f8cf01e22d))
+
+## [1.3.12](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.11...v1.3.12) (2026-05-17)
+
+### Bug Fixes
+
+- deduplicate changelog entry from pr 63 ([4b9eb20](https://github.com/thangvq95/thangvq-digital-hub/commit/4b9eb20db21714861b141cef0e2d0491b8a4ae75))
+
+## [1.3.11](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.10...v1.3.11) (2026-05-17)
+
+### Bug Fixes
+
+- cleanup package-lock.json from pr 60 ([c949a70](https://github.com/thangvq95/thangvq-digital-hub/commit/c949a70e2752e56560fa93786b66bc59cec84571))
+
+## [1.3.10](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.9...v1.3.10) (2026-05-17)
+
+### Bug Fixes
+
+- address PR [#42](https://github.com/thangvq95/thangvq-digital-hub/issues/42) review comments from Copilot (staleness check) ([#48](https://github.com/thangvq95/thangvq-digital-hub/issues/48)) ([7b4a159](https://github.com/thangvq95/thangvq-digital-hub/commit/7b4a159dc72e6c0a755886be1ba57b1328984b3e))
+
+## [1.3.9](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.8...v1.3.9) (2026-05-17)
+
+### Bug Fixes
+
+- address PR 45 review comments by removing insecure port binding and ssh keys from dashboard ([#57](https://github.com/thangvq95/thangvq-digital-hub/issues/57)) ([3f0e574](https://github.com/thangvq95/thangvq-digital-hub/commit/3f0e574ac8b78146fb955620c2b5f042953a0a06))
+
+## [1.3.8](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.7...v1.3.8) (2026-05-17)
+
+### Bug Fixes
+
+- split hermes gateway and dashboard into separate services ([260c237](https://github.com/thangvq95/thangvq-digital-hub/commit/260c23768f45301de6516ed17435ccbfc67b691c))
+
+## [1.3.7](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.6...v1.3.7) (2026-05-17)
+
+### Bug Fixes
+
+- address PR [#51](https://github.com/thangvq95/thangvq-digital-hub/issues/51) review comment by fixing [#42](https://github.com/thangvq95/thangvq-digital-hub/issues/42) link ([#53](https://github.com/thangvq95/thangvq-digital-hub/issues/53)) ([d709af6](https://github.com/thangvq95/thangvq-digital-hub/commit/d709af6e6a460ee2fc1c994fc01ead4b9aca7c77))
+
+## [1.3.6](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.5...v1.3.6) (2026-05-17)
+
+### Bug Fixes
+
+- address PR [#42](https://github.com/thangvq95/thangvq-digital-hub/pull/42) review comments from Copilot ([984ed1e](https://github.com/thangvq95/thangvq-digital-hub/commit/984ed1ec94b6a6e0122bbd86240f6bedc8b8167f))
+- resolve merge conflicts ([5837cb4](https://github.com/thangvq95/thangvq-digital-hub/commit/5837cb466cbab7520486e1cfd15e7c15ee2a854a))
+
+## [1.3.5](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.4...v1.3.5) (2026-05-17)
+
+### Bug Fixes
+
+- address PR 41 review comments for index.lock handling and changelog ([d46d431](https://github.com/thangvq95/thangvq-digital-hub/commit/d46d431d30fa2be66824672c07ae4320210411af))
+- address PR 41 review comments for index.lock handling and changelog ([588796c](https://github.com/thangvq95/thangvq-digital-hub/commit/588796c8cc158853a3603f190d9cfcab6be356b0))
+
+## [1.3.4](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.3...v1.3.4) (2026-05-17)
+
+### Bug Fixes
+
+- add staleness and active-process check before removing index.lock in deploy workflow ([#42](https://github.com/thangvq95/thangvq-digital-hub/pull/42)) ([984ed1e](https://github.com/thangvq95/thangvq-digital-hub/commit/984ed1ec94b6a6e0122bbd86240f6bedc8b8167f))
+- add deploy workflow staleness check for git index.lock to prevent deployment failures ([#41](https://github.com/thangvq95/thangvq-digital-hub/pull/41))
+- address PR [#35](https://github.com/thangvq95/thangvq-digital-hub/issues/35) review comments from Copilot ([#38](https://github.com/thangvq95/thangvq-digital-hub/issues/38)) ([c0912f6](https://github.com/thangvq95/thangvq-digital-hub/commit/c0912f69c796e60ec566e4f102a65cf9e45ccc38))
+
+## [1.3.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.2...v1.3.3) (2026-05-17)
+
+### Bug Fixes
+
+- remove ai-workspace and webhook secret from deploy workflow ([#36](https://github.com/thangvq95/thangvq-digital-hub/issues/36)) ([63c052d](https://github.com/thangvq95/thangvq-digital-hub/commit/63c052d523f02160216f959e9e52aaeb28b52a01))
+
+## [1.3.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.1...v1.3.2) (2026-05-17)
+
+### Bug Fixes
+
+- add listener phase logs and guaranteed worktree cleanup ([93e7f63](https://github.com/thangvq95/thangvq-digital-hub/commit/93e7f633632562f237875e07845ed070240b1869))
+- add listener phase logs and guaranteed worktree cleanup ([7d773d8](https://github.com/thangvq95/thangvq-digital-hub/commit/7d773d8d60ae13b54a36aeccab277a69c89db66d))
+- address copilot review comments for redelivery ([baa7c3c](https://github.com/thangvq95/thangvq-digital-hub/commit/baa7c3c7c9348983798eead744640126bd2c0400))
+
+## [1.3.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.0...v1.3.1) (2026-05-17)
+
+### Bug Fixes
+
+- force hermes to use gh CLI first to start tool chain ([0f49821](https://github.com/thangvq95/thangvq-digital-hub/commit/0f4982176b6d1d3a351519a6f59a759af2dfb710))
+- force hermes to use gh CLI first to start tool chain ([901272c](https://github.com/thangvq95/thangvq-digital-hub/commit/901272ca62d905a0d8341e2ea593c50ca063f526))
+- force hermes to use gh CLI first to start tool chain ([a8410b3](https://github.com/thangvq95/thangvq-digital-hub/commit/a8410b36e0027cd502aabfb05b209aaa40af98f0))
 
 ## [1.3.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.2...v1.3.0) (2026-05-17)
 
-
 ### Features
 
-* add headless prompt to hermes targets to prevent blocking ([71f631d](https://github.com/thangvq95/thangvq-digital-hub/commit/71f631d6ef570b65fe4f548d652d9b42c867ea3d))
-* add headless prompt to hermes targets to prevent blocking ([c15988d](https://github.com/thangvq95/thangvq-digital-hub/commit/c15988de6097e7d55110823d8acc97e743c60124))
-* add headless prompt to hermes targets to prevent blocking ([3167f1a](https://github.com/thangvq95/thangvq-digital-hub/commit/3167f1aa98c59c7785c63e2ed88b557531d374ec))
+- add headless prompt to hermes targets to prevent blocking ([71f631d](https://github.com/thangvq95/thangvq-digital-hub/commit/71f631d6ef570b65fe4f548d652d9b42c867ea3d))
+- add headless prompt to hermes targets to prevent blocking ([c15988d](https://github.com/thangvq95/thangvq-digital-hub/commit/c15988de6097e7d55110823d8acc97e743c60124))
+- add headless prompt to hermes targets to prevent blocking ([3167f1a](https://github.com/thangvq95/thangvq-digital-hub/commit/3167f1aa98c59c7785c63e2ed88b557531d374ec))
 
 ## [1.2.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.1...v1.2.2) (2026-05-17)
 
-
 ### Bug Fixes
 
-* include ai-workspace and gateway in CI deploy targets ([340d5b7](https://github.com/thangvq95/thangvq-digital-hub/commit/340d5b7b75869d5a9cbcc9937157e34e3277898b))
-* include ai-workspace and gateway in CI deploy targets ([df2861c](https://github.com/thangvq95/thangvq-digital-hub/commit/df2861c48de23b4f9bb10756c197287a862ccb02))
-* include ai-workspace and gateway in CI deploy targets ([178dc7e](https://github.com/thangvq95/thangvq-digital-hub/commit/178dc7eac69a79ac6a23c1adcfb9c4c75e232fc4))
+- include ai-workspace and gateway in CI deploy targets ([340d5b7](https://github.com/thangvq95/thangvq-digital-hub/commit/340d5b7b75869d5a9cbcc9937157e34e3277898b))
+- include ai-workspace and gateway in CI deploy targets ([df2861c](https://github.com/thangvq95/thangvq-digital-hub/commit/df2861c48de23b4f9bb10756c197287a862ccb02))
+- include ai-workspace and gateway in CI deploy targets ([178dc7e](https://github.com/thangvq95/thangvq-digital-hub/commit/178dc7eac69a79ac6a23c1adcfb9c4c75e232fc4))
 
 ## [1.2.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.2.0...v1.2.1) (2026-05-17)
 
-
 ### Bug Fixes
 
-* correct hermes CLI arguments in listener ([76c784b](https://github.com/thangvq95/thangvq-digital-hub/commit/76c784b3e604aa939542013801c2ad16e5e2401d))
-* correct hermes CLI arguments in listener ([7460bc7](https://github.com/thangvq95/thangvq-digital-hub/commit/7460bc7457b20165937e1516553faaee442a5f16))
-* correct hermes CLI arguments in listener ([dc9cc98](https://github.com/thangvq95/thangvq-digital-hub/commit/dc9cc981b0d837870e903d87af1eaa4121a1e852))
+- correct hermes CLI arguments in listener ([76c784b](https://github.com/thangvq95/thangvq-digital-hub/commit/76c784b3e604aa939542013801c2ad16e5e2401d))
+- correct hermes CLI arguments in listener ([7460bc7](https://github.com/thangvq95/thangvq-digital-hub/commit/7460bc7457b20165937e1516553faaee442a5f16))
+- correct hermes CLI arguments in listener ([dc9cc98](https://github.com/thangvq95/thangvq-digital-hub/commit/dc9cc981b0d837870e903d87af1eaa4121a1e852))
 
 ## [1.2.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.1.0...v1.2.0) (2026-05-15)
 
-
 ### Features
 
-* improve documentation and secure webhook listener execution ([8369cec](https://github.com/thangvq95/thangvq-digital-hub/commit/8369cec73ea9a20054b069cfd77e178dce88a736))
-* improve documentation and secure webhook listener execution ([e4efc1e](https://github.com/thangvq95/thangvq-digital-hub/commit/e4efc1ec3a6f8f6d3340f6905668cc1437b72637))
+- improve documentation and secure webhook listener execution ([8369cec](https://github.com/thangvq95/thangvq-digital-hub/commit/8369cec73ea9a20054b069cfd77e178dce88a736))
+- improve documentation and secure webhook listener execution ([e4efc1e](https://github.com/thangvq95/thangvq-digital-hub/commit/e4efc1ec3a6f8f6d3340f6905668cc1437b72637))
 
 ## [1.1.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.3...v1.1.0) (2026-05-14)
 
-
 ### Features
 
-* **stack:** add /stack page with Remotion videos, tech grid, and architecture animations ([#8](https://github.com/thangvq95/thangvq-digital-hub/issues/8)) ([ef2aca2](https://github.com/thangvq95/thangvq-digital-hub/commit/ef2aca2500a38a064746fae5fc6bf8031bedc388))
+- **stack:** add /stack page with Remotion videos, tech grid, and architecture animations ([#8](https://github.com/thangvq95/thangvq-digital-hub/issues/8)) ([ef2aca2](https://github.com/thangvq95/thangvq-digital-hub/commit/ef2aca2500a38a064746fae5fc6bf8031bedc388))
 
 ## [1.0.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.2...v1.0.3) (2026-05-14)
 
-
 ### Bug Fixes
 
-* **ci:** add --repo flag to gh pr merge for no-checkout context ([c6e1433](https://github.com/thangvq95/thangvq-digital-hub/commit/c6e14337738ba3a0fb96bc83b3d5ba8c071b3540))
-* **ci:** extract PR number from JSON output for auto-merge ([b21cc7f](https://github.com/thangvq95/thangvq-digital-hub/commit/b21cc7f5bfd9b1835c599434aa79047e2dd465cd))
-* Use step output for Playwright version ([09795cb](https://github.com/thangvq95/thangvq-digital-hub/commit/09795cbc66d42640c68d44055db5621349735c64))
+- **ci:** add --repo flag to gh pr merge for no-checkout context ([c6e1433](https://github.com/thangvq95/thangvq-digital-hub/commit/c6e14337738ba3a0fb96bc83b3d5ba8c071b3540))
+- **ci:** extract PR number from JSON output for auto-merge ([b21cc7f](https://github.com/thangvq95/thangvq-digital-hub/commit/b21cc7f5bfd9b1835c599434aa79047e2dd465cd))
+- Use step output for Playwright version ([09795cb](https://github.com/thangvq95/thangvq-digital-hub/commit/09795cbc66d42640c68d44055db5621349735c64))
 
 ## [1.0.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.1...v1.0.2) (2026-05-14)
 
-
 ### Bug Fixes
 
-* improve repo sorting and fix stars_growth display ([efb1478](https://github.com/thangvq95/thangvq-digital-hub/commit/efb14785722f51d4b43719f737098e63cc004393))
-* use Partial&lt;RepositoryEntity&gt; for upsert updateData type ([474df88](https://github.com/thangvq95/thangvq-digital-hub/commit/474df8825a2e2670c2b4a650b3b10c57e9b1ee3c))
+- improve repo sorting and fix stars_growth display ([efb1478](https://github.com/thangvq95/thangvq-digital-hub/commit/efb14785722f51d4b43719f737098e63cc004393))
+- use Partial&lt;RepositoryEntity&gt; for upsert updateData type ([474df88](https://github.com/thangvq95/thangvq-digital-hub/commit/474df8825a2e2670c2b4a650b3b10c57e9b1ee3c))
 
 ## [1.0.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.0.0...v1.0.1) (2026-05-14)
 

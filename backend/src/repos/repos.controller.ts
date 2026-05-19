@@ -38,7 +38,13 @@ export class ReposController {
   @Patch(':fullName')
   patch(
     @Param('fullName') fullName: string,
-    @Body() body: { is_favorite?: boolean; is_archived?: boolean; has_new_release?: boolean; is_read?: boolean },
+    @Body()
+    body: {
+      is_favorite?: boolean;
+      is_archived?: boolean;
+      has_new_release?: boolean;
+      is_read?: boolean;
+    },
   ) {
     return this.reposService.patch(decodeURIComponent(fullName), body);
   }
@@ -84,4 +90,3 @@ export class ReposCompatController {
     return this.reposService.upsert(body.repositories);
   }
 }
-

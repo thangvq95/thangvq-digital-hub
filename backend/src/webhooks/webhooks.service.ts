@@ -3,14 +3,42 @@ import { Injectable, Logger } from '@nestjs/common';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
 
+interface SentryAlertPayload {
+  action?: string;
+  data?: {
+    issue?: {
+      title?: string;
+      project?: {
+        slug?: string;
+      };
+      level?: string;
+      firstSeen?: string;
+      permalink?: string;
+      culprit?: string;
+    };
+  };
+}
+
+interface GithubIssueResponse {
+  data: {
+    html_url: string;
+  };
+}
+
+interface GithubError {
+  message: string;
+  response?: {
+    data: unknown;
+  };
+}
+
 @Injectable()
 export class WebhooksService {
   private readonly logger = new Logger(WebhooksService.name);
 
   constructor(private readonly httpService: HttpService) {}
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  async handleSentryAlert(payload: any) {
+  async handleSentryAlert(payload: SentryAlertPayload) {
     this.logger.log('Received Sentry alert');
 
     // Check if it's an issue alert
@@ -58,8 +86,7 @@ ${issue.culprit}
     }
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const response: any = await firstValueFrom(
+      const response: GithubIssueResponse = await firstValueFrom(
         this.httpService.post(
           `https://api.github.com/repos/${repoOwner}/${repoName}/issues`,
           { title, body, labels: ['bug', 'sentry'] },
@@ -73,8 +100,7 @@ ${issue.culprit}
       );
       this.logger.log(`GitHub issue created: ${response.data.html_url}`);
     } catch (err) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = err as any;
+      const error = err as GithubError;
       this.logger.error(`Failed to create GitHub issue: ${error.message}`);
       if (error.response) {
         this.logger.error(

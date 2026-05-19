@@ -9,7 +9,9 @@ import {
 @Injectable()
 export class ApiKeyGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<{ headers: Record<string, string> }>();
+    const request = context
+      .switchToHttp()
+      .getRequest<{ headers: Record<string, string> }>();
     const apiKey = request.headers['x-api-key'];
     if (!apiKey || apiKey !== process.env.SYNC_API_KEY) {
       throw new UnauthorizedException('Invalid API key');
