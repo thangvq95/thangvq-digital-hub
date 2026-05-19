@@ -16,24 +16,16 @@ const TechStackSection: React.FC = () => {
         >
           Technologies and tools I use daily to build production applications.
         </p>
-        <div className="flex justify-center mb-16">
-          <a
-            href="/stack"
-            className="px-6 py-2.5 rounded-full font-medium text-sm transition-all duration-200 hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
-            style={{ border: "1px solid var(--accent)", color: "var(--accent)", background: "var(--accent-glow)" }}
-          >
-            <span>View Interactive Architecture & Stack</span>
-            <span>→</span>
-          </a>
-        </div>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {TECH_STACK.map((category, i) => (
             <div
               key={category.name}
               data-testid={`tech-category-${i}`}
               className="p-6 rounded-2xl glass card-hover"
-              style={{ border: "1px solid var(--border)", animationDelay: `${i * 80}ms` }}
+              style={{
+                border: "1px solid var(--border)",
+                animationDelay: `${i * 80}ms`,
+              }}
             >
               <h3
                 className="text-base font-semibold mb-4"

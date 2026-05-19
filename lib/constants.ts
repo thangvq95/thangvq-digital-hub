@@ -72,28 +72,32 @@ export const EXPERIENCE: {
     company: "Care",
     role: "Flutter Engineer",
     duration: "~5.5 years",
-    highlights: "Primary mobile engineer. Built CI/CD, implemented design patterns and clean architecture across multiple production releases.",
+    highlights:
+      "Primary mobile engineer. Built CI/CD, implemented design patterns and clean architecture across multiple production releases.",
   },
   {
     period: "Jul 2019 — Nov 2020",
     company: "Rovo",
     role: "Flutter Engineer",
     duration: "1y 5m",
-    highlights: "Sports activity booking app. Full CI/CD pipeline, design patterns, cross-platform delivery.",
+    highlights:
+      "Sports activity booking app. Full CI/CD pipeline, design patterns, cross-platform delivery.",
   },
   {
     period: "Feb 2018 — Jun 2019",
     company: "UpUp App",
     role: "Flutter Engineer",
     duration: "1y 5m",
-    highlights: "Early Flutter adopter. Built from ground up during Flutter beta era.",
+    highlights:
+      "Early Flutter adopter. Built from ground up during Flutter beta era.",
   },
   {
     period: "Oct 2016 — Jan 2018",
     company: "TMA Solutions",
     role: "Android Engineer",
     duration: "1y 4m",
-    highlights: "Android native development with Java. Enterprise project delivery.",
+    highlights:
+      "Android native development with Java. Enterprise project delivery.",
   },
 ];
 
@@ -103,6 +107,8 @@ export const PROJECTS: {
   description: string;
   tags: string[];
   url?: string;
+  /** undefined = no stack page; "" = default (digital hub); "slug" = ?project=slug */
+  stackProject?: string | null;
 }[] = [
   {
     title: "Sổ Giáo Dân",
@@ -110,6 +116,7 @@ export const PROJECTS: {
       "Full-stack parish management platform with NestJS API, PostgreSQL, and Next.js dashboard.",
     tags: ["NestJS", "Next.js", "PostgreSQL", "Docker"],
     url: "https://sogioadan.com",
+    stackProject: "sogiaodan",
   },
   {
     title: "ThangVQ Digital Hub",
@@ -117,18 +124,21 @@ export const PROJECTS: {
       "Developer intelligence platform with AI-powered trending repo analysis and release monitoring.",
     tags: ["Next.js", "Tailwind", "Hermes", "Playwright"],
     url: "https://thangvq95.page",
+    stackProject: "",
   },
   {
     title: "Care Mobile App",
     description:
       "Production Flutter app serving thousands of users. Built CI/CD pipelines and clean architecture.",
     tags: ["Flutter", "Dart", "Riverpod", "CI/CD"],
+    stackProject: "care-health",
   },
   {
     title: "Self-Hosted Infrastructure",
     description:
       "Mac Mini M4 Pro production server running Docker, Cloudflare Tunnels, and autonomous AI agents.",
     tags: ["Docker", "Cloudflare", "GitHub Actions", "Mac Mini"],
+    stackProject: null,
   },
 ];
 
