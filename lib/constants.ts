@@ -54,13 +54,7 @@ export const TECH_STACK: { name: string; items: string[] }[] = [
   },
   {
     name: "Backend & Infra",
-    items: [
-      "Firebase",
-      "SQL",
-      "Self Host 🎓",
-      "Docker",
-      "Cloudflare Tunnels 🎓",
-    ],
+    items: ["Firebase", "SQL", "Self Host", "Docker", "Cloudflare Tunnels"],
   },
   {
     name: "Tools & APIs",
@@ -72,7 +66,6 @@ export const TECH_STACK: { name: string; items: string[] }[] = [
       "Google Analytics",
       "Antigravity",
       "Claude Code",
-      "9router",
     ],
   },
   {

@@ -34,19 +34,37 @@ const TechStackSection: React.FC = () => {
                 {category.name}
               </h3>
               <div className="flex flex-wrap gap-2">
-                {category.items.map((tech) => (
-                  <span
-                    key={tech}
-                    className="text-xs px-3 py-1.5 rounded-full transition-colors duration-200"
-                    style={{
-                      background: "var(--bg-card)",
-                      color: "var(--text-secondary)",
-                      border: "1px solid var(--border)",
-                    }}
-                  >
-                    {tech}
-                  </span>
-                ))}
+                {category.items.map((tech) => {
+                  const isSelfStudy = tech.endsWith("🎓");
+                  const displayName = isSelfStudy
+                    ? tech.slice(0, -1).trim()
+                    : tech;
+                  return (
+                    <span
+                      key={tech}
+                      className="text-xs px-3 py-1.5 rounded-full transition-all duration-200 flex items-center gap-1"
+                      style={{
+                        background: isSelfStudy
+                          ? "var(--accent-glow)"
+                          : "var(--bg-card)",
+                        color: isSelfStudy
+                          ? "var(--accent)"
+                          : "var(--text-secondary)",
+                        border: isSelfStudy
+                          ? "1px solid var(--accent)"
+                          : "1px solid var(--border)",
+                      }}
+                      title={
+                        isSelfStudy
+                          ? `${displayName} (Self-Taught / Homelab)`
+                          : undefined
+                      }
+                    >
+                      {displayName}
+                      {isSelfStudy && <span className="text-[11px]">🎓</span>}
+                    </span>
+                  );
+                })}
               </div>
             </div>
           ))}
