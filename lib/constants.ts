@@ -39,7 +39,14 @@ export type RankPeriod = keyof typeof RANK_PERIODS;
 export const TECH_STACK: { name: string; items: string[] }[] = [
   {
     name: "Mobile (Primary)",
-    items: ["Flutter", "Dart", "Riverpod", "Bloc", "Clean Architecture"],
+    items: [
+      "Flutter",
+      "Dart",
+      "Riverpod",
+      "Bloc",
+      "GetX",
+      "Clean Architecture",
+    ],
   },
   {
     name: "Mobile (Android)",
@@ -51,7 +58,16 @@ export const TECH_STACK: { name: string; items: string[] }[] = [
   },
   {
     name: "Tools & APIs",
-    items: ["Android Studio", "Figma", "Google Maps API", "Google Analytics"],
+    items: [
+      "Android Studio",
+      "VSCode",
+      "Figma",
+      "Google Maps API",
+      "Google Analytics",
+      "Antigravity",
+      "Claude Code",
+      "9router",
+    ],
   },
   {
     name: "Workflow",
@@ -109,6 +125,7 @@ export const PROJECTS: {
   url?: string;
   /** undefined = no stack page; "" = default (digital hub); "slug" = ?project=slug */
   stackProject?: string | null;
+  image?: string;
 }[] = [
   {
     title: "Sổ Giáo Dân",
@@ -132,8 +149,9 @@ export const PROJECTS: {
       "Vercel",
       "GitNexus",
     ],
-    url: "https://thangvq95.page",
+    url: "https://thangvq95.page/tech",
     stackProject: "",
+    image: "/screenshots/techtrend.png",
   },
   {
     title: "Care Mobile App",
