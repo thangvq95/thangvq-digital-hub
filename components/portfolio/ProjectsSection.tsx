@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { PROJECTS } from "@/lib/constants";
 import ProjectDialog from "./ProjectDialog";
 
@@ -25,52 +26,85 @@ const ProjectsSection: React.FC = () => {
           A selection of projects that showcase my engineering approach.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-          {PROJECTS.map((project, i) => (
-            <button
-              key={project.title}
-              data-testid={`project-card-${i}`}
-              onClick={() => setSelected(project)}
-              className="p-6 rounded-2xl glass card-hover group text-left w-full cursor-pointer transition-all duration-200"
-              style={{ border: "1px solid var(--border)" }}
-              aria-label={`View details for ${project.title}`}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <h3
-                  className="text-lg font-semibold"
-                  style={{ color: "var(--text-primary)" }}
-                >
-                  {project.title}
-                </h3>
-                {/* Visual hint that card is clickable */}
-                <span
-                  className="opacity-40 group-hover:opacity-80 transition-opacity text-xs mt-1"
-                  style={{ color: "var(--accent)" }}
-                >
-                  ↗
-                </span>
-              </div>
-              <p
-                className="text-sm mb-4"
-                style={{ color: "var(--text-secondary)" }}
+          {PROJECTS.map((project, i) => {
+            const stackUrl =
+              project.stackProject !== null &&
+              project.stackProject !== undefined
+                ? project.stackProject === ""
+                  ? "/stack"
+                  : `/stack?project=${project.stackProject}`
+                : null;
+
+            return (
+              <div
+                key={project.title}
+                data-testid={`project-card-${i}`}
+                onClick={() => setSelected(project)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setSelected(project);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                className="p-6 rounded-2xl glass card-hover group text-left w-full cursor-pointer transition-all duration-200"
+                style={{ border: "1px solid var(--border)" }}
+                aria-label={`View details for ${project.title}`}
               >
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2.5 py-1 rounded-full"
-                    style={{
-                      background: "var(--accent-glow)",
-                      color: "var(--accent)",
-                    }}
+                <div className="flex items-start justify-between mb-3">
+                  <h3
+                    className="text-lg font-semibold"
+                    style={{ color: "var(--text-primary)" }}
                   >
-                    {tag}
+                    {project.title}
+                  </h3>
+                  {/* Visual hint that card is clickable */}
+                  <span
+                    className="opacity-40 group-hover:opacity-80 transition-opacity text-xs mt-1"
+                    style={{ color: "var(--accent)" }}
+                  >
+                    ↗
                   </span>
-                ))}
+                </div>
+                <p
+                  className="text-sm mb-4"
+                  style={{ color: "var(--text-secondary)" }}
+                >
+                  {project.description}
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-xs px-2.5 py-1 rounded-full"
+                      style={{
+                        background: "var(--accent-glow)",
+                        color: "var(--accent)",
+                      }}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                  {stackUrl && (
+                    <Link
+                      href={stackUrl}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                      }}
+                      className="text-xs px-2.5 py-1 rounded-full hover:brightness-110 active:scale-95 transition-all duration-150 font-semibold"
+                      style={{
+                        background: "var(--accent)",
+                        color: "#000",
+                      }}
+                    >
+                      More →
+                    </Link>
+                  )}
+                </div>
               </div>
-            </button>
-          ))}
+            );
+          })}
         </div>
       </div>
 
