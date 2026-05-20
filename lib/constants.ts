@@ -122,7 +122,16 @@ export const PROJECTS: {
     title: "ThangVQ Digital Hub",
     description:
       "Developer intelligence platform with AI-powered trending repo analysis and release monitoring.",
-    tags: ["Next.js", "Tailwind", "Hermes", "Playwright"],
+    tags: [
+      "Next.js",
+      "Tailwind",
+      "Hermes",
+      "Playwright",
+      "VPS Digital Ocean",
+      "Cloudflare",
+      "Vercel",
+      "GitNexus",
+    ],
     url: "https://thangvq95.page",
     stackProject: "",
   },
