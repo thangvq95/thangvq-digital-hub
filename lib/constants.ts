@@ -68,26 +68,26 @@ export const EXPERIENCE: {
   highlights: string;
 }[] = [
   {
-    period: "Dec 2021 — Present",
+    period: "Feb 2022 — Present",
     company: "Care",
     role: "Flutter Engineer",
-    duration: "~4.5 years",
+    duration: "~4.3 years",
     highlights:
       "Primary mobile engineer. Built CI/CD, implemented design patterns and clean architecture across multiple production releases.",
   },
   {
-    period: "Dec 2019 — Dec 2021",
+    period: "Dec 2019 — Jan 2022",
     company: "Rovo",
     role: "Flutter Engineer",
-    duration: "2y",
+    duration: "2y 2m",
     highlights:
       "Sports activity booking app. Full CI/CD pipeline, design patterns, cross-platform delivery.",
   },
   {
-    period: "Dec 2018 — Dec 2019",
+    period: "Dec 2018 — Nov 2019",
     company: "UpUp App",
     role: "Flutter Engineer",
-    duration: "1y 1m",
+    duration: "1y",
     highlights:
       "Early Flutter adopter. Built from ground up during Flutter release 1.0.0 stable.",
   },
