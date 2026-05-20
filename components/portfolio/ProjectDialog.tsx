@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { ExternalLink, X, Layers } from "lucide-react";
+import { buildStackUrl } from "@/lib/utils";
 
 interface ProjectDialogProps {
   project: {
@@ -12,12 +13,6 @@ interface ProjectDialogProps {
     stackProject?: string | null;
   };
   onClose: () => void;
-}
-
-function buildStackUrl(stackProject: string | null | undefined): string | null {
-  if (stackProject === null || stackProject === undefined) return null;
-  if (stackProject === "") return "https://www.thangvq95.page/stack";
-  return `https://www.thangvq95.page/stack?project=${stackProject}`;
 }
 
 export default function ProjectDialog({
