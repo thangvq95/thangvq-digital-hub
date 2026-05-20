@@ -54,7 +54,7 @@ export const TECH_STACK: { name: string; items: string[] }[] = [
   },
   {
     name: "Backend & Infra",
-    items: ["Firebase", "SQL", "CI/CD", "Docker", "Cloudflare Tunnels"],
+    items: ["Firebase", "SQL", "Self Host", "Docker", "Cloudflare Tunnels"],
   },
   {
     name: "Tools & APIs",
