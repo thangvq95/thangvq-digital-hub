@@ -125,7 +125,8 @@ export const PROJECTS: {
   url?: string;
   /** undefined = no stack page; "" = default (digital hub); "slug" = ?project=slug */
   stackProject?: string | null;
-  image?: string;
+  /** Single image (legacy) or multiple images for swipeable carousel */
+  images?: string[];
 }[] = [
   {
     title: "Sổ Giáo Dân",
@@ -151,14 +152,22 @@ export const PROJECTS: {
     ],
     url: "https://thangvq95.page/tech",
     stackProject: "",
-    image: "/screenshots/techtrend.png",
+    images: ["/screenshots/techtrend.png"],
   },
   {
     title: "Care Mobile App",
     description:
-      "Production Flutter app serving thousands of users. Built CI/CD pipelines and clean architecture.",
+      "Healthcare app (Raffles Connect) serving thousands of patients in Singapore. Features GP teleconsult, eQueue management, and health screening packages. Built with Flutter, clean architecture, and full CI/CD pipeline.",
     tags: ["Flutter", "Dart", "Riverpod", "CI/CD"],
+    url: "https://apps.apple.com/vn/app/raffles-connect/id1444394990",
     stackProject: "care-health",
+    images: [
+      "/screenshots/care-health/01.png",
+      "/screenshots/care-health/02.png",
+      "/screenshots/care-health/03.png",
+      "/screenshots/care-health/04.png",
+      "/screenshots/care-health/05.png",
+    ],
   },
   {
     title: "Self-Hosted Infrastructure",

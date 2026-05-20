@@ -1,7 +1,13 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { ExternalLink, X, Layers } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import {
+  ExternalLink,
+  X,
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { buildStackUrl } from "@/lib/utils";
 
 interface ProjectDialogProps {
@@ -11,7 +17,7 @@ interface ProjectDialogProps {
     tags: string[];
     url?: string;
     stackProject?: string | null;
-    image?: string;
+    images?: string[];
   };
   onClose: () => void;
 }
@@ -22,20 +28,33 @@ export default function ProjectDialog({
 }: ProjectDialogProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
   const stackUrl = buildStackUrl(project.stackProject);
+  const images = project.images ?? [];
+  const hasImages = images.length > 0;
+  const isCarousel = images.length > 1;
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Close on Escape
+  const prev = useCallback(() => {
+    setActiveIndex((i) => (i - 1 + images.length) % images.length);
+  }, [images.length]);
+
+  const next = useCallback(() => {
+    setActiveIndex((i) => (i + 1) % images.length);
+  }, [images.length]);
+
+  // Close on Escape, arrow-key navigation
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
+      if (isCarousel && e.key === "ArrowLeft") prev();
+      if (isCarousel && e.key === "ArrowRight") next();
     };
     document.addEventListener("keydown", handler);
-    // Prevent body scroll
     document.body.style.overflow = "hidden";
     return () => {
       document.removeEventListener("keydown", handler);
       document.body.style.overflow = "";
     };
-  }, [onClose]);
+  }, [onClose, isCarousel, prev, next]);
 
   // Close on backdrop click
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -102,19 +121,83 @@ export default function ProjectDialog({
           ))}
         </div>
 
-        {/* Project Screenshot */}
-        {project.image && (
-          <div
-            className="mb-5 overflow-hidden rounded-xl border"
-            style={{ borderColor: "var(--border)" }}
-          >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={project.image}
-              alt={`${project.title} screenshot`}
-              className="w-full h-auto block"
-              loading="lazy"
-            />
+        {/* Image Carousel */}
+        {hasImages && (
+          <div className="mb-5">
+            {/* Main image — clickable to open URL */}
+            <a
+              href={project.url ?? "#"}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block relative overflow-hidden rounded-xl border group"
+              style={{ borderColor: "var(--border)" }}
+              aria-label={`Open ${project.title}`}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                key={activeIndex}
+                src={images[activeIndex]}
+                alt={`${project.title} screenshot ${activeIndex + 1}`}
+                className="w-full h-auto block transition-opacity duration-200"
+                loading="lazy"
+              />
+              {/* Subtle hover overlay */}
+              <div
+                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
+                style={{ background: "rgba(0,0,0,0.25)" }}
+              >
+                <ExternalLink size={22} color="#fff" />
+              </div>
+            </a>
+
+            {/* Carousel controls */}
+            {isCarousel && (
+              <div className="flex items-center justify-between mt-3 px-1">
+                {/* Prev */}
+                <button
+                  onClick={prev}
+                  className="p-1.5 rounded-lg transition-colors duration-150 cursor-pointer"
+                  style={{
+                    background: "var(--accent-glow)",
+                    color: "var(--accent)",
+                  }}
+                  aria-label="Previous screenshot"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                {/* Dots */}
+                <div className="flex gap-1.5">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveIndex(i)}
+                      className="rounded-full transition-all duration-200 cursor-pointer"
+                      style={{
+                        width: i === activeIndex ? "18px" : "6px",
+                        height: "6px",
+                        background:
+                          i === activeIndex ? "var(--accent)" : "var(--border)",
+                      }}
+                      aria-label={`Go to screenshot ${i + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Next */}
+                <button
+                  onClick={next}
+                  className="p-1.5 rounded-lg transition-colors duration-150 cursor-pointer"
+                  style={{
+                    background: "var(--accent-glow)",
+                    color: "var(--accent)",
+                  }}
+                  aria-label="Next screenshot"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
           </div>
         )}
 
