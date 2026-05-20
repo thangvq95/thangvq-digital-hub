@@ -129,7 +129,7 @@ export default function ProjectDialog({
               href={project.url ?? "#"}
               target="_blank"
               rel="noopener noreferrer"
-              className="block relative overflow-hidden rounded-xl border group"
+              className="block relative overflow-hidden rounded-xl border group bg-black/20 flex justify-center items-center"
               style={{ borderColor: "var(--border)" }}
               aria-label={`Open ${project.title}`}
             >
@@ -138,14 +138,11 @@ export default function ProjectDialog({
                 key={activeIndex}
                 src={images[activeIndex]}
                 alt={`${project.title} screenshot ${activeIndex + 1}`}
-                className="w-full h-auto block transition-opacity duration-200"
+                className="max-h-[380px] w-auto block object-contain transition-opacity duration-200"
                 loading="lazy"
               />
               {/* Subtle hover overlay */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
-                style={{ background: "rgba(0,0,0,0.25)" }}
-              >
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40">
                 <ExternalLink size={22} color="#fff" />
               </div>
             </a>
