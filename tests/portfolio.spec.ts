@@ -42,21 +42,26 @@ test.describe("Portfolio Page", () => {
       projects.getByRole("heading", { name: /projects/i }),
     ).toBeVisible();
 
-    // Find the card for ThangVQ Digital Hub (index 1)
-    const hubCard = page.locator('[data-testid="project-card-1"]');
+    // Find the card for ThangVQ Digital Hub by its visible title (stable across reorders)
+    const hubCard = page.locator("#projects [role='button']").filter({
+      has: page.getByRole("heading", { name: "ThangVQ Digital Hub" }),
+    });
     await expect(hubCard).toBeVisible();
 
-    // Check if "More →" button exists
-    const moreLink = hubCard.locator("a", { hasText: "More →" });
+    // Check if "More →" link exists (role-based, resilient to markup changes)
+    const moreLink = hubCard.getByRole("link", { name: "More →" });
     await expect(moreLink).toBeVisible();
 
     // Click "More →" and check it redirects to /stack
     await moreLink.click();
     await expect(page).toHaveURL(/\/stack$/);
 
-    // Navigate back and click the card itself to verify modal dialog opens
+    // Navigate back and click the card body to verify modal dialog opens
     await page.goto("/");
-    await page.locator('[data-testid="project-card-1"]').click();
+    const hubCardAgain = page.locator("#projects [role='button']").filter({
+      has: page.getByRole("heading", { name: "ThangVQ Digital Hub" }),
+    });
+    await hubCardAgain.click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
   });

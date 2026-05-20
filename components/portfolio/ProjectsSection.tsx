@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PROJECTS } from "@/lib/constants";
+import { buildStackUrl } from "@/lib/utils";
 import ProjectDialog from "./ProjectDialog";
 
 type Project = (typeof PROJECTS)[number];
@@ -27,13 +28,7 @@ const ProjectsSection: React.FC = () => {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {PROJECTS.map((project, i) => {
-            const stackUrl =
-              project.stackProject !== null &&
-              project.stackProject !== undefined
-                ? project.stackProject === ""
-                  ? "/stack"
-                  : `/stack?project=${project.stackProject}`
-                : null;
+            const stackUrl = buildStackUrl(project.stackProject);
 
             return (
               <div
