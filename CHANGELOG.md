@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.4.0...v1.4.1) (2026-05-20)
+
+
+### Bug Fixes
+
+* shared buildStackUrl helper with encodeURIComponent and stable test locators ([#96](https://github.com/thangvq95/thangvq-digital-hub/issues/96)) ([9182619](https://github.com/thangvq95/thangvq-digital-hub/commit/9182619d1f41d9474a55059bb785321c8781f9ee))
+
 ## [1.4.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.23...v1.4.0) (2026-05-20)
 
 
