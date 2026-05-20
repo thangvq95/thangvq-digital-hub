@@ -11,6 +11,7 @@ interface ProjectDialogProps {
     tags: string[];
     url?: string;
     stackProject?: string | null;
+    image?: string;
   };
   onClose: () => void;
 }
@@ -86,7 +87,7 @@ export default function ProjectDialog({
         </p>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-5">
           {project.tags.map((tag) => (
             <span
               key={tag}
@@ -100,6 +101,22 @@ export default function ProjectDialog({
             </span>
           ))}
         </div>
+
+        {/* Project Screenshot */}
+        {project.image && (
+          <div
+            className="mb-5 overflow-hidden rounded-xl border"
+            style={{ borderColor: "var(--border)" }}
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={project.image}
+              alt={`${project.title} screenshot`}
+              className="w-full h-auto block"
+              loading="lazy"
+            />
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex flex-col gap-3">
