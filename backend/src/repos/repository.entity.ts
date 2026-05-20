@@ -73,4 +73,3 @@ export class RepositoryEntity {
   @UpdateDateColumn({ type: 'timestamptz' })
   updated_at: Date;
 }
-

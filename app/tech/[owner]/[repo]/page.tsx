@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useId,
+  ComponentPropsWithoutRef,
+  useRef,
+} from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
@@ -12,10 +19,12 @@ import remarkMath from "remark-math";
 import rehypeKatex from "rehype-katex";
 import { Check, Copy } from "lucide-react";
 import mermaid from "mermaid";
-import { useRef } from "react";
 import { sanitizeStarsGrowth } from "@/lib/utils";
 
-const PreWithCopy = ({ children, ...props }: any) => {
+const PreWithCopy = ({
+  children,
+  ...props
+}: ComponentPropsWithoutRef<"pre">) => {
   const preRef = useRef<HTMLPreElement>(null);
   const [copied, setCopied] = useState(false);
 
@@ -36,7 +45,11 @@ const PreWithCopy = ({ children, ...props }: any) => {
       >
         {copied ? <Check size={14} /> : <Copy size={14} />}
       </button>
-      <pre ref={preRef} {...props} className="bg-black/30 rounded-xl p-4 overflow-x-auto text-sm m-0 border border-white/5">
+      <pre
+        ref={preRef}
+        {...props}
+        className="bg-black/30 rounded-xl p-4 overflow-x-auto text-sm m-0 border border-white/5"
+      >
         {children}
       </pre>
     </div>
@@ -44,20 +57,36 @@ const PreWithCopy = ({ children, ...props }: any) => {
 };
 
 const Mermaid = ({ chart }: { chart: string }) => {
-  const [svg, setSvg] = useState<string>('');
-  const id = `mermaid-${Math.random().toString(36).substring(2, 9)}`;
+  const [svg, setSvg] = useState<string>("");
+  const baseId = useId();
+  const id = `mermaid-${baseId.replace(/:/g, "")}`;
 
   useEffect(() => {
-    mermaid.initialize({ startOnLoad: false, theme: 'dark' });
-    mermaid.render(id, chart).then((result) => {
-      setSvg(result.svg);
-    }).catch(e => {
-       setSvg(`<div style="color:red">Error rendering diagram</div><pre>${chart}</pre>`);
-    });
-  }, [chart]);
+    mermaid.initialize({ startOnLoad: false, theme: "dark" });
+    mermaid
+      .render(id, chart)
+      .then((result) => {
+        setSvg(result.svg);
+      })
+      .catch(() => {
+        setSvg(
+          `<div style="color:red">Error rendering diagram</div><pre>${chart}</pre>`,
+        );
+      });
+  }, [chart, id]);
 
-  if (!svg) return <div className="animate-pulse h-32 bg-white/5 rounded-xl flex items-center justify-center text-xs text-white/50">Rendering diagram...</div>;
-  return <div className="mermaid-diagram my-6 flex justify-center bg-black/20 p-6 rounded-xl" dangerouslySetInnerHTML={{ __html: svg }} />;
+  if (!svg)
+    return (
+      <div className="animate-pulse h-32 bg-white/5 rounded-xl flex items-center justify-center text-xs text-white/50">
+        Rendering diagram...
+      </div>
+    );
+  return (
+    <div
+      className="mermaid-diagram my-6 flex justify-center bg-black/20 p-6 rounded-xl"
+      dangerouslySetInnerHTML={{ __html: svg }}
+    />
+  );
 };
 
 export default function RepoDetailPage() {
@@ -76,13 +105,16 @@ export default function RepoDetailPage() {
         setRepoData(data);
         if (!data.is_read) {
           api.repos.patch(fullName, { is_read: true }).then((updated) => {
-            setRepoData((prev) => (prev ? { ...prev, is_read: true } : updated));
+            setRepoData((prev) =>
+              prev ? { ...prev, is_read: true } : updated,
+            );
           });
         }
         // Auto-sync if no release tag yet
         if (!data.latest_release_tag) {
           setIsSyncingRelease(true);
-          api.repos.syncRelease(fullName)
+          api.repos
+            .syncRelease(fullName)
             .then(setRepoData)
             .catch(console.error)
             .finally(() => setIsSyncingRelease(false));
@@ -135,19 +167,6 @@ export default function RepoDetailPage() {
     // Trigger async analysis — BE will process in background
     const updated = await api.repos.analyze(fullName);
     setRepoData(updated); // status will be 'analyzing', polling kicks in
-  }, [repoData, fullName]);
-
-  const handleViewChangelog = useCallback(async () => {
-    if (!repoData) return;
-    // Dismiss new release highlight
-    if (repoData.has_new_release) {
-      const updated = await api.repos.patch(fullName, {
-        has_new_release: false,
-      });
-      setRepoData(updated);
-    }
-    // Open GitHub releases page
-    window.open(`https://github.com/${fullName}/releases`, "_blank");
   }, [repoData, fullName]);
 
   const handleSyncRelease = useCallback(async () => {
@@ -240,7 +259,10 @@ export default function RepoDetailPage() {
           </div>
         </div>
 
-        <p className="text-sm sm:text-base mb-4" style={{ color: "var(--text-secondary)" }}>
+        <p
+          className="text-sm sm:text-base mb-4"
+          style={{ color: "var(--text-secondary)" }}
+        >
           {repoData.description ?? "No description available."}
         </p>
 
@@ -282,10 +304,10 @@ export default function RepoDetailPage() {
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 sm:flex-none px-4 sm:px-6 py-2.5 rounded-xl text-sm font-semibold transition-all hover:-translate-y-0.5 inline-flex items-center justify-center gap-2.5 border"
-            style={{ 
-              background: "var(--bg-card)", 
+            style={{
+              background: "var(--bg-card)",
               color: "var(--text-primary)",
-              borderColor: "var(--border)"
+              borderColor: "var(--border)",
             }}
           >
             <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
@@ -322,8 +344,8 @@ export default function RepoDetailPage() {
             className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-neutral-800 transition-all disabled:opacity-50 cursor-pointer"
             title="Sync latest release"
           >
-            <svg 
-              className={`w-4 h-4 fill-none stroke-current ${isSyncingRelease ? 'animate-spin' : ''}`}
+            <svg
+              className={`w-4 h-4 fill-none stroke-current ${isSyncingRelease ? "animate-spin" : ""}`}
               viewBox="0 0 24 24"
               strokeWidth="2"
               strokeLinecap="round"
@@ -336,8 +358,16 @@ export default function RepoDetailPage() {
 
         {isSyncingRelease && !repoData.latest_release_tag ? (
           <div className="py-8 flex flex-col items-center justify-center gap-3">
-             <div className="w-6 h-6 border-2 border-t-transparent animate-spin rounded-full" style={{ borderColor: 'var(--accent)', borderTopColor: 'transparent' }} />
-             <p className="text-sm" style={{ color: "var(--text-muted)" }}>Syncing latest release...</p>
+            <div
+              className="w-6 h-6 border-2 border-t-transparent animate-spin rounded-full"
+              style={{
+                borderColor: "var(--accent)",
+                borderTopColor: "transparent",
+              }}
+            />
+            <p className="text-sm" style={{ color: "var(--text-muted)" }}>
+              Syncing latest release...
+            </p>
           </div>
         ) : repoData.latest_release_tag ? (
           <div className="space-y-4">
@@ -348,7 +378,7 @@ export default function RepoDetailPage() {
                   style={{
                     background: "var(--bg-card)",
                     color: "var(--text-primary)",
-                    borderColor: "var(--border)"
+                    borderColor: "var(--border)",
                   }}
                 >
                   {repoData.latest_release_tag}
@@ -358,7 +388,7 @@ export default function RepoDetailPage() {
 
             {repoData.latest_release_body && (
               <div className="space-y-6">
-                <div 
+                <div
                   className="p-4 sm:p-8 rounded-2xl bg-[#0a0a0c]/40 border border-white/5 text-[13px] max-h-[500px] sm:max-h-[600px] overflow-y-auto 
                              prose prose-invert prose-sm max-w-none 
                              scrollbar-thin scrollbar-thumb-white/10 scrollbar-track-transparent
@@ -401,9 +431,12 @@ export default function RepoDetailPage() {
             className="w-full py-10 flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed transition-all hover:bg-white/5 group cursor-pointer"
             style={{ borderColor: "var(--border)" }}
           >
-            <div 
-              className={`p-4 rounded-full glass group-hover:scale-110 transition-transform ${isSyncingRelease ? 'animate-spin' : ''}`}
-              style={{ background: "var(--bg-card)", border: "1px solid var(--border)" }}
+            <div
+              className={`p-4 rounded-full glass group-hover:scale-110 transition-transform ${isSyncingRelease ? "animate-spin" : ""}`}
+              style={{
+                background: "var(--bg-card)",
+                border: "1px solid var(--border)",
+              }}
             >
               <svg
                 className="w-8 h-8 fill-none stroke-current"
@@ -417,8 +450,20 @@ export default function RepoDetailPage() {
               </svg>
             </div>
             <div className="text-center">
-              <p className="font-semibold text-lg" style={{ color: "var(--text-primary)" }}>{isSyncingRelease ? 'Syncing...' : 'No release info yet'}</p>
-              <p className="text-sm mt-1" style={{ color: "var(--text-muted)" }}>{isSyncingRelease ? 'Fetching from GitHub...' : 'Click to sync latest release from GitHub'}</p>
+              <p
+                className="font-semibold text-lg"
+                style={{ color: "var(--text-primary)" }}
+              >
+                {isSyncingRelease ? "Syncing..." : "No release info yet"}
+              </p>
+              <p
+                className="text-sm mt-1"
+                style={{ color: "var(--text-muted)" }}
+              >
+                {isSyncingRelease
+                  ? "Fetching from GitHub..."
+                  : "Click to sync latest release from GitHub"}
+              </p>
             </div>
           </button>
         )}
@@ -440,7 +485,10 @@ export default function RepoDetailPage() {
           <div className="text-center py-12">
             <div
               className="inline-block w-8 h-8 rounded-full border-2 border-t-transparent animate-spin mb-4"
-              style={{ borderColor: "var(--accent)", borderTopColor: "transparent" }}
+              style={{
+                borderColor: "var(--accent)",
+                borderTopColor: "transparent",
+              }}
             />
             <p className="text-sm" style={{ color: "var(--text-muted)" }}>
               AI is reading and analyzing this repository...
@@ -464,10 +512,13 @@ export default function RepoDetailPage() {
                 components={{
                   pre: PreWithCopy,
                   code(props) {
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     const { children, className, node, ...rest } = props;
                     const match = /language-(\w+)/.exec(className || "");
                     if (match && match[1] === "mermaid") {
-                      return <Mermaid chart={String(children).replace(/\n$/, "")} />;
+                      return (
+                        <Mermaid chart={String(children).replace(/\n$/, "")} />
+                      );
                     }
                     return (
                       <code {...rest} className={className}>
@@ -492,10 +543,7 @@ export default function RepoDetailPage() {
               🔄 Re-analyze
             </button>
             {repoData.analyze_status === "failed" && (
-              <p
-                className="text-xs mt-2"
-                style={{ color: "hsl(0, 72%, 51%)" }}
-              >
+              <p className="text-xs mt-2" style={{ color: "hsl(0, 72%, 51%)" }}>
                 Previous analysis failed. Try again.
               </p>
             )}
@@ -515,10 +563,7 @@ export default function RepoDetailPage() {
               ✨ Magic Analyze
             </button>
             {repoData.analyze_status === "failed" && (
-              <p
-                className="text-xs mt-3"
-                style={{ color: "hsl(0, 72%, 51%)" }}
-              >
+              <p className="text-xs mt-3" style={{ color: "hsl(0, 72%, 51%)" }}>
                 Previous analysis failed. Try again.
               </p>
             )}

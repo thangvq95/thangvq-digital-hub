@@ -31,7 +31,7 @@ const HeroSection: React.FC = () => {
           className="text-sm font-medium tracking-widest uppercase mb-4"
           style={{ color: "var(--accent)" }}
         >
-          Software Engineer &middot; 10+ Years in Production
+          Software Engineer &middot; 9+ Years in Production
         </p>
         <h1 className="text-6xl sm:text-8xl lg:text-9xl font-bold tracking-tight mb-6">
           <span className="gradient-text">Thang VQ</span>

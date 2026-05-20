@@ -2,87 +2,75 @@
 
 ## [1.3.23](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.22...v1.3.23) (2026-05-18)
 
-
 ### Bug Fixes
 
-* skip playwright on release-please version bump PRs ([#90](https://github.com/thangvq95/thangvq-digital-hub/issues/90)) ([8affde0](https://github.com/thangvq95/thangvq-digital-hub/commit/8affde022ef63f2c987e0969c58a369565282226))
+- skip playwright on release-please version bump PRs ([#90](https://github.com/thangvq95/thangvq-digital-hub/issues/90)) ([8affde0](https://github.com/thangvq95/thangvq-digital-hub/commit/8affde022ef63f2c987e0969c58a369565282226))
 
 ## [1.3.22](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.21...v1.3.22) (2026-05-18)
 
-
 ### Bug Fixes
 
-* optimize CI workflows to trigger on release instead of push to main ([#88](https://github.com/thangvq95/thangvq-digital-hub/issues/88)) ([7020788](https://github.com/thangvq95/thangvq-digital-hub/commit/7020788dc96e80d67a944353d1929a5be7650d1d))
+- optimize CI workflows to trigger on release instead of push to main ([#88](https://github.com/thangvq95/thangvq-digital-hub/issues/88)) ([7020788](https://github.com/thangvq95/thangvq-digital-hub/commit/7020788dc96e80d67a944353d1929a5be7650d1d))
 
 ## [1.3.21](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.20...v1.3.21) (2026-05-18)
 
-
 ### Bug Fixes
 
-* add jq and sync api key environment to hermes gateway ([#86](https://github.com/thangvq95/thangvq-digital-hub/issues/86)) ([83830cb](https://github.com/thangvq95/thangvq-digital-hub/commit/83830cb74f3303770bdb53c1f8ac815c9611a455))
+- add jq and sync api key environment to hermes gateway ([#86](https://github.com/thangvq95/thangvq-digital-hub/issues/86)) ([83830cb](https://github.com/thangvq95/thangvq-digital-hub/commit/83830cb74f3303770bdb53c1f8ac815c9611a455))
 
 ## [1.3.20](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.19...v1.3.20) (2026-05-17)
 
-
 ### Bug Fixes
 
-* forcefully purge containers by name to resolve deploy conflicts ([#83](https://github.com/thangvq95/thangvq-digital-hub/issues/83)) ([c3608ae](https://github.com/thangvq95/thangvq-digital-hub/commit/c3608ae93454a84b25983c7c79d7de11e70fac0e))
+- forcefully purge containers by name to resolve deploy conflicts ([#83](https://github.com/thangvq95/thangvq-digital-hub/issues/83)) ([c3608ae](https://github.com/thangvq95/thangvq-digital-hub/commit/c3608ae93454a84b25983c7c79d7de11e70fac0e))
 
 ## [1.3.19](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.18...v1.3.19) (2026-05-17)
 
-
 ### Bug Fixes
 
-* resolve hermes-dashboard crash by using uv to install fastapi/uvicorn ([#81](https://github.com/thangvq95/thangvq-digital-hub/issues/81)) ([540748f](https://github.com/thangvq95/thangvq-digital-hub/commit/540748f5fdd82291d283a68b7ef573385b4353ef))
+- resolve hermes-dashboard crash by using uv to install fastapi/uvicorn ([#81](https://github.com/thangvq95/thangvq-digital-hub/issues/81)) ([540748f](https://github.com/thangvq95/thangvq-digital-hub/commit/540748f5fdd82291d283a68b7ef573385b4353ef))
 
 ## [1.3.18](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.17...v1.3.18) (2026-05-17)
 
-
 ### Bug Fixes
 
-* increase command timeout for vps deploy to 30m ([#76](https://github.com/thangvq95/thangvq-digital-hub/issues/76)) ([86b3208](https://github.com/thangvq95/thangvq-digital-hub/commit/86b3208fe5cb0a030212b330f167a94bfdfec133))
+- increase command timeout for vps deploy to 30m ([#76](https://github.com/thangvq95/thangvq-digital-hub/issues/76)) ([86b3208](https://github.com/thangvq95/thangvq-digital-hub/commit/86b3208fe5cb0a030212b330f167a94bfdfec133))
 
 ## [1.3.17](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.16...v1.3.17) (2026-05-17)
 
-
 ### Bug Fixes
 
-* add unzip dependency required by composio installer ([#74](https://github.com/thangvq95/thangvq-digital-hub/issues/74)) ([141e484](https://github.com/thangvq95/thangvq-digital-hub/commit/141e484012ef3130186a9eff23db7663a0274202))
+- add unzip dependency required by composio installer ([#74](https://github.com/thangvq95/thangvq-digital-hub/issues/74)) ([141e484](https://github.com/thangvq95/thangvq-digital-hub/commit/141e484012ef3130186a9eff23db7663a0274202))
 
 ## [1.3.16](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.15...v1.3.16) (2026-05-17)
 
-
 ### Bug Fixes
 
-* change composio-cli installation to official curl installer script ([#72](https://github.com/thangvq95/thangvq-digital-hub/issues/72)) ([7d6d0c0](https://github.com/thangvq95/thangvq-digital-hub/commit/7d6d0c082d9cab8009e869e0c26039f3e6b40c0d))
+- change composio-cli installation to official curl installer script ([#72](https://github.com/thangvq95/thangvq-digital-hub/issues/72)) ([7d6d0c0](https://github.com/thangvq95/thangvq-digital-hub/commit/7d6d0c082d9cab8009e869e0c26039f3e6b40c0d))
 
 ## [1.3.15](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.14...v1.3.15) (2026-05-17)
 
-
 ### Bug Fixes
 
-* automate composio setup by installing in docker and passing env api key ([#70](https://github.com/thangvq95/thangvq-digital-hub/issues/70)) ([adb16f8](https://github.com/thangvq95/thangvq-digital-hub/commit/adb16f8119eb9702b4a440dca4096cd73a4cc047))
+- automate composio setup by installing in docker and passing env api key ([#70](https://github.com/thangvq95/thangvq-digital-hub/issues/70)) ([adb16f8](https://github.com/thangvq95/thangvq-digital-hub/commit/adb16f8119eb9702b4a440dca4096cd73a4cc047))
 
 ## [1.3.14](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.13...v1.3.14) (2026-05-17)
 
-
 ### Bug Fixes
 
-* resolve lint errors in next.js app and webhooks controller ([#68](https://github.com/thangvq95/thangvq-digital-hub/issues/68)) ([432905b](https://github.com/thangvq95/thangvq-digital-hub/commit/432905b3ed79aaa3ef0ce41a9f4b24ced89c078f))
+- resolve lint errors in next.js app and webhooks controller ([#68](https://github.com/thangvq95/thangvq-digital-hub/issues/68)) ([432905b](https://github.com/thangvq95/thangvq-digital-hub/commit/432905b3ed79aaa3ef0ce41a9f4b24ced89c078f))
 
 ## [1.3.13](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.12...v1.3.13) (2026-05-17)
 
-
 ### Bug Fixes
 
-* prevent hermes infinite loop on PRs by adding guards and skipping non-CI failing/release PRs ([#66](https://github.com/thangvq95/thangvq-digital-hub/issues/66)) ([e15d236](https://github.com/thangvq95/thangvq-digital-hub/commit/e15d23688834a763f576242b8b1af5f8cf01e22d))
+- prevent hermes infinite loop on PRs by adding guards and skipping non-CI failing/release PRs ([#66](https://github.com/thangvq95/thangvq-digital-hub/issues/66)) ([e15d236](https://github.com/thangvq95/thangvq-digital-hub/commit/e15d23688834a763f576242b8b1af5f8cf01e22d))
 
 ## [1.3.12](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.11...v1.3.12) (2026-05-17)
 
-
 ### Bug Fixes
 
-* deduplicate changelog entry from pr 63 ([4b9eb20](https://github.com/thangvq95/thangvq-digital-hub/commit/4b9eb20db21714861b141cef0e2d0491b8a4ae75))
+- deduplicate changelog entry from pr 63 ([4b9eb20](https://github.com/thangvq95/thangvq-digital-hub/commit/4b9eb20db21714861b141cef0e2d0491b8a4ae75))
 
 ## [1.3.11](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.10...v1.3.11) (2026-05-17)
 

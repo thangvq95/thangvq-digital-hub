@@ -1,7 +1,14 @@
+"use client";
+
+import { useState } from "react";
 import { PROJECTS } from "@/lib/constants";
-import { ExternalLink } from "lucide-react";
+import ProjectDialog from "./ProjectDialog";
+
+type Project = (typeof PROJECTS)[number];
 
 const ProjectsSection: React.FC = () => {
+  const [selected, setSelected] = useState<Project | null>(null);
+
   return (
     <section id="projects" className="py-24 px-4">
       <div className="max-w-5xl mx-auto">
@@ -19,11 +26,13 @@ const ProjectsSection: React.FC = () => {
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {PROJECTS.map((project, i) => (
-            <div
+            <button
               key={project.title}
               data-testid={`project-card-${i}`}
-              className="p-6 rounded-2xl glass card-hover group"
+              onClick={() => setSelected(project)}
+              className="p-6 rounded-2xl glass card-hover group text-left w-full cursor-pointer transition-all duration-200"
               style={{ border: "1px solid var(--border)" }}
+              aria-label={`View details for ${project.title}`}
             >
               <div className="flex items-start justify-between mb-3">
                 <h3
@@ -32,20 +41,18 @@ const ProjectsSection: React.FC = () => {
                 >
                   {project.title}
                 </h3>
-                {project.url && (
-                  <a
-                    href={project.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="opacity-50 group-hover:opacity-100 transition-opacity cursor-pointer"
-                    style={{ color: "var(--text-secondary)" }}
-                    aria-label={`Visit ${project.title}`}
-                  >
-                    <ExternalLink size={16} />
-                  </a>
-                )}
+                {/* Visual hint that card is clickable */}
+                <span
+                  className="opacity-40 group-hover:opacity-80 transition-opacity text-xs mt-1"
+                  style={{ color: "var(--accent)" }}
+                >
+                  ↗
+                </span>
               </div>
-              <p className="text-sm mb-4" style={{ color: "var(--text-secondary)" }}>
+              <p
+                className="text-sm mb-4"
+                style={{ color: "var(--text-secondary)" }}
+              >
                 {project.description}
               </p>
               <div className="flex flex-wrap gap-2">
@@ -53,16 +60,23 @@ const ProjectsSection: React.FC = () => {
                   <span
                     key={tag}
                     className="text-xs px-2.5 py-1 rounded-full"
-                    style={{ background: "var(--accent-glow)", color: "var(--accent)" }}
+                    style={{
+                      background: "var(--accent-glow)",
+                      color: "var(--accent)",
+                    }}
                   >
                     {tag}
                   </span>
                 ))}
               </div>
-            </div>
+            </button>
           ))}
         </div>
       </div>
+
+      {selected && (
+        <ProjectDialog project={selected} onClose={() => setSelected(null)} />
+      )}
     </section>
   );
 };

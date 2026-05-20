@@ -203,7 +203,7 @@ Rules for tags:
       try {
         const llmData = JSON.parse(rawText);
         contentStr = llmData.choices?.[0]?.message?.content ?? '{}';
-      } catch (_e) {
+      } catch {
         // If it's somehow still returning SSE (some proxies force stream), accumulate the chunks
         if (rawText.includes('data: ')) {
           const lines = rawText.split('\\n');
@@ -217,7 +217,7 @@ Rules for tags:
                 } else if (chunk.choices?.[0]?.message?.content) {
                   fullContent += chunk.choices[0].message.content;
                 }
-              } catch (_err) {}
+              } catch {}
             }
           }
           if (fullContent) {
@@ -333,14 +333,18 @@ Rules for tags:
           .owner?.avatar_url;
       const avatar_url = this.normalizeAvatarUrl(rawAvatar);
 
-      const stars_growth = r.stars_growth !== undefined
-        ? this.sanitizeStarsGrowth(r.stars_growth)
-        : undefined;
+      const stars_growth =
+        r.stars_growth !== undefined
+          ? this.sanitizeStarsGrowth(r.stars_growth)
+          : undefined;
 
       if (!existing) {
         await this.repo.save({
           ...r,
-          stars_growth: stars_growth !== undefined ? (stars_growth ?? undefined) : undefined,
+          stars_growth:
+            stars_growth !== undefined
+              ? (stars_growth ?? undefined)
+              : undefined,
           avatar_url: typeof avatar_url === 'string' ? avatar_url : undefined,
           is_favorite: false,
           is_archived: false,

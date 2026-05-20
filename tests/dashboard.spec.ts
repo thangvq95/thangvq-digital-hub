@@ -28,7 +28,9 @@ test.describe("TechTrend Dashboard", () => {
     await expect(input).toBeVisible();
   });
 
-  test("sanitizes malformed stars_growth strings containing SVG tags", async ({ page }) => {
+  test("sanitizes malformed stars_growth strings containing SVG tags", async ({
+    page,
+  }) => {
     await page.route("**/api/repos*", async (route) => {
       await route.fulfill({
         json: {
