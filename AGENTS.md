@@ -37,6 +37,7 @@
 - **NEVER Push to Main:** The `main` branch is protected. Autonomous agents must never push directly to it.
 - **Branching:** When starting work on an issue, ALWAYS create a new branch: `git checkout -b fix/issue-<id>` or `feat/issue-<id>`.
 - **Pull Request:** After committing your changes and verifying tests pass, you MUST create a Pull Request using the GitHub CLI: `gh pr create --fill`.
+- **NO Auto-Merge on Feature/Fix PRs:** AI Agents MUST NEVER run `gh pr merge` or enable auto-merge (e.g. `--auto`) on their own feature/fix PRs. PRs must remain open for GitHub Copilot / AI Reviewer scanning and human approval. Auto-merge is strictly reserved for the automated `release-please` release PRs via GitHub Actions.
 - **Commit Formatting (Husky + Conventional Commits):** This project enforces Conventional Commits via Husky (`commitlint`). You MUST format all commit messages according to this standard (e.g., `feat: <description>`, `fix: <description>`, `chore: <description>`). This is required for the `release-please` automated versioning system to work properly. The `pre-commit` hook will also automatically run `lint-staged`.
 - **Completion:** Do not close the issue manually. Let the PR merge process close it automatically.
 
@@ -79,6 +80,7 @@ Default vocabulary. See `docs/agents/triage-labels.md`.
 Single-context layout. See `docs/agents/domain.md`.
 
 <!-- gitnexus:start -->
+
 # GitNexus — Code Intelligence
 
 This project is indexed by GitNexus as **thangvq-digital-hub** (847 symbols, 1220 relationships, 10 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
@@ -102,22 +104,22 @@ This project is indexed by GitNexus as **thangvq-digital-hub** (847 symbols, 122
 
 ## Resources
 
-| Resource | Use for |
-|----------|---------|
-| `gitnexus://repo/thangvq-digital-hub/context` | Codebase overview, check index freshness |
-| `gitnexus://repo/thangvq-digital-hub/clusters` | All functional areas |
-| `gitnexus://repo/thangvq-digital-hub/processes` | All execution flows |
-| `gitnexus://repo/thangvq-digital-hub/process/{name}` | Step-by-step execution trace |
+| Resource                                             | Use for                                  |
+| ---------------------------------------------------- | ---------------------------------------- |
+| `gitnexus://repo/thangvq-digital-hub/context`        | Codebase overview, check index freshness |
+| `gitnexus://repo/thangvq-digital-hub/clusters`       | All functional areas                     |
+| `gitnexus://repo/thangvq-digital-hub/processes`      | All execution flows                      |
+| `gitnexus://repo/thangvq-digital-hub/process/{name}` | Step-by-step execution trace             |
 
 ## CLI
 
-| Task | Read this skill file |
-|------|---------------------|
-| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md` |
-| Blast radius / "What breaks if I change X?" | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
-| Trace bugs / "Why is X failing?" | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md` |
-| Rename / extract / split / refactor | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md` |
-| Tools, resources, schema reference | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md` |
-| Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
+| Task                                         | Read this skill file                                        |
+| -------------------------------------------- | ----------------------------------------------------------- |
+| Understand architecture / "How does X work?" | `.claude/skills/gitnexus/gitnexus-exploring/SKILL.md`       |
+| Blast radius / "What breaks if I change X?"  | `.claude/skills/gitnexus/gitnexus-impact-analysis/SKILL.md` |
+| Trace bugs / "Why is X failing?"             | `.claude/skills/gitnexus/gitnexus-debugging/SKILL.md`       |
+| Rename / extract / split / refactor          | `.claude/skills/gitnexus/gitnexus-refactoring/SKILL.md`     |
+| Tools, resources, schema reference           | `.claude/skills/gitnexus/gitnexus-guide/SKILL.md`           |
+| Index, status, clean, wiki CLI commands      | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md`             |
 
 <!-- gitnexus:end -->
