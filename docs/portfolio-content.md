@@ -67,7 +67,7 @@
 | 1 | Feb 2022 — Present | **Care** | Flutter Engineer | ~4.3 years | Primary mobile engineer, CI/CD, Design Patterns |
 | 2 | Dec 2019 — Jan 2022 | **Rovo** | Flutter Engineer | 2y 2m | Sports app, CI/CD, Design Patterns |
 | 3 | Dec 2018 — Nov 2019 | **UpUp App** | Flutter Engineer | 1y | Early Flutter adopter. Built from ground up during Flutter release 1.0.0 stable |
-| 4 | Oct 2016 — Nov 2018 | **TMA Solutions** | Android Engineer | 2y 2m | Android native development |
+| 4 | Jan 2017 — Nov 2018 | **TMA Solutions** | Android Engineer | 1y 11m | Android native development |
 
 > 📝 *Detailed descriptions will be added after the CV is finalized*
 

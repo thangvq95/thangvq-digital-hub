@@ -92,10 +92,10 @@ export const EXPERIENCE: {
       "Early Flutter adopter. Built from ground up during Flutter release 1.0.0 stable.",
   },
   {
-    period: "Oct 2016 — Nov 2018",
+    period: "Jan 2017 — Nov 2018",
     company: "TMA Solutions",
     role: "Android Engineer",
-    duration: "2y 2m",
+    duration: "1y 11m",
     highlights:
       "Android native development with Java. Enterprise project delivery.",
   },
