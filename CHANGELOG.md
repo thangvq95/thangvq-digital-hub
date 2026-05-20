@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.23...v1.4.0) (2026-05-20)
+
+
+### Features
+
+* add tech stack tags and pr title checker workflow ([#94](https://github.com/thangvq95/thangvq-digital-hub/issues/94)) ([bbce3f3](https://github.com/thangvq95/thangvq-digital-hub/commit/bbce3f3b53687c1bb5bb86d7ed6bc12b01532408))
+
 ## [1.3.23](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.22...v1.3.23) (2026-05-18)
 
 ### Bug Fixes
