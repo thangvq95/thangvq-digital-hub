@@ -7,6 +7,8 @@ import {
   Layers,
   ChevronLeft,
   ChevronRight,
+  User,
+  Briefcase,
 } from "lucide-react";
 import { buildStackUrl } from "@/lib/utils";
 
@@ -19,6 +21,7 @@ interface ProjectDialogProps {
     stackProject?: string | null;
     images?: string[];
     contributions?: string[];
+    type?: "personal" | "company";
   };
   onClose: () => void;
 }
@@ -91,12 +94,45 @@ export default function ProjectDialog({
         </button>
 
         {/* Title */}
-        <h3
-          className="text-xl font-bold mb-2 pr-8"
-          style={{ color: "var(--text-primary)" }}
-        >
-          {project.title}
-        </h3>
+        <div className="flex items-center gap-2.5 flex-wrap mb-2 pr-8">
+          <h3
+            className="text-xl font-bold"
+            style={{ color: "var(--text-primary)" }}
+          >
+            {project.title}
+          </h3>
+          {project.type && (
+            <span
+              className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded font-mono uppercase font-bold tracking-wider"
+              style={{
+                background:
+                  project.type === "personal"
+                    ? "rgba(99, 102, 241, 0.12)"
+                    : "rgba(16, 185, 129, 0.12)",
+                color:
+                  project.type === "personal"
+                    ? "rgb(129, 140, 248)"
+                    : "rgb(52, 211, 153)",
+                border:
+                  project.type === "personal"
+                    ? "1px solid rgba(99, 102, 241, 0.2)"
+                    : "1px solid rgba(16, 185, 129, 0.2)",
+              }}
+            >
+              {project.type === "personal" ? (
+                <>
+                  <User size={10} />
+                  Side Project
+                </>
+              ) : (
+                <>
+                  <Briefcase size={10} />
+                  Work Project
+                </>
+              )}
+            </span>
+          )}
+        </div>
 
         {/* Description */}
         <p

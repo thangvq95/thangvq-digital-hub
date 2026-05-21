@@ -160,6 +160,7 @@ export const PROJECTS: {
   /** Single image (legacy) or multiple images for swipeable carousel */
   images?: string[];
   contributions?: string[];
+  type?: "personal" | "company";
 }[] = [
   {
     title: "Sổ Giáo Dân",
@@ -182,6 +183,7 @@ export const PROJECTS: {
       "Developed a highly responsive parish dashboard in Next.js.",
       "Configured Dockerized deployment pipeline for reproducible server environments.",
     ],
+    type: "personal",
   },
   {
     title: "ThangVQ Digital Hub",
@@ -207,6 +209,7 @@ export const PROJECTS: {
       "Integrated Sentry observability to capture server issues with automatic webhook triggers.",
       "Set up zero-downtime VPS deployment with Cloudflare Tunnels and reverse proxy.",
     ],
+    type: "personal",
   },
   {
     title: "Care Mobile App",
@@ -238,6 +241,7 @@ export const PROJECTS: {
       "Set up automated CI/CD pipelines via Codemagic and Fastlane for rapid App Store/Play Store deployments.",
       "Engineered secure end-to-end video consultation features powered by Twilio Video SDK.",
     ],
+    type: "company",
   },
   {
     title: "Rovo Mobile App",
@@ -269,6 +273,7 @@ export const PROJECTS: {
       "Configured Firebase Analytics, Dynamic Links, and push notification triggers for user engagement.",
       "Maintained a single codebase for Android and iOS using Flutter, resulting in 40%+ faster feature rollout.",
     ],
+    type: "company",
   },
 ];
 
