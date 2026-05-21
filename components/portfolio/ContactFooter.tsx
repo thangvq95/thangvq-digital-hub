@@ -1,8 +1,14 @@
 import { GITHUB_URL, LINKEDIN_URL } from "@/lib/constants";
 import { Mail } from "lucide-react";
 
-const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
+interface IconProps extends React.SVGProps<SVGSVGElement> {
+  size?: number | string;
+}
+
+const GithubIcon = ({ size = 20, ...props }: IconProps) => (
   <svg
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
@@ -16,8 +22,10 @@ const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
-const LinkedinIcon = (props: React.SVGProps<SVGSVGElement>) => (
+const LinkedinIcon = ({ size = 20, ...props }: IconProps) => (
   <svg
+    width={size}
+    height={size}
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
