@@ -91,10 +91,10 @@ export const EXPERIENCE: {
       "Primary mobile engineer. Built CI/CD, implemented design patterns and clean architecture across multiple production releases.",
   },
   {
-    period: "Dec 2019 — Jan 2022",
+    period: "Dec 2019 — Dec 2021",
     company: "Rovo",
     role: "Flutter Engineer",
-    duration: "2y 2m",
+    duration: "2 years",
     highlights:
       "Sports activity booking app. Full CI/CD pipeline, design patterns, cross-platform delivery.",
   },
