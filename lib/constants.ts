@@ -81,6 +81,9 @@ export const EXPERIENCE: {
   role: string;
   duration: string;
   highlights: string;
+  projectTitle?: string;
+  tags?: string[];
+  contributions: string[];
 }[] = [
   {
     period: "Dec 2021 — Present",
@@ -89,6 +92,14 @@ export const EXPERIENCE: {
     duration: "~4.5 years",
     highlights:
       "Primary mobile engineer. Built CI/CD, implemented design patterns and clean architecture across multiple production releases.",
+    projectTitle: "Care Mobile App",
+    contributions: [
+      "Spearheaded mobile development of GP Teleconsultation and eQueue management modules using Flutter.",
+      "Implemented reactive state management using Riverpod to handle real-time doctor queue updates.",
+      "Integrated Health SDK (iOS HealthKit / Android Google Fit) for patient vitals tracking.",
+      "Set up automated CI/CD pipelines via Codemagic and Fastlane for rapid App Store/Play Store deployments.",
+      "Engineered secure end-to-end video consultation features powered by Twilio Video SDK.",
+    ],
   },
   {
     period: "Jul 2019 — Dec 2021",
@@ -97,6 +108,14 @@ export const EXPERIENCE: {
     duration: "2y 5m",
     highlights:
       "Sports activity booking app. Full CI/CD pipeline, design patterns, cross-platform delivery.",
+    projectTitle: "Rovo Mobile App",
+    contributions: [
+      "Architected the venue booking flow and sport partner matching features using Google Maps integration.",
+      "Developed customized in-app video chat capabilities leveraging Agora Video SDK.",
+      "Designed and optimized the real-time active leaderboards and group activity feeds.",
+      "Configured Firebase Analytics, Dynamic Links, and push notification triggers for user engagement.",
+      "Maintained a single codebase for Android and iOS using Flutter, resulting in 40%+ faster feature rollout.",
+    ],
   },
   {
     period: "Feb 2018 — Jun 2019",
@@ -105,6 +124,13 @@ export const EXPERIENCE: {
     duration: "1y 4m",
     highlights:
       "Early Flutter adopter. Started with Flutter beta and delivered production builds inline with the 1.0.0 stable release in Dec 2018.",
+    tags: ["Flutter", "Dart", "Beta Adopter", "Animation", "Git"],
+    contributions: [
+      "Adopted Flutter in its early beta stage (mid-2018), transitioning the product to Flutter 1.0 stable.",
+      "Built smooth UI animations, custom charts, and progress tracking visualizations.",
+      "Integrated Local Auth (Biometrics) and secure storage for user authentication.",
+      "Wrote clean, modular UI components ensuring high test coverage across different device sizes.",
+    ],
   },
   {
     period: "Jan 2017 — Jan 2018",
@@ -113,6 +139,13 @@ export const EXPERIENCE: {
     duration: "1 year",
     highlights:
       "Android native development with Java. Enterprise project delivery.",
+    tags: ["Android", "Java", "RxJava", "SQLite", "Agile"],
+    contributions: [
+      "Developed native Android applications using Java, RxJava, and Android SDK.",
+      "Implemented offline-first synchronization using SQLite database and local caching.",
+      "Refactored legacy codebase to follow MVP (Model-View-Presenter) pattern, reducing crash rates.",
+      "Worked in an Agile Scrum environment communicating directly with overseas clients.",
+    ],
   },
 ];
 
@@ -126,6 +159,7 @@ export const PROJECTS: {
   stackProject?: string | null;
   /** Single image (legacy) or multiple images for swipeable carousel */
   images?: string[];
+  contributions?: string[];
 }[] = [
   {
     title: "Sổ Giáo Dân",
@@ -142,6 +176,12 @@ export const PROJECTS: {
     ],
     url: "https://sogioadan.com",
     stackProject: "sogiaodan",
+    contributions: [
+      "Architected the full-stack database schema using NestJS and PostgreSQL.",
+      "Implemented secure authentication and role-based access control (RBAC).",
+      "Developed a highly responsive parish dashboard in Next.js.",
+      "Configured Dockerized deployment pipeline for reproducible server environments.",
+    ],
   },
   {
     title: "ThangVQ Digital Hub",
@@ -161,6 +201,12 @@ export const PROJECTS: {
     url: "https://thangvq95.page/tech",
     stackProject: "",
     images: ["/screenshots/techtrend.png"],
+    contributions: [
+      "Created programmatic video generator using Remotion to visualize architectural flow.",
+      "Configured continuous integration with Playwright tests for robust verification.",
+      "Integrated Sentry observability to capture server issues with automatic webhook triggers.",
+      "Set up zero-downtime VPS deployment with Cloudflare Tunnels and reverse proxy.",
+    ],
   },
   {
     title: "Care Mobile App",
@@ -185,6 +231,13 @@ export const PROJECTS: {
       "/screenshots/care-health/04.png",
       "/screenshots/care-health/05.png",
     ],
+    contributions: [
+      "Spearheaded mobile development of GP Teleconsultation and eQueue management modules using Flutter.",
+      "Implemented reactive state management using Riverpod to handle real-time doctor queue updates.",
+      "Integrated Health SDK (iOS HealthKit / Android Google Fit) for patient vitals tracking.",
+      "Set up automated CI/CD pipelines via Codemagic and Fastlane for rapid App Store/Play Store deployments.",
+      "Engineered secure end-to-end video consultation features powered by Twilio Video SDK.",
+    ],
   },
   {
     title: "Rovo Mobile App",
@@ -208,6 +261,13 @@ export const PROJECTS: {
       "/screenshots/rovo-sports/5.png",
       "/screenshots/rovo-sports/6.png",
       "/screenshots/rovo-sports/7.png",
+    ],
+    contributions: [
+      "Architected the venue booking flow and sport partner matching features using Google Maps integration.",
+      "Developed customized in-app video chat capabilities leveraging Agora Video SDK.",
+      "Designed and optimized the real-time active leaderboards and group activity feeds.",
+      "Configured Firebase Analytics, Dynamic Links, and push notification triggers for user engagement.",
+      "Maintained a single codebase for Android and iOS using Flutter, resulting in 40%+ faster feature rollout.",
     ],
   },
 ];

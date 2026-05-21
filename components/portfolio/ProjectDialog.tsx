@@ -18,6 +18,7 @@ interface ProjectDialogProps {
     url?: string;
     stackProject?: string | null;
     images?: string[];
+    contributions?: string[];
   };
   onClose: () => void;
 }
@@ -72,7 +73,7 @@ export default function ProjectDialog({
       aria-label={project.title}
     >
       <div
-        className="relative w-full max-w-md rounded-2xl p-6 animate-dialog-in"
+        className="relative w-full max-w-lg rounded-2xl p-6 animate-dialog-in max-h-[90vh] overflow-y-auto"
         style={{
           background: "var(--bg-card)",
           border: "1px solid var(--border)",
@@ -120,6 +121,29 @@ export default function ProjectDialog({
             </span>
           ))}
         </div>
+
+        {/* Contributions (New!) */}
+        {project.contributions && project.contributions.length > 0 && (
+          <div className="mb-6">
+            <h4
+              className="text-xs font-mono uppercase tracking-wider mb-2.5"
+              style={{ color: "var(--accent)" }}
+            >
+              Key Contributions
+            </h4>
+            <ul
+              className="space-y-2 text-xs leading-relaxed"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {project.contributions.map((item, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-accent mt-0.5">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Image Carousel */}
         {hasImages && (
