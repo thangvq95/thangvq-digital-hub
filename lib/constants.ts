@@ -83,10 +83,10 @@ export const EXPERIENCE: {
   highlights: string;
 }[] = [
   {
-    period: "Feb 2022 — Present",
+    period: "Dec 2021 — Present",
     company: "Care",
     role: "Flutter Engineer",
-    duration: "~4.3 years",
+    duration: "~4.5 years",
     highlights:
       "Primary mobile engineer. Built CI/CD, implemented design patterns and clean architecture across multiple production releases.",
   },
@@ -107,10 +107,10 @@ export const EXPERIENCE: {
       "Early Flutter adopter. Built from ground up during Flutter release 1.0.0 stable.",
   },
   {
-    period: "Jan 2017 — Nov 2018",
+    period: "Jan 2017 — Dec 2018",
     company: "TMA Solutions",
     role: "Android Engineer",
-    duration: "1y 11m",
+    duration: "2 years",
     highlights:
       "Android native development with Java. Enterprise project delivery.",
   },
