@@ -180,6 +180,9 @@ export const PROJECTS: {
       "/screenshots/rovo-sports/2.png",
       "/screenshots/rovo-sports/3.png",
       "/screenshots/rovo-sports/4.png",
+      "/screenshots/rovo-sports/5.png",
+      "/screenshots/rovo-sports/6.png",
+      "/screenshots/rovo-sports/7.png",
     ],
   },
   {

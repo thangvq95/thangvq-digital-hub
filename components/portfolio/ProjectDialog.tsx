@@ -124,28 +124,81 @@ export default function ProjectDialog({
         {/* Image Carousel */}
         {hasImages && (
           <div className="mb-5">
-            {/* Main image — clickable to open URL */}
-            <a
-              href={project.url ?? "#"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="block relative overflow-hidden rounded-xl border group bg-black/20 flex justify-center items-center"
+            <div
+              className="relative overflow-hidden w-full rounded-xl border bg-black/10 py-3"
               style={{ borderColor: "var(--border)" }}
-              aria-label={`Open ${project.title}`}
             >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                key={activeIndex}
-                src={images[activeIndex]}
-                alt={`${project.title} screenshot ${activeIndex + 1}`}
-                className="max-h-[380px] w-auto block object-contain transition-opacity duration-200"
-                loading="lazy"
-              />
-              {/* Subtle hover overlay */}
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40">
-                <ExternalLink size={22} color="#fff" />
-              </div>
-            </a>
+              {isCarousel ? (
+                <div
+                  className="flex transition-transform duration-300 ease-out"
+                  style={{
+                    transform: `translateX(${20 - activeIndex * 60}%)`,
+                  }}
+                >
+                  {images.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="w-[60%] flex-shrink-0 px-2 transition-all duration-300"
+                      style={{
+                        opacity: idx === activeIndex ? 1 : 0.35,
+                        transform:
+                          idx === activeIndex ? "scale(1)" : "scale(0.92)",
+                      }}
+                    >
+                      <a
+                        href={project.url ?? "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          if (idx !== activeIndex) {
+                            e.preventDefault();
+                            setActiveIndex(idx);
+                          }
+                        }}
+                        className={`block relative overflow-hidden rounded-xl bg-black/20 flex justify-center items-center h-[340px] ${
+                          idx !== activeIndex ? "cursor-pointer" : ""
+                        }`}
+                        aria-label={`View screenshot ${idx + 1}`}
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={img}
+                          alt={`${project.title} screenshot ${idx + 1}`}
+                          className="max-h-full max-w-full object-contain"
+                          loading="lazy"
+                        />
+                        {idx === activeIndex && (
+                          <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40">
+                            <ExternalLink size={20} color="#fff" />
+                          </div>
+                        )}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full flex justify-center items-center px-4">
+                  <a
+                    href={project.url ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block relative overflow-hidden rounded-xl bg-black/20 flex justify-center items-center w-full h-[340px]"
+                    aria-label={`Open ${project.title}`}
+                  >
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={images[0]}
+                      alt={`${project.title} screenshot`}
+                      className="max-h-full max-w-full object-contain"
+                      loading="lazy"
+                    />
+                    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40">
+                      <ExternalLink size={20} color="#fff" />
+                    </div>
+                  </a>
+                </div>
+              )}
+            </div>
 
             {/* Carousel controls */}
             {isCarousel && (
