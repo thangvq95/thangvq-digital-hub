@@ -169,6 +169,20 @@ export const PROJECTS: {
     ],
   },
   {
+    title: "Rovo Mobile App",
+    description:
+      "Sports & fitness social platform allowing users to find sports partners, book venues, and track activities. Features custom workout routines, active leaderboards, and map-based activity discovery. Built with Flutter, Dart, and Google Maps API.",
+    tags: ["Flutter", "Dart", "Firebase", "Google Maps"],
+    url: "https://apps.apple.com/sg/app/rovo-sports-fitness-app/id1044009295",
+    stackProject: null,
+    images: [
+      "/screenshots/rovo-sports/1.png",
+      "/screenshots/rovo-sports/2.png",
+      "/screenshots/rovo-sports/3.png",
+      "/screenshots/rovo-sports/4.png",
+    ],
+  },
+  {
     title: "Self-Hosted Infrastructure",
     description:
       "Mac Mini M4 Pro production server running Docker, Cloudflare Tunnels, and autonomous AI agents.",
