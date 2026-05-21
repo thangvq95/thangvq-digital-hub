@@ -124,10 +124,7 @@ export default function ProjectDialog({
         {/* Image Carousel */}
         {hasImages && (
           <div className="mb-5">
-            <div
-              className="relative overflow-hidden w-full rounded-xl border bg-black/10 py-3"
-              style={{ borderColor: "var(--border)" }}
-            >
+            <div className="relative overflow-hidden w-full py-2">
               {isCarousel ? (
                 <div
                   className="flex transition-transform duration-300 ease-out"
@@ -155,7 +152,7 @@ export default function ProjectDialog({
                             setActiveIndex(idx);
                           }
                         }}
-                        className={`block relative overflow-hidden rounded-xl bg-black/20 flex justify-center items-center h-[340px] ${
+                        className={`block relative overflow-hidden flex justify-center items-center h-[340px] ${
                           idx !== activeIndex ? "cursor-pointer" : ""
                         }`}
                         aria-label={`View screenshot ${idx + 1}`}
@@ -164,11 +161,12 @@ export default function ProjectDialog({
                         <img
                           src={img}
                           alt={`${project.title} screenshot ${idx + 1}`}
-                          className="max-h-full max-w-full object-contain"
+                          className="max-h-full w-auto object-contain rounded-xl border"
+                          style={{ borderColor: "var(--border)" }}
                           loading="lazy"
                         />
                         {idx === activeIndex && (
-                          <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40">
+                          <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40 rounded-xl">
                             <ExternalLink size={20} color="#fff" />
                           </div>
                         )}
@@ -182,17 +180,18 @@ export default function ProjectDialog({
                     href={project.url ?? "#"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="block relative overflow-hidden rounded-xl bg-black/20 flex justify-center items-center w-full h-[340px]"
+                    className="block relative overflow-hidden flex justify-center items-center w-full h-[340px]"
                     aria-label={`Open ${project.title}`}
                   >
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={images[0]}
                       alt={`${project.title} screenshot`}
-                      className="max-h-full max-w-full object-contain"
+                      className="max-h-full w-auto object-contain rounded-xl border"
+                      style={{ borderColor: "var(--border)" }}
                       loading="lazy"
                     />
-                    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40">
+                    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40 rounded-xl">
                       <ExternalLink size={20} color="#fff" />
                     </div>
                   </a>
