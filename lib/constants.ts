@@ -199,7 +199,7 @@ export const PROJECTS: {
       "Codemagic CICD",
     ],
     url: "https://apps.apple.com/sg/app/rovo-sports-fitness-app/id1044009295",
-    stackProject: null,
+    stackProject: "rovo-sports",
     images: [
       "/screenshots/rovo-sports/1.png",
       "/screenshots/rovo-sports/2.png",
