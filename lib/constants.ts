@@ -99,7 +99,7 @@ export const EXPERIENCE: {
       "Sports activity booking app. Full CI/CD pipeline, design patterns, cross-platform delivery.",
   },
   {
-    period: "Jul 2018 — Nov 2019",
+    period: "Feb 2018 — Jun 2019",
     company: "UpUp App",
     role: "Flutter Engineer",
     duration: "1y 4m",
@@ -107,10 +107,10 @@ export const EXPERIENCE: {
       "Early Flutter adopter. Started with Flutter beta and delivered production builds inline with the 1.0.0 stable release in Dec 2018.",
   },
   {
-    period: "Jan 2017 — Jun 2018",
+    period: "Jan 2017 — Jan 2018",
     company: "TMA Solutions",
     role: "Android Engineer",
-    duration: "1y 5m",
+    duration: "1 year",
     highlights:
       "Android native development with Java. Enterprise project delivery.",
   },
