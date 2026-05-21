@@ -141,13 +141,15 @@ export const PROJECTS: {
       "Developer intelligence platform with AI-powered trending repo analysis and release monitoring.",
     tags: [
       "Next.js",
+      "Nest.js",
       "Tailwind",
-      "Hermes",
+      "Postgres",
       "Playwright",
-      "VPS Digital Ocean",
       "Cloudflare",
       "Vercel",
-      "GitNexus",
+      "Self-Host",
+      "Github Action",
+      "Hermes",
     ],
     url: "https://thangvq95.page/tech",
     stackProject: "",
@@ -157,7 +159,16 @@ export const PROJECTS: {
     title: "Care Mobile App",
     description:
       "Healthcare app (Raffles Connect) serving thousands of patients in Singapore. Features GP teleconsult, eQueue management, and health screening packages. Built with Flutter, clean architecture, and full CI/CD pipeline.",
-    tags: ["Flutter", "Dart", "Riverpod", "CI/CD", "Twilio SDK"],
+    tags: [
+      "Flutter",
+      "Dart",
+      "Riverpod",
+      "GetX",
+      "OneSignal",
+      "Health SDK",
+      "CI/CD",
+      "Twilio SDK",
+    ],
     url: "https://apps.apple.com/vn/app/raffles-connect/id1444394990",
     stackProject: "care-health",
     images: [
@@ -172,7 +183,14 @@ export const PROJECTS: {
     title: "Rovo Mobile App",
     description:
       "Sports & fitness social platform allowing users to find sports partners, book venues, and track activities. Features custom workout routines, active leaderboards, and map-based activity discovery. Built with Flutter, Dart, and Google Maps API.",
-    tags: ["Flutter", "Dart", "Firebase", "Google Maps", "Agora Video"],
+    tags: [
+      "Flutter",
+      "Dart",
+      "Firebase",
+      "Google Maps",
+      "Agora Video",
+      "Codemagic CICD",
+    ],
     url: "https://apps.apple.com/sg/app/rovo-sports-fitness-app/id1044009295",
     stackProject: null,
     images: [
@@ -184,13 +202,6 @@ export const PROJECTS: {
       "/screenshots/rovo-sports/6.png",
       "/screenshots/rovo-sports/7.png",
     ],
-  },
-  {
-    title: "Self-Hosted Infrastructure",
-    description:
-      "Mac Mini M4 Pro production server running Docker, Cloudflare Tunnels, and autonomous AI agents.",
-    tags: ["Docker", "Cloudflare", "GitHub Actions", "Mac Mini"],
-    stackProject: null,
   },
 ];
 
