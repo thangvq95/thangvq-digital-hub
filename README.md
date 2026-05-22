@@ -71,8 +71,8 @@ Merge to `main` → GitHub Actions
 
 ```bash
 npm install
-cp .env.local.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:3001
-npm run dev                         # → http://localhost:3000
+cp .env.local.example .env.local   # set NEXT_PUBLIC_API_URL=http://localhost:3005
+npm run dev                         # → http://localhost:3002
 ```
 
 ### 2. Backend API + Database (Docker)
@@ -81,7 +81,7 @@ npm run dev                         # → http://localhost:3000
 cd infra
 cp .env.example .env    # fill in POSTGRES_PASSWORD, SYNC_API_KEY, NODE_ENV=development
 docker compose --env-file .env up -d postgres api
-# NestJS API → http://localhost:3001
+# NestJS API → http://localhost:3005
 ```
 
 ### 3. Run E2E Tests
