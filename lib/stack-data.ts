@@ -159,7 +159,7 @@ export const techStack: Record<string, TechItem[]> = {
       role: "Agentic AI Developer (Gemini)",
       category: "ai",
       url: "https://github.com/google-gemini",
-      why: "A powerful agentic AI coding assistant from Google Deepmind pair programming with the developer.",
+      why: "A powerful agentic AI coding assistant from Google DeepMind pair programming with the developer.",
     },
     {
       name: "Claude Code",
