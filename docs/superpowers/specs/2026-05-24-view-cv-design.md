@@ -11,12 +11,11 @@
 - **Objective:** Change the portfolio button from "Download CV" to "View CV".
 - **User Experience:** When clicked, the button should open a new tab containing the user's PDF resume (`resume.pdf`). 
 - **Download Capability:** Modern web browsers' built-in PDF viewer will naturally host the viewing experience and allow direct downloading of the PDF.
-- **Source Material:** The source PDF file `/Users/thang/Downloads/thang_vu_resume.pdf` is to be hosted in the public directory of the web application as `resume.pdf`.
 
 ---
 
 ## 2. Proposed Design (Option A)
-- **Asset Relocation:** Copy `thang_vu_resume.pdf` to the `public/` folder as `/public/resume.pdf` *(Already completed)*.
+- **Asset:** The resume PDF file `/public/resume.pdf` is served statically.
 - **UI Update:** In `/components/portfolio/HeroSection.tsx`:
   - Change the label of the second button from `"Download CV"` to `"View CV"`.
   - The `href` will remain `"/resume.pdf"`.
