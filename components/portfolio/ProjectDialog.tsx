@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
 import {
   ExternalLink,
   X,
@@ -217,13 +218,13 @@ export default function ProjectDialog({
                         }`}
                         aria-label={`View screenshot ${idx + 1}`}
                       >
-                        {/* eslint-disable-next-line @next/next/no-img-element */}
-                        <img
+                        <Image
                           src={img}
                           alt={`${project.title} screenshot ${idx + 1}`}
-                          className="max-h-full w-auto object-contain rounded-xl border"
-                          style={{ borderColor: "var(--border)" }}
-                          loading="lazy"
+                          fill
+                          className="object-contain rounded-xl"
+                          style={{ border: "1px solid var(--border)" }}
+                          sizes="(max-width: 768px) 100vw, 480px"
                         />
                         {idx === activeIndex && (
                           <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40 rounded-xl">
@@ -243,13 +244,13 @@ export default function ProjectDialog({
                     className="block relative overflow-hidden flex justify-center items-center w-full h-[340px]"
                     aria-label={`Open ${project.title}`}
                   >
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
+                    <Image
                       src={images[0]}
                       alt={`${project.title} screenshot`}
-                      className="max-h-full w-auto object-contain rounded-xl border"
-                      style={{ borderColor: "var(--border)" }}
-                      loading="lazy"
+                      fill
+                      className="object-contain rounded-xl"
+                      style={{ border: "1px solid var(--border)" }}
+                      sizes="(max-width: 768px) 100vw, 480px"
                     />
                     <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40 rounded-xl">
                       <ExternalLink size={20} color="#fff" />
