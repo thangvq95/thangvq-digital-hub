@@ -65,7 +65,7 @@ const HeroSection: React.FC = () => {
             className="px-8 py-3 rounded-full font-medium glass transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
             style={{ color: "var(--text-primary)", border: "1px solid var(--border)" }}
           >
-            Download CV
+            View CV
           </a>
         </div>
       </div>
