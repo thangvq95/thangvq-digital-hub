@@ -52,9 +52,9 @@ test.describe("Portfolio Page", () => {
     const moreLink = hubCard.getByRole("link", { name: "More →" });
     await expect(moreLink).toBeVisible();
 
-    // Click "More →" and check it redirects to /stack
+    // Click "More →" and check it redirects to /tech (updated URL)
     await moreLink.click();
-    await expect(page).toHaveURL(/\/stack$/);
+    await expect(page).toHaveURL(/\/tech$/);
 
     // Navigate back and click the card body to verify modal dialog opens
     await page.goto("/");
