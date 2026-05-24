@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.4.1...v1.5.0) (2026-05-24)
+
+
+### Features
+
+* Add VSCode, Antigravity, Claude Code, and 9router to Tools & APIs in Tech Stack ([#100](https://github.com/thangvq95/thangvq-digital-hub/issues/100)) ([367b547](https://github.com/thangvq95/thangvq-digital-hub/commit/367b5473ad878f7d6e8cc0fb120e4bc645615edb))
+
 ## [1.4.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.4.0...v1.4.1) (2026-05-20)
 
 
