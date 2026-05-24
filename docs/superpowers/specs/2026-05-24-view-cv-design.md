@@ -9,17 +9,17 @@
 
 ## 1. Problem Statement & Goals
 - **Objective:** Change the portfolio button from "Download CV" to "View CV".
-- **User Experience:** When clicked, the button should open a new tab containing the user's PDF resume (`thang_vu_resume.pdf`). 
+- **User Experience:** When clicked, the button should open a new tab containing the user's PDF resume (`resume.pdf`). 
 - **Download Capability:** Modern web browsers' built-in PDF viewer will naturally host the viewing experience and allow direct downloading of the PDF.
-- **Source Material:** The source PDF file `/Users/thang/Downloads/thang_vu_resume.pdf` is to be hosted in the public directory of the web application.
+- **Source Material:** The source PDF file `/Users/thang/Downloads/thang_vu_resume.pdf` is to be hosted in the public directory of the web application as `resume.pdf`.
 
 ---
 
 ## 2. Proposed Design (Option A)
-- **Asset Relocation:** Copy `thang_vu_resume.pdf` to the `public/` folder as `/public/thang_vu_resume.pdf`. *(This step is already successfully completed)*.
+- **Asset Relocation:** Copy `thang_vu_resume.pdf` to the `public/` folder as `/public/resume.pdf` *(Already completed)*.
 - **UI Update:** In `/components/portfolio/HeroSection.tsx`:
   - Change the label of the second button from `"Download CV"` to `"View CV"`.
-  - Update `href` from `"/resume.pdf"` to `"/thang_vu_resume.pdf"`.
+  - The `href` will remain `"/resume.pdf"`.
   - Ensure the link is configured with `target="_blank"` and `rel="noopener noreferrer"` attributes to open in a new tab.
 
 ---
@@ -29,8 +29,7 @@
 ### File: `/components/portfolio/HeroSection.tsx`
 ```diff
            <a
--            href="/resume.pdf"
-+            href="/thang_vu_resume.pdf"
+             href="/resume.pdf"
              id="hero-download-cv"
              target="_blank"
              rel="noopener noreferrer"
@@ -50,7 +49,7 @@
 1. Open the local development website at `http://localhost:3002`.
 2. Inspect the secondary button in the Hero section:
    - Ensure the label text is **"View CV"**.
-   - Check that clicking the button opens the PDF `/thang_vu_resume.pdf` in a new tab.
+   - Check that clicking the button opens the PDF `/resume.pdf` in a new tab.
    - Confirm that the PDF file loads properly and allows downloading.
 
 ### CI/Build Verification
