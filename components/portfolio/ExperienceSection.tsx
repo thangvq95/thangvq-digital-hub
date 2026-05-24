@@ -74,7 +74,7 @@ const ExperienceSection: React.FC = () => {
                         description: matched?.description || exp.highlights,
                         tags: matched?.tags || exp.tags || [],
                         url: matched?.url || undefined,
-                        stackProject: matched?.stackProject || null,
+                        stackProject: matched?.stackProject ?? null,
                         images: matched?.images || [],
                         contributions: exp.contributions,
                       });
@@ -90,7 +90,7 @@ const ExperienceSection: React.FC = () => {
                           description: matched?.description || exp.highlights,
                           tags: matched?.tags || exp.tags || [],
                           url: matched?.url || undefined,
-                          stackProject: matched?.stackProject || null,
+                          stackProject: matched?.stackProject ?? null,
                           images: matched?.images || [],
                           contributions: exp.contributions,
                         });

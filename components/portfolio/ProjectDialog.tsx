@@ -343,7 +343,9 @@ export default function ProjectDialog({
               }}
             >
               <Layers size={15} />
-              How to build this project
+              {stackUrl === "/tech"
+                ? "Explore Tech Dashboard"
+                : "How to build this project"}
             </a>
           )}
         </div>

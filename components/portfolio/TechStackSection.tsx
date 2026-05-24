@@ -37,7 +37,7 @@ const TechStackSection: React.FC = () => {
                 {category.items.map((tech) => {
                   const isSelfStudy = tech.endsWith("🎓");
                   const displayName = isSelfStudy
-                    ? tech.slice(0, -1).trim()
+                    ? tech.replace(/🎓$/u, "").trim()
                     : tech;
                   return (
                     <span
