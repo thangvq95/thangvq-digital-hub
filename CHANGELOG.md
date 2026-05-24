@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.5.0...v1.6.0) (2026-05-24)
+
+
+### Features
+
+* issue view cv ([#101](https://github.com/thangvq95/thangvq-digital-hub/issues/101)) ([c35525e](https://github.com/thangvq95/thangvq-digital-hub/commit/c35525e57bc34191621aaf5600dff45d4f2f0422))
+
 ## [1.5.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.4.1...v1.5.0) (2026-05-24)
 
 
