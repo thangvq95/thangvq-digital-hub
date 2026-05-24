@@ -154,6 +154,22 @@ export const techStack: Record<string, TechItem[]> = {
       why: "Runs cronjobs, writes code, fixes PRs. Native cron poller + SQLite dedup + git worktrees.",
     },
     {
+      name: "Antigravity",
+      icon: "robot",
+      role: "Agentic AI Developer (Gemini)",
+      category: "ai",
+      url: "https://github.com/google-gemini",
+      why: "A powerful agentic AI coding assistant from Google DeepMind pair programming with the developer.",
+    },
+    {
+      name: "Claude Code",
+      icon: "terminal",
+      role: "Agentic CLI Coding Companion",
+      category: "ai",
+      url: "https://docs.anthropic.com/en/docs/agents-and-subagents",
+      why: "Agentic developer CLI by Anthropic that runs locally for high-speed file editing and terminal command execution.",
+    },
+    {
       name: "GitNexus",
       icon: "git",
       role: "Code knowledge graph (MCP)",

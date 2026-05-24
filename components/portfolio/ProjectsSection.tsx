@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { User, Briefcase } from "lucide-react";
 import { PROJECTS } from "@/lib/constants";
 import { buildStackUrl } from "@/lib/utils";
 import ProjectDialog from "./ProjectDialog";
@@ -48,12 +49,45 @@ const ProjectsSection: React.FC = () => {
                 aria-label={`View details for ${project.title}`}
               >
                 <div className="flex items-start justify-between mb-3">
-                  <h3
-                    className="text-lg font-semibold"
-                    style={{ color: "var(--text-primary)" }}
-                  >
-                    {project.title}
-                  </h3>
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3
+                      className="text-lg font-semibold"
+                      style={{ color: "var(--text-primary)" }}
+                    >
+                      {project.title}
+                    </h3>
+                    {project.type && (
+                      <span
+                        className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded font-mono uppercase font-bold tracking-wider"
+                        style={{
+                          background:
+                            project.type === "personal"
+                              ? "rgba(99, 102, 241, 0.12)"
+                              : "rgba(16, 185, 129, 0.12)",
+                          color:
+                            project.type === "personal"
+                              ? "rgb(129, 140, 248)"
+                              : "rgb(52, 211, 153)",
+                          border:
+                            project.type === "personal"
+                              ? "1px solid rgba(99, 102, 241, 0.2)"
+                              : "1px solid rgba(16, 185, 129, 0.2)",
+                        }}
+                      >
+                        {project.type === "personal" ? (
+                          <>
+                            <User size={10} />
+                            Side Project
+                          </>
+                        ) : (
+                          <>
+                            <Briefcase size={10} />
+                            Work Project
+                          </>
+                        )}
+                      </span>
+                    )}
+                  </div>
                   {/* Visual hint that card is clickable */}
                   <span
                     className="opacity-40 group-hover:opacity-80 transition-opacity text-xs mt-1"
