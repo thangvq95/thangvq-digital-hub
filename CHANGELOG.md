@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.6.0...v1.7.0) (2026-05-25)
+
+
+### Features
+
+* update view CV, fix review issues, and add profile photo to resume ([#104](https://github.com/thangvq95/thangvq-digital-hub/issues/104)) ([9c6c60a](https://github.com/thangvq95/thangvq-digital-hub/commit/9c6c60ab6b1db763b47a3f2a5e78b79f7e00250b))
+
 ## [1.6.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.5.0...v1.6.0) (2026-05-24)
 
 
