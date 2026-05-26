@@ -322,10 +322,28 @@ Rules for tags:
         `[upsert] sample payload — full_name=${sample.full_name} stars_growth=${sample.stars_growth} trending_rank=${sample.trending_rank} stars_total=${sample.stars_total}`,
       );
     }
-    let newCount = 0;
-    for (const r of repos) {
-      const existing = await this.repo.findOneBy({ full_name: r.full_name });
+    const incomingUrls = new Set(
+      repos
+        .map((r) => r.html_url)
+        .filter(
+          (url): url is string => typeof url === 'string' && url.length > 0,
+        ),
+    );
 
+    const existingUrlRows =
+      incomingUrls.size > 0
+        ? await this.repo
+            .createQueryBuilder('repo')
+            .select('repo.html_url', 'html_url')
+            .where('repo.html_url IN (:...urls)', {
+              urls: Array.from(incomingUrls),
+            })
+            .getRawMany<{ html_url: string }>()
+        : [];
+
+    const existingUrlSet = new Set(existingUrlRows.map((row) => row.html_url));
+
+    const rows = repos.map((r) => {
       // Normalize avatar_url: handle both flat property and nested owner object from GitHub API
       const rawAvatar =
         r.avatar_url ||
@@ -338,48 +356,22 @@ Rules for tags:
           ? this.sanitizeStarsGrowth(r.stars_growth)
           : undefined;
 
-      if (!existing) {
-        await this.repo.save({
-          ...r,
-          stars_growth:
-            stars_growth !== undefined
-              ? (stars_growth ?? undefined)
-              : undefined,
-          avatar_url: typeof avatar_url === 'string' ? avatar_url : undefined,
-          is_favorite: false,
-          is_archived: false,
-          has_new_release: false,
-          is_read: false,
-          analyze_status: 'idle',
-          last_scraped_at: new Date(),
-        });
-        newCount++;
-      } else {
-        // Update dynamic GitHub-sourced metadata while strictly preserving user state/preferences.
-        // We construct the update object dynamically to only update fields that are provided
-        // and avoid overwriting existing valid data with undefined/null from partial Hermes payloads.
-        const updateData: Partial<RepositoryEntity> = {
-          last_scraped_at: new Date(),
-        };
+      return {
+        ...r,
+        stars_growth:
+          stars_growth !== undefined ? (stars_growth ?? undefined) : undefined,
+        avatar_url: typeof avatar_url === 'string' ? avatar_url : undefined,
+        analyze_status: 'idle',
+        last_scraped_at: new Date(),
+      };
+    });
 
-        if (r.description !== undefined) updateData.description = r.description;
-        if (r.html_url !== undefined) updateData.html_url = r.html_url;
-        if (r.language !== undefined) updateData.language = r.language;
-        if (r.stars_total !== undefined) updateData.stars_total = r.stars_total;
-        if (stars_growth !== undefined)
-          updateData.stars_growth = stars_growth ?? undefined;
-        if (r.forks_total !== undefined) updateData.forks_total = r.forks_total;
-        if (r.trending_rank !== undefined)
-          updateData.trending_rank = r.trending_rank;
+    await this.repo.upsert(rows, ['html_url']);
 
-        // Only update avatar_url if we found a valid string
-        if (typeof avatar_url === 'string' && avatar_url.length > 0) {
-          updateData.avatar_url = avatar_url;
-        }
+    const newCount = Array.from(incomingUrls).filter(
+      (url) => !existingUrlSet.has(url),
+    ).length;
 
-        await this.repo.update({ full_name: r.full_name }, updateData);
-      }
-    }
     return { received: repos.length, new: newCount };
   }
 
