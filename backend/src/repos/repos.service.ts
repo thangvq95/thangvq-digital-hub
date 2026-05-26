@@ -343,30 +343,54 @@ Rules for tags:
 
     const existingUrlSet = new Set(existingUrlRows.map((row) => row.html_url));
 
-    const rows = repos.map((r) => {
-      // Normalize avatar_url: handle both flat property and nested owner object from GitHub API
-      const rawAvatar =
-        r.avatar_url ||
-        (r as Partial<RepositoryEntity> & { owner?: { avatar_url?: string } })
-          .owner?.avatar_url;
-      const avatar_url = this.normalizeAvatarUrl(rawAvatar);
+    const rows = repos
+      .map((r) => {
+        // Normalize avatar_url: handle both flat property and nested owner object from GitHub API
+        const rawAvatar =
+          r.avatar_url ||
+          (r as Partial<RepositoryEntity> & { owner?: { avatar_url?: string } })
+            .owner?.avatar_url;
+        const avatar_url = this.normalizeAvatarUrl(rawAvatar);
 
-      const stars_growth =
-        r.stars_growth !== undefined
-          ? this.sanitizeStarsGrowth(r.stars_growth)
-          : undefined;
+        const stars_growth =
+          r.stars_growth !== undefined
+            ? this.sanitizeStarsGrowth(r.stars_growth)
+            : undefined;
 
-      return {
-        ...r,
-        stars_growth:
-          stars_growth !== undefined ? (stars_growth ?? undefined) : undefined,
-        avatar_url: typeof avatar_url === 'string' ? avatar_url : undefined,
-        analyze_status: 'idle',
-        last_scraped_at: new Date(),
-      };
-    });
+        return {
+          ...r,
+          stars_growth:
+            stars_growth !== undefined
+              ? (stars_growth ?? undefined)
+              : undefined,
+          avatar_url: typeof avatar_url === 'string' ? avatar_url : undefined,
+          analyze_status: 'idle',
+          last_scraped_at: new Date(),
+        };
+      })
+      .filter((r) => r.full_name && r.html_url);
 
-    await this.repo.upsert(rows, ['html_url']);
+    if (rows.length > 0) {
+      await this.repo
+        .createQueryBuilder()
+        .insert()
+        .into(RepositoryEntity)
+        .values(rows)
+        .orUpdate(
+          [
+            'stars_total',
+            'stars_growth',
+            'description',
+            'avatar_url',
+            'language',
+            'trending_rank',
+            'last_scraped_at',
+            'forks_total',
+          ],
+          ['html_url'],
+        )
+        .execute();
+    }
 
     const newCount = Array.from(incomingUrls).filter(
       (url) => !existingUrlSet.has(url),

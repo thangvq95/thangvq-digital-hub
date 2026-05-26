@@ -2,23 +2,32 @@ import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddUniqueHtmlUrl1716660000000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // Remove existing duplicate URLs before creating the unique constraint.
-    // Keep the oldest row for each html_url to preserve first_seen_at semantics.
+    // Deduplicate repositories by html_url.
+    // We group by html_url and keep the first one based on a custom score (preferring those with user state).
     await queryRunner.query(`
-      DELETE FROM "repositories"
-      WHERE "full_name" IN (
-        SELECT "full_name"
-        FROM (
-          SELECT
-            "full_name",
-            ROW_NUMBER() OVER (
-              PARTITION BY "html_url"
-              ORDER BY "first_seen_at" ASC NULLS LAST, "updated_at" ASC NULLS LAST, "full_name" ASC
-            ) AS rn
-          FROM "repositories"
-          WHERE "html_url" IS NOT NULL
-        ) duplicates
-        WHERE duplicates.rn > 1
+      WITH RankedRepos AS (
+        SELECT
+          full_name,
+          html_url,
+          ROW_NUMBER() OVER(
+            PARTITION BY html_url
+            ORDER BY
+              -- Prefer items that have user interaction or AI summaries
+              (CASE WHEN is_favorite = true THEN 1 ELSE 0 END) DESC,
+              (CASE WHEN is_archived = true THEN 1 ELSE 0 END) DESC,
+              (CASE WHEN is_read = true THEN 1 ELSE 0 END) DESC,
+              (CASE WHEN ai_summary IS NOT NULL AND ai_summary != '' THEN 1 ELSE 0 END) DESC,
+              -- Fallback to oldest first
+              first_seen_at ASC NULLS LAST,
+              updated_at ASC NULLS LAST,
+              full_name ASC
+          ) as rn
+        FROM repositories
+        WHERE html_url IS NOT NULL
+      )
+      DELETE FROM repositories
+      WHERE full_name IN (
+        SELECT full_name FROM RankedRepos WHERE rn > 1
       );
     `);
 
