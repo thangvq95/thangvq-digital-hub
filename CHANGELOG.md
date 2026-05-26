@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.7.0...v1.7.1) (2026-05-26)
+
+
+### Bug Fixes
+
+* update db upsert logic and auto-run migration ([#106](https://github.com/thangvq95/thangvq-digital-hub/issues/106)) ([7d062bf](https://github.com/thangvq95/thangvq-digital-hub/commit/7d062bf56a70f673198a46dee7b7876fe14ba0c0))
+
 ## [1.7.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.6.0...v1.7.0) (2026-05-25)
 
 
