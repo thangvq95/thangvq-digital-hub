@@ -8,13 +8,15 @@
 ---
 
 ## 1. Problem Statement & Goals
+
 - **Objective:** Change the portfolio button from "Download CV" to "View CV".
-- **User Experience:** When clicked, the button should open a new tab containing the user's PDF resume (`resume.pdf`). 
+- **User Experience:** When clicked, the button should open a new tab containing the user's PDF resume (`resume.pdf`).
 - **Download Capability:** Modern web browsers' built-in PDF viewer will naturally host the viewing experience and allow direct downloading of the PDF.
 
 ---
 
 ## 2. Proposed Design (Option A)
+
 - **Asset:** The resume PDF file `/public/resume.pdf` is served statically.
 - **UI Update:** In `/components/portfolio/HeroSection.tsx`:
   - Change the label of the second button from `"Download CV"` to `"View CV"`.
@@ -26,6 +28,7 @@
 ## 3. Detailed Changes
 
 ### File: `/components/portfolio/HeroSection.tsx`
+
 ```diff
            <a
              href="/resume.pdf"
@@ -45,6 +48,7 @@
 ## 4. Verification Plan
 
 ### Manual Verification
+
 1. Open the local development website at `http://localhost:3002`.
 2. Inspect the secondary button in the Hero section:
    - Ensure the label text is **"View CV"**.
@@ -52,5 +56,6 @@
    - Confirm that the PDF file loads properly and allows downloading.
 
 ### CI/Build Verification
+
 1. Run `npm run lint` to verify that there are no lint issues.
 2. Run `npm run build` to ensure the project builds correctly with the new file and changes.

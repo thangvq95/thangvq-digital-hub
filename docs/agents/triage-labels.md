@@ -16,9 +16,9 @@ _If an issue lacks these specific routing labels, the orchestrator defaults to t
 
 ## PR & CI Routing
 
-The orchestrator also handles CI and pull request events:
+The orchestrator polls GitHub for open pull requests and checks their CI status:
 
-- `pull_request`, `check_run`, `check_suite` → Triggers the `gh-fix-ci` skill to automatically fix failing PRs.
+- **Open PRs with failing CI checks** (excluding PRs authored by Hermes/bots or automated release-please PRs) → Triggers the `pr-review-ci-fix` skill to automatically analyze, review, and patch failing CI runs.
 
 ## Human vs Agent States
 

@@ -46,6 +46,7 @@ services:
       - hermes_data:/root/.hermes
       - gitnexus_data:/root/.gitnexus
       - /root/.config/gh:/root/.config/gh
+      - hermes_db_data:/app/data
     environment:
       - HOST=0.0.0.0
       - PORT=9119
@@ -74,6 +75,7 @@ services:
       - ../:/app/repo
       - hermes_data:/root/.hermes
       - gitnexus_data:/root/.gitnexus
+      - hermes_db_data:/app/data
     environment:
       - HOST=0.0.0.0
       - PORT=9119
@@ -104,3 +106,4 @@ volumes:
   pgdata:
   hermes_data:
   gitnexus_data:
+  hermes_db_data:

@@ -9,6 +9,12 @@ jobs:
     name: Deploy Backend to VPS
     runs-on: ubuntu-latest
     steps:
+      - name: Notify Telegram on Start
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"🚀 *[thangvq-digital-hub]* Bắt đầu deploy tag \`${{ github.event.release.tag_name }}\` lên VPS và Vercel...\", \"parse_mode\": \"Markdown\"}"
+
       - name: Deploy via SSH
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -55,14 +61,16 @@ jobs:
             # Set secure permissions
             chmod 600 .env
             
-            # Stop and clean up old/orphan containers to prevent Docker name registration conflicts
-            docker compose down --remove-orphans
+            # 1. Build custom backend and agent services before recreating containers.
+            # During build, the current containers remain online serving requests.
+            docker compose build api hermes-gateway hermes-dashboard
             
-            # Forcefully remove conflicting containers by name if they are stuck or belong to a different project
-            docker rm -f hermes-gateway hermes-dashboard digitalhub-api digitalhub-tunnel digitalhub-postgres || true
+            # 2. Recreate changed containers. Docker Compose handles stopping the old container
+            # and launching the new container sequentially. Postgres and Cloudflared remain running.
+            docker compose up -d --remove-orphans postgres api hermes-gateway hermes-dashboard cloudflared
             
-            # Rebuild and start all services
-            docker compose up --build -d postgres api hermes-gateway hermes-dashboard cloudflared
+            # 3. Clean up dangling images to avoid filling up VPS disk space
+            docker image prune -f
 
       - name: Health Check API
         # Wait up to 60s, continuously pinging the API until it returns 200 OK
@@ -70,6 +78,13 @@ jobs:
           echo "Waiting for API to be healthy..."
           timeout 60 bash -c 'while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' https://api.thangvq95.page/api/repos)" != "200" ]]; do sleep 5; done' || false
           echo "API is healthy! Proceeding to deploy Frontend."
+
+      - name: Notify Telegram on Failure (Backend)
+        if: failure()
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"❌ *[thangvq-digital-hub]* Deploy Backend THẤT BẠI cho tag \`${{ github.event.release.tag_name }}\`! Vui lòng kiểm tra Github Actions log.\", \"parse_mode\": \"Markdown\"}"
 
   deploy-frontend:
     name: Trigger Vercel Frontend
@@ -87,3 +102,18 @@ jobs:
           vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           vercel-args: '--prod'
+
+      - name: Notify Telegram on Failure (Frontend)
+        if: failure()
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"❌ *[thangvq-digital-hub]* Deploy Frontend THẤT BẠI cho tag \`${{ github.event.release.tag_name }}\`! Vui lòng kiểm tra Github Actions log.\", \"parse_mode\": \"Markdown\"}"
+
+      - name: Notify Telegram on Success
+        if: success()
+        run: |
+          curl -s -X POST https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage \
+            -H "Content-Type: application/json" \
+            -d "{\"chat_id\": \"${{ secrets.TELEGRAM_CHAT_ID }}\", \"text\": \"✅ *[thangvq-digital-hub]* Deploy thành công tag \`${{ github.event.release.tag_name }}\`! Hệ thống đã online ổn định.\", \"parse_mode\": \"Markdown\"}"
+

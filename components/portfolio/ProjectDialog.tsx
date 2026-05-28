@@ -32,6 +32,9 @@ export default function ProjectDialog({
   onClose,
 }: ProjectDialogProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+
   const stackUrl = buildStackUrl(project.stackProject);
   const images = project.images ?? [];
   const hasImages = images.length > 0;
@@ -46,18 +49,56 @@ export default function ProjectDialog({
     setActiveIndex((i) => (i + 1) % images.length);
   }, [images.length]);
 
-  // Close on Escape, arrow-key navigation
+  // Accessibility: focus trap, esc key, body scroll prevention, arrow navigation for carousel
   useEffect(() => {
+    const previousActiveElement = document.activeElement as HTMLElement;
+
+    // Focus close button on mount
+    closeButtonRef.current?.focus();
+
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-      if (isCarousel && e.key === "ArrowLeft") prev();
-      if (isCarousel && e.key === "ArrowRight") next();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (isCarousel && e.key === "ArrowLeft") {
+        prev();
+      }
+      if (isCarousel && e.key === "ArrowRight") {
+        next();
+      }
+
+      if (e.key === "Tab" && containerRef.current) {
+        const focusableElements =
+          containerRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
     };
+
     document.addEventListener("keydown", handler);
     document.body.style.overflow = "hidden";
+
     return () => {
       document.removeEventListener("keydown", handler);
       document.body.style.overflow = "";
+      previousActiveElement?.focus();
     };
   }, [onClose, isCarousel, prev, next]);
 
@@ -77,6 +118,7 @@ export default function ProjectDialog({
       aria-label={project.title}
     >
       <div
+        ref={containerRef}
         className="relative w-full max-w-lg rounded-2xl p-6 animate-dialog-in max-h-[90vh] overflow-y-auto"
         style={{
           background: "var(--bg-card)",
@@ -86,6 +128,7 @@ export default function ProjectDialog({
       >
         {/* Close button */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
           className="absolute top-4 right-4 p-1.5 rounded-lg transition-colors duration-150 cursor-pointer"
           style={{ color: "var(--text-secondary)" }}
@@ -159,7 +202,7 @@ export default function ProjectDialog({
           ))}
         </div>
 
-        {/* Contributions (New!) */}
+        {/* Contributions */}
         {project.contributions && project.contributions.length > 0 && (
           <div className="mb-6">
             <h4

@@ -86,10 +86,10 @@ export const EXPERIENCE: {
   contributions: string[];
 }[] = [
   {
-    period: "Dec 2021 — Present",
+    period: "Dec 2020 — Present",
     company: "Care",
     role: "Flutter Engineer",
-    duration: "~4.5 years",
+    duration: "~5.5 years",
     highlights:
       "Primary mobile engineer. Built CI/CD, implemented design patterns and clean architecture across multiple production releases.",
     projectTitle: "Care Mobile App",
@@ -102,10 +102,10 @@ export const EXPERIENCE: {
     ],
   },
   {
-    period: "Jul 2019 — Dec 2021",
+    period: "Jul 2019 — Nov 2020",
     company: "Rovo",
     role: "Flutter Engineer",
-    duration: "2y 5m",
+    duration: "1y 5m",
     highlights:
       "Sports activity booking app. Full CI/CD pipeline, design patterns, cross-platform delivery.",
     projectTitle: "Rovo Mobile App",
@@ -121,7 +121,7 @@ export const EXPERIENCE: {
     period: "Feb 2018 — Jun 2019",
     company: "UpUp App",
     role: "Flutter Engineer",
-    duration: "1y 4m",
+    duration: "1y 5m",
     highlights:
       "Early Flutter adopter. Started with Flutter beta and delivered production builds inline with the 1.0.0 stable release in Dec 2018.",
     tags: ["Flutter", "Dart", "Beta Adopter", "Animation", "Git"],
@@ -133,10 +133,10 @@ export const EXPERIENCE: {
     ],
   },
   {
-    period: "Jan 2017 — Jan 2018",
+    period: "Oct 2016 — Jan 2018",
     company: "TMA Solutions",
     role: "Android Engineer",
-    duration: "1 year",
+    duration: "1y 4m",
     highlights:
       "Android native development with Java. Enterprise project delivery.",
     tags: ["Android", "Java", "RxJava", "SQLite", "Agile"],
@@ -150,7 +150,7 @@ export const EXPERIENCE: {
 ];
 
 // ─── Portfolio: Featured Projects ─────────────────────────────────────────────
-export const PROJECTS: {
+export interface ProjectType {
   title: string;
   description: string;
   tags: string[];
@@ -161,7 +161,9 @@ export const PROJECTS: {
   images?: string[];
   contributions?: string[];
   type?: "personal" | "company";
-}[] = [
+}
+
+export const PROJECTS: ProjectType[] = [
   {
     title: "Sổ Giáo Dân",
     description:
