@@ -308,7 +308,7 @@ Rules for tags:
 
   private sanitizeStarsGrowth(val: string | null | undefined): string | null {
     if (typeof val !== 'string') return null;
-    return val.replace(/.*?\/svg>\s*/, '');
+    return val.replace(/[\s\S]*?<\/svg>\s*/, '');
   }
 
   // ─── Batch upsert from Hermes trending sync (append-only) ─────────────────
