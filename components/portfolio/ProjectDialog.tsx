@@ -1,7 +1,17 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { ExternalLink, X, Layers } from "lucide-react";
+import { useEffect, useRef, useState, useCallback } from "react";
+import Image from "next/image";
+import {
+  ExternalLink,
+  X,
+  Layers,
+  ChevronLeft,
+  ChevronRight,
+  User,
+  Briefcase,
+} from "lucide-react";
+import { buildStackUrl } from "@/lib/utils";
 
 interface ProjectDialogProps {
   project: {
@@ -10,14 +20,11 @@ interface ProjectDialogProps {
     tags: string[];
     url?: string;
     stackProject?: string | null;
+    images?: string[];
+    contributions?: string[];
+    type?: "personal" | "company";
   };
   onClose: () => void;
-}
-
-function buildStackUrl(stackProject: string | null | undefined): string | null {
-  if (stackProject === null || stackProject === undefined) return null;
-  if (stackProject === "") return "https://www.thangvq95.page/stack";
-  return `https://www.thangvq95.page/stack?project=${stackProject}`;
 }
 
 export default function ProjectDialog({
@@ -25,21 +32,75 @@ export default function ProjectDialog({
   onClose,
 }: ProjectDialogProps) {
   const overlayRef = useRef<HTMLDivElement>(null);
-  const stackUrl = buildStackUrl(project.stackProject);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Close on Escape
+  const stackUrl = buildStackUrl(project.stackProject);
+  const images = project.images ?? [];
+  const hasImages = images.length > 0;
+  const isCarousel = images.length > 1;
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const prev = useCallback(() => {
+    setActiveIndex((i) => (i - 1 + images.length) % images.length);
+  }, [images.length]);
+
+  const next = useCallback(() => {
+    setActiveIndex((i) => (i + 1) % images.length);
+  }, [images.length]);
+
+  // Accessibility: focus trap, esc key, body scroll prevention, arrow navigation for carousel
   useEffect(() => {
+    const previousActiveElement = document.activeElement as HTMLElement;
+
+    // Focus close button on mount
+    closeButtonRef.current?.focus();
+
     const handler = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+        return;
+      }
+      if (isCarousel && e.key === "ArrowLeft") {
+        prev();
+      }
+      if (isCarousel && e.key === "ArrowRight") {
+        next();
+      }
+
+      if (e.key === "Tab" && containerRef.current) {
+        const focusableElements =
+          containerRef.current.querySelectorAll<HTMLElement>(
+            'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+          );
+        if (focusableElements.length === 0) return;
+
+        const firstElement = focusableElements[0];
+        const lastElement = focusableElements[focusableElements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement) {
+            lastElement.focus();
+            e.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            firstElement.focus();
+            e.preventDefault();
+          }
+        }
+      }
     };
+
     document.addEventListener("keydown", handler);
-    // Prevent body scroll
     document.body.style.overflow = "hidden";
+
     return () => {
       document.removeEventListener("keydown", handler);
       document.body.style.overflow = "";
+      previousActiveElement?.focus();
     };
-  }, [onClose]);
+  }, [onClose, isCarousel, prev, next]);
 
   // Close on backdrop click
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -57,7 +118,8 @@ export default function ProjectDialog({
       aria-label={project.title}
     >
       <div
-        className="relative w-full max-w-md rounded-2xl p-6 animate-dialog-in"
+        ref={containerRef}
+        className="relative w-full max-w-lg rounded-2xl p-6 animate-dialog-in max-h-[90vh] overflow-y-auto"
         style={{
           background: "var(--bg-card)",
           border: "1px solid var(--border)",
@@ -66,6 +128,7 @@ export default function ProjectDialog({
       >
         {/* Close button */}
         <button
+          ref={closeButtonRef}
           onClick={onClose}
           className="absolute top-4 right-4 p-1.5 rounded-lg transition-colors duration-150 cursor-pointer"
           style={{ color: "var(--text-secondary)" }}
@@ -75,12 +138,45 @@ export default function ProjectDialog({
         </button>
 
         {/* Title */}
-        <h3
-          className="text-xl font-bold mb-2 pr-8"
-          style={{ color: "var(--text-primary)" }}
-        >
-          {project.title}
-        </h3>
+        <div className="flex items-center gap-2.5 flex-wrap mb-2 pr-8">
+          <h3
+            className="text-xl font-bold"
+            style={{ color: "var(--text-primary)" }}
+          >
+            {project.title}
+          </h3>
+          {project.type && (
+            <span
+              className="inline-flex items-center gap-1 text-[9px] px-1.5 py-0.5 rounded font-mono uppercase font-bold tracking-wider"
+              style={{
+                background:
+                  project.type === "personal"
+                    ? "rgba(99, 102, 241, 0.12)"
+                    : "rgba(16, 185, 129, 0.12)",
+                color:
+                  project.type === "personal"
+                    ? "rgb(129, 140, 248)"
+                    : "rgb(52, 211, 153)",
+                border:
+                  project.type === "personal"
+                    ? "1px solid rgba(99, 102, 241, 0.2)"
+                    : "1px solid rgba(16, 185, 129, 0.2)",
+              }}
+            >
+              {project.type === "personal" ? (
+                <>
+                  <User size={10} />
+                  Side Project
+                </>
+              ) : (
+                <>
+                  <Briefcase size={10} />
+                  Work Project
+                </>
+              )}
+            </span>
+          )}
+        </div>
 
         {/* Description */}
         <p
@@ -91,7 +187,7 @@ export default function ProjectDialog({
         </p>
 
         {/* Tags */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        <div className="flex flex-wrap gap-2 mb-5">
           {project.tags.map((tag) => (
             <span
               key={tag}
@@ -105,6 +201,158 @@ export default function ProjectDialog({
             </span>
           ))}
         </div>
+
+        {/* Contributions */}
+        {project.contributions && project.contributions.length > 0 && (
+          <div className="mb-6">
+            <h4
+              className="text-xs font-mono uppercase tracking-wider mb-2.5"
+              style={{ color: "var(--accent)" }}
+            >
+              Key Contributions
+            </h4>
+            <ul
+              className="space-y-2 text-xs leading-relaxed"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              {project.contributions.map((item, index) => (
+                <li key={index} className="flex items-start gap-2">
+                  <span className="text-accent mt-0.5">•</span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {/* Image Carousel */}
+        {hasImages && (
+          <div className="mb-5">
+            <div className="relative overflow-hidden w-full py-2">
+              {isCarousel ? (
+                <div
+                  className="flex transition-transform duration-300 ease-out"
+                  style={{
+                    transform: `translateX(${20 - activeIndex * 60}%)`,
+                  }}
+                >
+                  {images.map((img, idx) => (
+                    <div
+                      key={idx}
+                      className="w-[60%] flex-shrink-0 px-2 transition-all duration-300"
+                      style={{
+                        opacity: idx === activeIndex ? 1 : 0.35,
+                        transform:
+                          idx === activeIndex ? "scale(1)" : "scale(0.92)",
+                      }}
+                    >
+                      <a
+                        href={project.url ?? "#"}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={(e) => {
+                          if (idx !== activeIndex) {
+                            e.preventDefault();
+                            setActiveIndex(idx);
+                          }
+                        }}
+                        className={`block relative overflow-hidden flex justify-center items-center h-[340px] ${
+                          idx !== activeIndex ? "cursor-pointer" : ""
+                        }`}
+                        aria-label={`View screenshot ${idx + 1}`}
+                      >
+                        <Image
+                          src={img}
+                          alt={`${project.title} screenshot ${idx + 1}`}
+                          fill
+                          className="object-contain rounded-xl"
+                          style={{ border: "1px solid var(--border)" }}
+                          sizes="(max-width: 768px) 100vw, 480px"
+                        />
+                        {idx === activeIndex && (
+                          <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40 rounded-xl">
+                            <ExternalLink size={20} color="#fff" />
+                          </div>
+                        )}
+                      </a>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="w-full flex justify-center items-center px-4">
+                  <a
+                    href={project.url ?? "#"}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block relative overflow-hidden flex justify-center items-center w-full h-[340px]"
+                    aria-label={`Open ${project.title}`}
+                  >
+                    <Image
+                      src={images[0]}
+                      alt={`${project.title} screenshot`}
+                      fill
+                      className="object-contain rounded-xl"
+                      style={{ border: "1px solid var(--border)" }}
+                      sizes="(max-width: 768px) 100vw, 480px"
+                    />
+                    <div className="absolute inset-0 opacity-0 hover:opacity-100 transition-opacity duration-200 flex items-center justify-center bg-black/40 rounded-xl">
+                      <ExternalLink size={20} color="#fff" />
+                    </div>
+                  </a>
+                </div>
+              )}
+            </div>
+
+            {/* Carousel controls */}
+            {isCarousel && (
+              <div className="flex items-center justify-between mt-3 px-1">
+                {/* Prev */}
+                <button
+                  onClick={prev}
+                  className="p-1.5 rounded-lg transition-colors duration-150 cursor-pointer"
+                  style={{
+                    background: "var(--accent-glow)",
+                    color: "var(--accent)",
+                  }}
+                  aria-label="Previous screenshot"
+                >
+                  <ChevronLeft size={16} />
+                </button>
+
+                {/* Dots */}
+                <div className="flex gap-1.5">
+                  {images.map((_, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setActiveIndex(i)}
+                      className="rounded-full transition-all duration-200 cursor-pointer"
+                      style={{
+                        width: i === activeIndex ? "18px" : "6px",
+                        height: "6px",
+                        background:
+                          i === activeIndex ? "var(--accent)" : "var(--border)",
+                      }}
+                      aria-label={`Go to screenshot ${i + 1}`}
+                    />
+                  ))}
+                </div>
+
+                {/* Next */}
+                <button
+                  onClick={next}
+                  className="p-1.5 rounded-lg transition-colors duration-150 cursor-pointer"
+                  style={{
+                    background: "var(--accent-glow)",
+                    color: "var(--accent)",
+                  }}
+                  aria-label="Next screenshot"
+                >
+                  <ChevronRight size={16} />
+                </button>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Actions */}
         <div className="flex flex-col gap-3">
@@ -138,7 +386,9 @@ export default function ProjectDialog({
               }}
             >
               <Layers size={15} />
-              How to build this project
+              {stackUrl === "/tech"
+                ? "Explore Tech Dashboard"
+                : "How to build this project"}
             </a>
           )}
         </div>

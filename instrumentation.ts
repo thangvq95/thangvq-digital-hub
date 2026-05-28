@@ -2,12 +2,12 @@
 // Next.js 14+ Instrumentation hook — loaded once at startup
 // https://nextjs.org/docs/app/building-your-application/optimizing/instrumentation
 export async function register() {
-  if (process.env.NEXT_RUNTIME === 'nodejs') {
-    await import('./sentry.server.config');
+  if (process.env.NEXT_RUNTIME === "nodejs") {
+    await import("./sentry.server.config");
   }
 
-  if (process.env.NEXT_RUNTIME === 'edge') {
-    await import('./sentry.edge.config');
+  if (process.env.NEXT_RUNTIME === "edge") {
+    await import("./sentry.edge.config");
   }
 }
 
@@ -17,14 +17,18 @@ export const onRequestError = async (
   request: Request,
   context: unknown,
 ) => {
-  const { captureRequestError } = await import('@sentry/nextjs');
-  // Sentry's captureRequestError expects RequestInfo with a 'path' property
+  const { captureRequestError } = await import("@sentry/nextjs");
   const url = new URL(request.url);
-  captureRequestError(err, {
-    ...request,
-    path: url.pathname,
-    method: request.method,
-    headers: Object.fromEntries(request.headers.entries()),
-  } as any, context as any);
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+  captureRequestError(
+    err,
+    {
+      ...request,
+      path: url.pathname,
+      method: request.method,
+      headers: Object.fromEntries(request.headers.entries()),
+    } as any,
+    context as any,
+  );
+  /* eslint-enable @typescript-eslint/no-explicit-any */
 };
-

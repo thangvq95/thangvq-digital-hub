@@ -37,6 +37,7 @@
 - **NEVER Push to Main:** The `main` branch is protected. Autonomous agents must never push directly to it.
 - **Branching:** When starting work on an issue, ALWAYS create a new branch: `git checkout -b fix/issue-<id>` or `feat/issue-<id>`.
 - **Pull Request:** After committing your changes and verifying tests pass, you MUST create a Pull Request using the GitHub CLI: `gh pr create --fill`.
+- **NO Auto-Merge on Feature/Fix PRs:** AI Agents MUST NEVER run `gh pr merge` or enable auto-merge (e.g. `--auto`) on their own feature/fix PRs. PRs must remain open for GitHub Copilot / AI Reviewer scanning and human approval. Auto-merge is strictly reserved for the automated `release-please` release PRs via GitHub Actions.
 - **Commit Formatting (Husky + Conventional Commits):** This project enforces Conventional Commits via Husky (`commitlint`). You MUST format all commit messages according to this standard (e.g., `feat: <description>`, `fix: <description>`, `chore: <description>`). This is required for the `release-please` automated versioning system to work properly. The `pre-commit` hook will also automatically run `lint-staged`.
 - **Completion:** Do not close the issue manually. Let the PR merge process close it automatically.
 
@@ -82,7 +83,7 @@ Single-context layout. See `docs/agents/domain.md`.
 
 # GitNexus — Code Intelligence
 
-This project is indexed by GitNexus as **thangvq-digital-hub** (803 symbols, 988 relationships, 0 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
+This project is indexed by GitNexus as **thangvq-digital-hub** (862 symbols, 1235 relationships, 10 execution flows). Use the GitNexus MCP tools to understand code, assess impact, and navigate safely.
 
 > If any GitNexus tool warns the index is stale, run `npx gitnexus analyze` in terminal first.
 

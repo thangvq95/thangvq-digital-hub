@@ -1,5 +1,47 @@
 # Changelog
 
+## [1.8.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.7.1...v1.8.0) (2026-05-28)
+
+### Features
+
+- deploy optimization ([#108](https://github.com/thangvq95/thangvq-digital-hub/issues/108)) ([a2754b7](https://github.com/thangvq95/thangvq-digital-hub/commit/a2754b75de9448858073827b5cf1a90123318d11))
+
+## [1.7.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.7.0...v1.7.1) (2026-05-26)
+
+### Bug Fixes
+
+- update db upsert logic and auto-run migration ([#106](https://github.com/thangvq95/thangvq-digital-hub/issues/106)) ([7d062bf](https://github.com/thangvq95/thangvq-digital-hub/commit/7d062bf56a70f673198a46dee7b7876fe14ba0c0))
+
+## [1.7.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.6.0...v1.7.0) (2026-05-25)
+
+### Features
+
+- update view CV, fix review issues, and add profile photo to resume ([#104](https://github.com/thangvq95/thangvq-digital-hub/issues/104)) ([9c6c60a](https://github.com/thangvq95/thangvq-digital-hub/commit/9c6c60ab6b1db763b47a3f2a5e78b79f7e00250b))
+
+## [1.6.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.5.0...v1.6.0) (2026-05-24)
+
+### Features
+
+- issue view cv ([#101](https://github.com/thangvq95/thangvq-digital-hub/issues/101)) ([c35525e](https://github.com/thangvq95/thangvq-digital-hub/commit/c35525e57bc34191621aaf5600dff45d4f2f0422))
+
+## [1.5.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.4.1...v1.5.0) (2026-05-24)
+
+### Features
+
+- Add VSCode, Antigravity, Claude Code, and 9router to Tools & APIs in Tech Stack ([#100](https://github.com/thangvq95/thangvq-digital-hub/issues/100)) ([367b547](https://github.com/thangvq95/thangvq-digital-hub/commit/367b5473ad878f7d6e8cc0fb120e4bc645615edb))
+
+## [1.4.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.4.0...v1.4.1) (2026-05-20)
+
+### Bug Fixes
+
+- shared buildStackUrl helper with encodeURIComponent and stable test locators ([#96](https://github.com/thangvq95/thangvq-digital-hub/issues/96)) ([9182619](https://github.com/thangvq95/thangvq-digital-hub/commit/9182619d1f41d9474a55059bb785321c8781f9ee))
+
+## [1.4.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.23...v1.4.0) (2026-05-20)
+
+### Features
+
+- add tech stack tags and pr title checker workflow ([#94](https://github.com/thangvq95/thangvq-digital-hub/issues/94)) ([bbce3f3](https://github.com/thangvq95/thangvq-digital-hub/commit/bbce3f3b53687c1bb5bb86d7ed6bc12b01532408))
+
 ## [1.3.23](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.3.22...v1.3.23) (2026-05-18)
 
 ### Bug Fixes

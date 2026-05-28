@@ -30,6 +30,7 @@ services:
       SENTRY_DSN_BE: ${SENTRY_DSN_BE}
       SENTRY_PROJECT_BE: ${SENTRY_PROJECT_BE}
       GH_PAT: ${GH_PAT}
+      RUN_MIGRATIONS_ON_START: ${RUN_MIGRATIONS_ON_START:-true}
       PORT: 3001
     depends_on:
       - postgres
@@ -45,6 +46,7 @@ services:
       - hermes_data:/root/.hermes
       - gitnexus_data:/root/.gitnexus
       - /root/.config/gh:/root/.config/gh
+      - hermes_db_data:/app/data
     environment:
       - HOST=0.0.0.0
       - PORT=9119
@@ -73,6 +75,7 @@ services:
       - ../:/app/repo
       - hermes_data:/root/.hermes
       - gitnexus_data:/root/.gitnexus
+      - hermes_db_data:/app/data
     environment:
       - HOST=0.0.0.0
       - PORT=9119
@@ -103,3 +106,4 @@ volumes:
   pgdata:
   hermes_data:
   gitnexus_data:
+  hermes_db_data:

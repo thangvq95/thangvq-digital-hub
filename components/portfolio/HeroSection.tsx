@@ -31,7 +31,7 @@ const HeroSection: React.FC = () => {
           className="text-sm font-medium tracking-widest uppercase mb-4"
           style={{ color: "var(--accent)" }}
         >
-          Software Engineer &middot; 10+ Years in Production
+          Software Engineer &middot; 9+ Years in Production
         </p>
         <h1 className="text-6xl sm:text-8xl lg:text-9xl font-bold tracking-tight mb-6">
           <span className="gradient-text">Thang VQ</span>
@@ -40,13 +40,15 @@ const HeroSection: React.FC = () => {
           className="text-lg sm:text-xl font-light mb-4 max-w-2xl mx-auto"
           style={{ color: "var(--text-secondary)" }}
         >
-          Building high-performance applications with modern web &amp; mobile stacks
+          Building high-performance applications with modern web &amp; mobile
+          stacks
         </p>
         <p
           className="max-w-xl mx-auto text-sm mb-10"
           style={{ color: "var(--text-muted)" }}
         >
-          Flutter &amp; mobile as primary career background, now expanding into full-stack web &amp; autonomous software engineering
+          Flutter &amp; mobile as primary career background, now expanding into
+          full-stack web &amp; autonomous software engineering
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a
@@ -63,9 +65,12 @@ const HeroSection: React.FC = () => {
             target="_blank"
             rel="noopener noreferrer"
             className="px-8 py-3 rounded-full font-medium glass transition-all duration-200 hover:-translate-y-0.5 cursor-pointer"
-            style={{ color: "var(--text-primary)", border: "1px solid var(--border)" }}
+            style={{
+              color: "var(--text-primary)",
+              border: "1px solid var(--border)",
+            }}
           >
-            Download CV
+            View CV
           </a>
         </div>
       </div>

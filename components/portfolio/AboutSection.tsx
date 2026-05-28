@@ -3,7 +3,7 @@ import { Code2, Cpu, Rocket, Server } from "lucide-react";
 const highlights = [
   {
     icon: Code2,
-    title: "10+ Years Experience",
+    title: "9+ Years Experience",
     description:
       "Building production applications across multiple startups and enterprise environments.",
   },

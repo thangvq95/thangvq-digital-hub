@@ -8,7 +8,7 @@ export class WebhooksController {
 
   @Post('sentry')
   @HttpCode(HttpStatus.OK)
-  async handleSentry(@Body() payload: any) {
+  async handleSentry(@Body() payload: Record<string, unknown>) {
     return this.webhooksService.handleSentryAlert(payload);
   }
 }
