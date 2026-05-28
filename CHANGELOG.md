@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.8.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.7.1...v1.8.0) (2026-05-28)
+
+
+### Features
+
+* deploy optimization ([#108](https://github.com/thangvq95/thangvq-digital-hub/issues/108)) ([a2754b7](https://github.com/thangvq95/thangvq-digital-hub/commit/a2754b75de9448858073827b5cf1a90123318d11))
+
 ## [1.7.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.7.0...v1.7.1) (2026-05-26)
 
 ### Bug Fixes
