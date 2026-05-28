@@ -15,7 +15,7 @@ export class RepositoryEntity {
   @Column({ nullable: true, type: 'text' })
   description: string;
 
-  @Column()
+  @Column({ unique: true })
   html_url: string;
 
   @Column({ nullable: true })

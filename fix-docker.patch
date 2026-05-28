@@ -1,0 +1,27 @@
+--- infra/docker-compose.yml
++++ infra/docker-compose.yml
+@@ -44,7 +44,6 @@
+       - ../:/app/repo
+       - hermes_data:/root/.hermes
+       - gitnexus_data:/root/.gitnexus
+-      - ~/.ssh:/root/.ssh:ro
+       - /root/.config/gh:/root/.config/gh
+     environment:
+       - HOST=0.0.0.0
+@@ -68,8 +67,6 @@
+     restart: always
+     depends_on:
+       - hermes-gateway
+-    ports:
+-      - "127.0.0.1:9119:9119"
+     volumes:
+       - ../:/app/repo
+       - hermes_data:/root/.hermes
+@@ -96,6 +93,7 @@
+     command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+     depends_on:
+       - api
++      - hermes-dashboard
+ 
+ volumes:
+   pgdata:
