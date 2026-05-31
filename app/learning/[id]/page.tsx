@@ -20,6 +20,7 @@ import {
   Calendar,
   Layers,
   CheckCircle,
+  X,
 } from "lucide-react";
 import {
   fetchLearning,
@@ -78,6 +79,7 @@ export default function LearningDetailPage() {
   const [loading, setLoading] = useState<boolean>(true);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [isLearned, setIsLearned] = useState<boolean>(false);
+  const [isLightboxOpen, setIsLightboxOpen] = useState<boolean>(false);
 
   // Fetch subtopics list
   useEffect(() => {
@@ -231,7 +233,9 @@ export default function LearningDetailPage() {
               <img
                 src={imageUrl}
                 alt={learning.title}
-                className="w-full h-auto object-contain max-h-[500px]"
+                onClick={() => setIsLightboxOpen(true)}
+                className="w-full h-auto object-contain max-h-[500px] cursor-zoom-in hover:opacity-90 transition-opacity"
+                title="Click to zoom image"
               />
             </div>
           </div>
@@ -427,6 +431,28 @@ export default function LearningDetailPage() {
           </div>
         </div>
       </div>
+
+      {/* Premium Image Lightbox (Zoom Modal) */}
+      {isLightboxOpen && imageUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-md p-4 animate-in fade-in duration-200"
+          onClick={() => setIsLightboxOpen(false)}
+        >
+          <button
+            onClick={() => setIsLightboxOpen(false)}
+            className="absolute top-6 right-6 p-2.5 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all cursor-pointer z-55"
+            title="Close Zoom"
+          >
+            <X size={22} />
+          </button>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={imageUrl}
+            alt={learning.title}
+            className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl select-none animate-in zoom-in-95 duration-200 cursor-zoom-out"
+          />
+        </div>
+      )}
     </main>
   );
 }
