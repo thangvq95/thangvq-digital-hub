@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.9.0...v1.9.1) (2026-05-31)
+
+
+### Bug Fixes
+
+* add telegram env variables to deploy workflow ([#112](https://github.com/thangvq95/thangvq-digital-hub/issues/112)) ([b3c244b](https://github.com/thangvq95/thangvq-digital-hub/commit/b3c244ba05cc3590eb365907fc78e5b28e3b7a9a))
+
 ## [1.9.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.8.0...v1.9.0) (2026-05-31)
 
 
