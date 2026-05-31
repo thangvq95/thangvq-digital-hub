@@ -178,11 +178,11 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
 
       {/* Tags */}
       {repo.tags && repo.tags.length > 0 && (
-        <div className="flex flex-wrap gap-1.5 mb-3">
-          {repo.tags.map((tag) => (
+        <div className="flex flex-nowrap items-center gap-1.5 mb-3 overflow-hidden">
+          {repo.tags.slice(0, 3).map((tag) => (
             <span
               key={tag}
-              className="text-[10px] px-2 py-0.5 rounded-full font-medium border"
+              className="text-[10px] px-2 py-0.5 rounded-full font-medium border whitespace-nowrap flex-shrink-0"
               style={{
                 background: "var(--bg-card)",
                 color: "var(--text-primary)",
@@ -192,6 +192,19 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
               #{tag}
             </span>
           ))}
+          {repo.tags.length > 3 && (
+            <span
+              className="text-[10px] px-2 py-0.5 rounded-full font-medium border whitespace-nowrap flex-shrink-0"
+              style={{
+                background: "var(--bg-card)",
+                color: "var(--text-muted)",
+                borderColor: "var(--border)",
+              }}
+              title={repo.tags.slice(3).join(', ')}
+            >
+              ...
+            </span>
+          )}
         </div>
       )}
 

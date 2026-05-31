@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { ChevronDown } from "lucide-react";
 import { api } from "@/lib/api/client";
 import type { Repository, Category } from "@/lib/api/types";
 import RepoCard from "./RepoCard";
@@ -19,6 +20,7 @@ const RepoGrid: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   useEffect(() => {
     api.categories.list().then(setCategories).catch(console.error);
@@ -71,32 +73,61 @@ const RepoGrid: React.FC = () => {
     loadRepos(1, false);
   };
 
-  const renderCategoryPills = () => {
+  const renderCategoryDropdown = () => {
     return (
-      <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-6 scrollbar-none flex-nowrap mask-image-horizontal">
-        <button
-          onClick={() => handleCategorySelect(null)}
-          className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 cursor-pointer whitespace-nowrap ${
-            !selectedCategory
-              ? "bg-[var(--accent)] text-white border-transparent shadow-[0_0_12px_rgba(59,130,246,0.3)]"
-              : "bg-[var(--bg-card)] text-[var(--text-muted)] border-[var(--border)] hover:text-[var(--text-primary)] hover:border-white/20"
-          }`}
-        >
-          All
-        </button>
-        {categories.map((c) => (
+      <div className="relative inline-block text-left mb-6">
+        <div>
           <button
-            key={c.id}
-            onClick={() => handleCategorySelect(c.name)}
-            className={`px-4 py-1.5 rounded-full text-xs font-semibold border transition-all duration-200 cursor-pointer whitespace-nowrap uppercase tracking-wider ${
-              selectedCategory === c.name
-                ? "bg-[var(--accent)] text-white border-transparent shadow-[0_0_12px_rgba(59,130,246,0.3)]"
-                : "bg-[var(--bg-card)] text-[var(--text-muted)] border-[var(--border)] hover:text-[var(--text-primary)] hover:border-white/20"
-            }`}
+            id="category-dropdown-btn"
+            type="button"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className="inline-flex items-center justify-between w-52 rounded-xl border border-[var(--border)] bg-black/40 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-[var(--text-primary)] hover:bg-black/50 hover:border-white/20 transition-all cursor-pointer font-mono"
           >
-            {c.name}
+            <span>Category: {selectedCategory ? selectedCategory : "ALL"}</span>
+            <ChevronDown size={14} className={`ml-2 h-4 w-4 transition-transform duration-200 ${dropdownOpen ? 'rotate-180' : ''}`} />
           </button>
-        ))}
+        </div>
+
+        {dropdownOpen && (
+          <>
+            {/* Click outside to close */}
+            <div className="fixed inset-0 z-10" onClick={() => setDropdownOpen(false)} />
+            
+            <div className="absolute left-0 mt-2 w-52 origin-top-left rounded-xl border border-[var(--border)] bg-[#0F172A]/95 backdrop-blur-md shadow-2xl ring-1 ring-black ring-opacity-5 focus:outline-none z-20 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150">
+              <div className="py-1">
+                <button
+                  onClick={() => {
+                    handleCategorySelect(null);
+                    setDropdownOpen(false);
+                  }}
+                  className={`flex items-center justify-between w-full text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer font-mono ${
+                    !selectedCategory
+                      ? "bg-[var(--accent)] text-white"
+                      : "text-[var(--text-muted)] hover:bg-white/5 hover:text-[var(--text-primary)]"
+                  }`}
+                >
+                  ALL
+                </button>
+                {categories.map((c) => (
+                  <button
+                    key={c.id}
+                    onClick={() => {
+                      handleCategorySelect(c.name);
+                      setDropdownOpen(false);
+                    }}
+                    className={`flex items-center justify-between w-full text-left px-4 py-2.5 text-xs font-semibold uppercase tracking-wider transition-colors cursor-pointer font-mono ${
+                      selectedCategory === c.name
+                        ? "bg-[var(--accent)] text-white"
+                        : "text-[var(--text-muted)] hover:bg-white/5 hover:text-[var(--text-primary)]"
+                    }`}
+                  >
+                    {c.name}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </>
+        )}
       </div>
     );
   };
@@ -104,7 +135,7 @@ const RepoGrid: React.FC = () => {
   if (loading && repos.length === 0) {
     return (
       <div>
-        {renderCategoryPills()}
+        {renderCategoryDropdown()}
         <div id="repo-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: 9 }).map((_, i) => (
             <div
@@ -120,7 +151,7 @@ const RepoGrid: React.FC = () => {
 
   return (
     <div>
-      {renderCategoryPills()}
+      {renderCategoryDropdown()}
       <div id="repo-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {repos.length === 0 ? (
           <div

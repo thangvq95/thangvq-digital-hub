@@ -29,7 +29,7 @@ export class ReposService {
   ) {
     const qb = this.repo.createQueryBuilder('r');
 
-    if (categoryName) {
+    if (categoryName && categoryName.trim().toLowerCase() !== 'all') {
       const category = await this.categoryRepo.findOne({
         where: { name: categoryName.trim().toLowerCase() },
       });
