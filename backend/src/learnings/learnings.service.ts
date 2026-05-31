@@ -526,7 +526,7 @@ Return a JSON object:
 
     for (const [subtopicName, keywords] of Object.entries(SUBTOPIC_RULES)) {
       if (keywords.some((kw) => searchText.includes(kw))) {
-        let subtopic = await this.subtopicRepo.findOneBy({
+        const subtopic = await this.subtopicRepo.findOneBy({
           name: subtopicName,
         });
         if (subtopic) {

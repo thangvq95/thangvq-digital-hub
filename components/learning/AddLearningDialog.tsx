@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, DragEvent, ChangeEvent } from "react";
-import { X, Upload, Link as LinkIcon, FileText, Image as ImageIcon, Sparkles } from "lucide-react";
+import { X, Upload, Link as LinkIcon, FileText, Sparkles } from "lucide-react";
 import { addLearning } from "@/lib/api/learning-client";
 import type { Learning } from "@/lib/api/learning-types";
 
@@ -101,9 +101,9 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
       setImage(null);
       setPreviewUrl(null);
       onClose();
-    } catch (err: any) {
+    } catch (err) {
       console.error(err);
-      setError(err?.message || "Failed to save learning content.");
+      setError(err instanceof Error ? err.message : "Failed to save learning content.");
     } finally {
       setIsSubmitting(false);
     }

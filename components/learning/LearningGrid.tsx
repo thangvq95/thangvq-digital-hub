@@ -49,6 +49,7 @@ export const LearningGrid: React.FC = () => {
 
   // Trigger loading list when filter changes
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setPage(1);
     loadLearnings(1, false);
   }, [tab, topic, subtopic, loadLearnings]);
