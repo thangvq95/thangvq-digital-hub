@@ -4,7 +4,7 @@
 > **Repo:** `thangvq-digital-hub` (monorepo)
 > **Developed by:** Hermes Agent (Powered by Superpowers Skills & GitNexus)
 > **Status:** Autonomous Workflow Ready
-> **Last Updated:** 2026-05-11
+> **Last Updated:** 2026-05-31
 
 ---
 
@@ -113,14 +113,16 @@ Design direction, personal content, and implementation details are in:
 6. **New Repo Indicator (`is_read`)** — Newly scraped repositories have a "NEW" badge. Clicking into the repo detail page automatically marks them as read.
 7. **AI Magic Analyze** — On repo detail page, click "Magic" button → AI reads the repo and generates a **Markdown-formatted** explanation
 8. **Favorite Release Monitor** — Daily cronjob checks favorite repos for new GitHub releases, highlights them with `has_new_release` badge
-9. **Release Changelog Link** — Detail page links to GitHub Releases page; clicking it dismisses the new-release highlight
-10. **Load More Pagination** — 20 repos per batch, load more on scroll/click
+9. Release Changelog Link — Detail page links to GitHub Releases page; clicking it dismisses the new-release highlight
+10. Load More Pagination — 20 repos per batch, load more on scroll/click
+11. **Category Filtering and Auto-Classification** — Repositories are categorized (e.g. 'video', 'memory', 'skills', 'finance'). Auto-classification uses regex rules first, falling back to LLM-based categorization via 9Router. Users can filter by category on the dashboard and manually edit/assign categories on the details page.
 
 ### Database Schema
 
 | Table          | Purpose                                                                                                            |
 | -------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `repositories` | Repo identity, trending rank, stars, user interactions (favorite/archive), release tracking, AI summary (Markdown) |
+| `repositories` | Repo identity, trending rank, stars, user interactions (favorite/archive), release tracking, category link, AI summary (Markdown) |
+| `categories`   | Curated and auto-generated repository categories (e.g. 'video', 'memory', 'skills', 'finance')                     |
 | `sync_logs`    | Audit trail for sync operations                                                                                    |
 
 Key design:
@@ -128,6 +130,7 @@ Key design:
 - `repositories` uses `full_name` (owner/repo) as primary key
 - Simple dedup: if `full_name` exists → skip, if not → insert with `is_read = false`
 - `is_archived` hides repos from default view
+- `category_id` (foreign key) links each repository to a category for filtering
 - `latest_release_tag` + `has_new_release` for lightweight release tracking (no full changelog storage)
 - `ai_summary` stores the Magic Analyze result as **Markdown** (rendered with `react-markdown`)
 
@@ -142,14 +145,19 @@ Key design:
 
 | Endpoint                        | Method | Auth        | Description                                              |
 | ------------------------------- | ------ | ----------- | -------------------------------------------------------- |
-| `/api/repos`                    | GET    | —           | List repos (tab: all/favorites/archived, pagination)     |
+| `/api/repos`                    | GET    | —           | List repos (tab: all/favorites/archived, category filter, pagination) |
 | `/api/repos/{fullName}`         | GET    | —           | Repo detail                                              |
-| `/api/repos/{fullName}`         | PATCH  | —           | Toggle favorite/archive/has_new_release/is_read          |
+| `/api/repos/{fullName}`         | PATCH  | —           | Toggle favorite/archive/has_new_release/is_read, update category_id |
 | `/api/repos/{fullName}/analyze` | POST   | —           | Trigger AI Magic Analyze                                 |
-| `/api/repos/add`                | POST   | —           | Manually add a repo via URL                              |
-| `/api/repos/upsert`             | POST   | `x-api-key` | Batch upsert from Hermes trending sync                   |
+| `/api/repos/add`                | POST   | —           | Manually add a repo via URL (with auto-classification)   |
+| `/api/repos/upsert`             | POST   | `x-api-key` | Batch upsert from Hermes trending sync (with auto-classification) |
 | `/api/repos/check-releases`     | POST   | `x-api-key` | Batch update release tags (from Hermes favorite monitor) |
-| `/api/sync`                     | GET    | —           | Latest sync log                                          |
+| `/api/repos/classify-all`       | POST   | —           | Run classification for all uncategorized repos           |
+| `/api/categories`               | GET    | —           | List all categories ordered by name                      |
+| `/api/categories`               | POST   | —           | Create a category                                        |
+| `/api/categories/{id}`          | PUT    | —           | Update category name                                     |
+| `/api/categories/{id}`          | DELETE | —           | Delete a category                                        |
+| `/api/sync`                     | GET    | —           | Latest sync log                                          |                                         |
 
 ---
 

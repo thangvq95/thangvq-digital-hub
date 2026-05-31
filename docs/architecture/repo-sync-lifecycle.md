@@ -84,6 +84,7 @@ To ensure data is always fresh without losing user preferences and custom AI sum
 | `has_new_release` | Release notification state |
 | `ai_summary` | AI-generated content (Markdown, from Magic Analyze) |
 | `tags` | AI-generated tags |
+| `category_id` | Associated repository category (preserved/manually set) |
 | `first_seen_at` | Historical tracking |
 | `analyze_status` | Status of the background AI analyzer |
 

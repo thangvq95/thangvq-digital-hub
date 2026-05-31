@@ -16,6 +16,7 @@ Developer Intelligence Platform — Portfolio + TechTrend Dashboard with weekly 
 - **Favorite Release Monitor** — Daily Hermes cronjob that checks favorite repos for new GitHub releases. Updates `latest_release_tag` and sets `has_new_release = true` for UI highlight. No changelog data stored.
 - **has_new_release** — Boolean flag on repos, set by release monitor cronjob, cleared when user clicks the changelog link on the detail page.
 - **is_read** — Boolean flag on repos, set to `false` when newly scraped by trending sync, cleared to `true` when user visits the detail page.
+- **Category Classification** — Auto-classification of repositories into categories (e.g. video, memory, skills, finance) during weekly sync or manual additions, utilizing rule-based regex and 9Router LLM.
 - **Sentry Global Filter** — NestJS exception filter that captures all unhandled errors.
 - **Sentry Webhook Handler** — Backend endpoint at `/webhooks/sentry` that maps Sentry alerts to GitHub Issues for automated AI fixing.
 

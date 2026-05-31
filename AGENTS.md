@@ -4,7 +4,7 @@
 
 - `docs/PRD.md` for product/roadmap.
 - `CONTEXT.md` for domain terms + architecture rules.
-- `docs/adr/` for decisions.
+- `docs/architecture/adr/` for decisions.
 - `design-system/MASTER.md` for UI/UX rules, colors, and styling patterns.
 
 ### Stack & structure
@@ -69,15 +69,15 @@ All skills are checked directly into the repository under `.agents/skills/` for 
 
 ### Issue tracker
 
-GitHub Issues. See `docs/agents/issue-tracker.md`.
+GitHub Issues. See `docs/architecture/agents/issue-tracker.md`.
 
 ### Triage labels
 
-Default vocabulary. See `docs/agents/triage-labels.md`.
+Default vocabulary. See `docs/architecture/agents/triage-labels.md`.
 
 ### Domain docs
 
-Single-context layout. See `docs/agents/domain.md`.
+Single-context layout. See `docs/architecture/agents/domain.md`.
 
 <!-- gitnexus:start -->
 # GitNexus — Code Intelligence

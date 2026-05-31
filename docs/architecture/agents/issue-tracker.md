@@ -25,4 +25,4 @@ Regardless of the source, once an issue is created on GitHub, it triggers the He
 - When creating issues, include a clear title prefix, context/links, and a checklist.
 - **Crucial**: Always apply the correct **Triage Labels** (e.g., `bug`, `feature`, `plan`). The Hermes orchestrator relies strictly on these labels to determine which skill to execute.
 
-See `docs/agents/triage-labels.md` for routing details.
+See `docs/architecture/agents/triage-labels.md` for routing details.
