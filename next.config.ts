@@ -12,6 +12,19 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "github.com",
       },
+      {
+        protocol: "http",
+        hostname: "localhost",
+        port: "3005",
+      },
+      {
+        protocol: "https",
+        hostname: "thangvq95.page",
+      },
+      {
+        protocol: "https",
+        hostname: "www.thangvq95.page",
+      },
     ],
   },
   turbopack: {
