@@ -515,6 +515,14 @@ Rules for tags:
 
     const saved = await this.repo.save(newRepo);
     await this.classifyRepo(saved);
+
+    // Auto-trigger magic AI analysis in the background
+    await this.triggerAnalyze(saved.full_name).catch((err) => {
+      this.logger.error(
+        `Failed to auto-trigger analysis for ${saved.full_name}: ${err.message}`,
+      );
+    });
+
     return this.findOne(saved.full_name);
   }
 
