@@ -136,7 +136,9 @@ export class ReposService {
       } else {
         const category = await this.categoryRepo.findOneBy({ id: category_id });
         if (!category) {
-          throw new NotFoundException(`Category with ID ${category_id} not found`);
+          throw new NotFoundException(
+            `Category with ID ${category_id} not found`,
+          );
         }
         repo.category = category;
       }

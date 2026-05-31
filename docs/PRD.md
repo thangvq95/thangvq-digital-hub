@@ -16,6 +16,7 @@ graph TB
         A["Next.js 16 App Router"]
         A --> B["/ — Portfolio"]
         A --> C["/tech — TechTrend Dashboard"]
+        A --> D["/learning — Learning Hub"]
     end
 
     subgraph "Stateless AI Execution (Local / Remote)"
@@ -74,6 +75,8 @@ graph TB
 /                       → Portfolio (SSG)
 /tech                   → TechTrend Dashboard (trending repos, load more)
 /tech/[owner]/[repo]    → Repo detail + AI Magic Analyze
+/learning               → Learning Hub (scraped & manual mobile learnings)
+/learning/[id]          → Learning detail + AI Markdown summary
 ```
 
 ---
@@ -119,11 +122,11 @@ Design direction, personal content, and implementation details are in:
 
 ### Database Schema
 
-| Table          | Purpose                                                                                                            |
-| -------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Table          | Purpose                                                                                                                           |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------- |
 | `repositories` | Repo identity, trending rank, stars, user interactions (favorite/archive), release tracking, category link, AI summary (Markdown) |
-| `categories`   | Curated and auto-generated repository categories (e.g. 'video', 'memory', 'skills', 'finance')                     |
-| `sync_logs`    | Audit trail for sync operations                                                                                    |
+| `categories`   | Curated and auto-generated repository categories (e.g. 'video', 'memory', 'skills', 'finance')                                    |
+| `sync_logs`    | Audit trail for sync operations                                                                                                   |
 
 Key design:
 
@@ -136,28 +139,61 @@ Key design:
 
 ### Cronjob Pipelines
 
-| Cronjob                  | Source                             | Schedule                         | Details                                                                     |
-| ------------------------ | ---------------------------------- | -------------------------------- | --------------------------------------------------------------------------- |
-| Weekly Trending Sync     | `github.com/trending?since=weekly` | `0 1 * * *` (daily 8AM UTC+7 / 1AM UTC)     | → [repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md)             |
-| Favorite Release Monitor | Favorite repos                     | `0 10 * * *` (daily 5PM UTC+7 / 10AM UTC)   | → [release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) |
+| Cronjob                  | Source                             | Schedule                                  | Details                                                                     |
+| ------------------------ | ---------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------- |
+| Weekly Trending Sync     | `github.com/trending?since=weekly` | `0 1 * * *` (daily 8AM UTC+7 / 1AM UTC)   | → [repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md)             |
+| Favorite Release Monitor | Favorite repos                     | `0 10 * * *` (daily 5PM UTC+7 / 10AM UTC) | → [release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) |
 
 ### API Routes
 
-| Endpoint                        | Method | Auth        | Description                                              |
-| ------------------------------- | ------ | ----------- | -------------------------------------------------------- |
+| Endpoint                        | Method | Auth        | Description                                                           |
+| ------------------------------- | ------ | ----------- | --------------------------------------------------------------------- | --- |
 | `/api/repos`                    | GET    | —           | List repos (tab: all/favorites/archived, category filter, pagination) |
-| `/api/repos/{fullName}`         | GET    | —           | Repo detail                                              |
-| `/api/repos/{fullName}`         | PATCH  | —           | Toggle favorite/archive/has_new_release/is_read, update category_id |
-| `/api/repos/{fullName}/analyze` | POST   | —           | Trigger AI Magic Analyze                                 |
-| `/api/repos/add`                | POST   | —           | Manually add a repo via URL (with auto-classification)   |
-| `/api/repos/upsert`             | POST   | `x-api-key` | Batch upsert from Hermes trending sync (with auto-classification) |
-| `/api/repos/check-releases`     | POST   | `x-api-key` | Batch update release tags (from Hermes favorite monitor) |
-| `/api/repos/classify-all`       | POST   | —           | Run classification for all uncategorized repos           |
-| `/api/categories`               | GET    | —           | List all categories ordered by name                      |
-| `/api/categories`               | POST   | —           | Create a category                                        |
-| `/api/categories/{id}`          | PUT    | —           | Update category name                                     |
-| `/api/categories/{id}`          | DELETE | —           | Delete a category                                        |
-| `/api/sync`                     | GET    | —           | Latest sync log                                          |                                         |
+| `/api/repos/{fullName}`         | GET    | —           | Repo detail                                                           |
+| `/api/repos/{fullName}`         | PATCH  | —           | Toggle favorite/archive/has_new_release/is_read, update category_id   |
+| `/api/repos/{fullName}/analyze` | POST   | —           | Trigger AI Magic Analyze                                              |
+| `/api/repos/add`                | POST   | —           | Manually add a repo via URL (with auto-classification)                |
+| `/api/repos/upsert`             | POST   | `x-api-key` | Batch upsert from Hermes trending sync (with auto-classification)     |
+| `/api/repos/check-releases`     | POST   | `x-api-key` | Batch update release tags (from Hermes favorite monitor)              |
+| `/api/repos/classify-all`       | POST   | —           | Run classification for all uncategorized repos                        |
+| `/api/categories`               | GET    | —           | List all categories ordered by name                                   |
+| `/api/categories`               | POST   | —           | Create a category                                                     |
+| `/api/categories/{id}`          | PUT    | —           | Update category name                                                  |
+| `/api/categories/{id}`          | DELETE | —           | Delete a category                                                     |
+| `/api/sync`                     | GET    | —           | Latest sync log                                                       |     |
+
+---
+
+## Part 3: Learning Hub (`/learning`)
+
+### Core Features
+
+1. **Daily Scraper Sync** — Hermes scrapes LinkedIn, Medium, and official blogs for Flutter & Android content, upserting to NestJS API.
+2. **Category / Subtopic Classification** — Rule-based keyword mapping for technical subtopics (navigation, state-management, deeplink, etc.) with automatic fallback to LLM classification via 9Router.
+3. **Manual Add** — Add learning items manually via text, URL, or image upload.
+4. **Image Compression** — Automatically compresses uploaded screenshots to under 150KB WebP format via Sharp.
+5. **Tabs View** — Organize learnings into "To Learn", "Learned", and "Favorites" tabs.
+6. **Detail View** — Displays original screenshots alongside the AI-generated Markdown summary of the learning.
+
+### Database Schema
+
+| Table                | Purpose                                                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `learnings`          | Learning item title, summary (Markdown), source, image path, topic & subtopic links, status, and content hash (dedup) |
+| `learning_topics`    | Main tech stacks (Flutter, Android)                                                                                   |
+| `learning_subtopics` | Technical subtopics (e.g. Navigation, State Management, Jetpack Compose)                                              |
+
+### API Routes
+
+| Endpoint                   | Method | Auth        | Description                                                 |
+| -------------------------- | ------ | ----------- | ----------------------------------------------------------- |
+| `/api/learnings`           | GET    | —           | List learnings (tab, topic, subtopic filter, pagination)    |
+| `/api/learnings/topics`    | GET    | —           | List all topics                                             |
+| `/api/learnings/subtopics` | GET    | —           | List all subtopics                                          |
+| `/api/learnings/{id}`      | GET    | —           | Learning detail                                             |
+| `/api/learnings/{id}`      | PATCH  | —           | Toggle favorite/learned, edit subtopic                      |
+| `/api/learnings/add`       | POST   | —           | Manually add a learning (supports image upload)             |
+| `/api/learnings/upsert`    | POST   | `x-api-key` | Batch upsert from Hermes crawler (with auto-classification) |
 
 ---
 
@@ -261,6 +297,7 @@ NEXT_PUBLIC_GA_ID=G-XXXXXXX              # Analytics (optional)
 7. **Document structure** — PRD stays concise; deep mechanics in `docs/architecture/`; personal content in `docs/portfolio-content.md`
 8. **Autonomous Pipeline** — Superpowers skills (brainstorming → writing-plans) + GitNexus + Hermes + Playwright form the development cycle. Spec Kit concepts (DAGs, structured contracts) to be adopted incrementally as complexity grows.
 9. **TechTrend Simplification (2026-05-11)** — Removed release monitoring, domain classification, multi-period ranking. Simplified to weekly trending scrape + dedup + favorite/archive + on-demand AI analysis. See `docs/superpowers/specs/2026-05-11-techtrend-simplification-design.md`.
+10. **Learning Hub Integration (2026-05-31)** — Added route `/learning` and backend module `backend/src/learnings` to catalog Flutter & Android knowledge, auto-classifying topics, and compressing images to &le;150KB WebP via Sharp.
 
 ---
 

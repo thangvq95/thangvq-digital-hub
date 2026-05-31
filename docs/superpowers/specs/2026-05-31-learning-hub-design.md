@@ -12,6 +12,7 @@
 As a senior developer, staying current with rapidly evolving technologies (Flutter, Android, Dart) is critical. Valuable learning content appears daily across LinkedIn, Medium, and official blogs — but there's no centralized place to capture, organize, and revisit this knowledge.
 
 The Learning Hub solves this by:
+
 1. **Hermes cronjob** scrapes Flutter & Android content from LinkedIn, Medium, and official blogs daily
 2. **Manual add** lets the user submit any URL, image, or text — AI analyzes and structures it
 3. **AI classification** automatically categorizes learnings by subtopic (navigation, state management, deeplink, etc.)
@@ -117,15 +118,15 @@ Fully independent NestJS module. Does NOT share service/entity with the `repos` 
 
 ### Controller — `LearningsController`
 
-| Endpoint | Method | Auth | Description |
-|---|---|---|---|
-| `/api/learnings` | GET | — | List learnings with filters: `tab` (to_learn/learned/favorites), `topic` (flutter/android), `subtopic`, `page`, `limit` |
-| `/api/learnings/:id` | GET | — | Single learning detail |
-| `/api/learnings/:id` | PATCH | — | Update: toggle `is_learned`, `is_favorite`, change `subtopic_id` |
-| `/api/learnings/add` | POST | — | Manual add: multipart form with `url` OR `image` OR `text`, optional `topic` |
-| `/api/learnings/upsert` | POST | `x-api-key` | Batch upsert from Hermes cronjob |
-| `/api/learnings/topics` | GET | — | List all topics |
-| `/api/learnings/subtopics` | GET | — | List all subtopics |
+| Endpoint                   | Method | Auth        | Description                                                                                                             |
+| -------------------------- | ------ | ----------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `/api/learnings`           | GET    | —           | List learnings with filters: `tab` (to_learn/learned/favorites), `topic` (flutter/android), `subtopic`, `page`, `limit` |
+| `/api/learnings/:id`       | GET    | —           | Single learning detail                                                                                                  |
+| `/api/learnings/:id`       | PATCH  | —           | Update: toggle `is_learned`, `is_favorite`, change `subtopic_id`                                                        |
+| `/api/learnings/add`       | POST   | —           | Manual add: multipart form with `url` OR `image` OR `text`, optional `topic`                                            |
+| `/api/learnings/upsert`    | POST   | `x-api-key` | Batch upsert from Hermes cronjob                                                                                        |
+| `/api/learnings/topics`    | GET    | —           | List all topics                                                                                                         |
+| `/api/learnings/subtopics` | GET    | —           | List all subtopics                                                                                                      |
 
 ### Service — `LearningsService`
 
@@ -170,23 +171,24 @@ Fully independent NestJS module. Does NOT share service/entity with the `repos` 
 
 **Rule-based subtopic matching (checked first):**
 
-| Subtopic | Keywords in title/content |
-|---|---|
-| `navigation` | navigator, go_router, auto_route, routing, push, pop, deeplink |
-| `state-management` | bloc, riverpod, provider, cubit, getx, setState, state management |
-| `deeplink` | deep link, universal link, app link, uri scheme |
-| `ui-widgets` | widget, listview, scrollview, container, layout, scaffold, appbar |
-| `architecture` | clean architecture, mvvm, mvc, repository pattern, dependency injection |
-| `performance` | performance, optimization, jank, frame rate, memory leak, profiling |
-| `testing` | test, widget test, integration test, unit test, mockito, bloc_test |
-| `animations` | animation, lottie, rive, tween, implicit animation, hero |
-| `networking` | http, dio, retrofit, api, rest, graphql, websocket |
-| `dart-language` | dart 3, sealed class, pattern matching, records, extension type |
-| `jetpack-compose` | compose, composable, modifier, lazycolumn, material3 |
-| `kotlin` | kotlin, coroutines, flow, sealed class, data class |
-| `gradle` | gradle, build.gradle, agp, version catalog |
+| Subtopic           | Keywords in title/content                                               |
+| ------------------ | ----------------------------------------------------------------------- |
+| `navigation`       | navigator, go_router, auto_route, routing, push, pop, deeplink          |
+| `state-management` | bloc, riverpod, provider, cubit, getx, setState, state management       |
+| `deeplink`         | deep link, universal link, app link, uri scheme                         |
+| `ui-widgets`       | widget, listview, scrollview, container, layout, scaffold, appbar       |
+| `architecture`     | clean architecture, mvvm, mvc, repository pattern, dependency injection |
+| `performance`      | performance, optimization, jank, frame rate, memory leak, profiling     |
+| `testing`          | test, widget test, integration test, unit test, mockito, bloc_test      |
+| `animations`       | animation, lottie, rive, tween, implicit animation, hero                |
+| `networking`       | http, dio, retrofit, api, rest, graphql, websocket                      |
+| `dart-language`    | dart 3, sealed class, pattern matching, records, extension type         |
+| `jetpack-compose`  | compose, composable, modifier, lazycolumn, material3                    |
+| `kotlin`           | kotlin, coroutines, flow, sealed class, data class                      |
+| `gradle`           | gradle, build.gradle, agp, version catalog                              |
 
 **LLM fallback:** If no rule matches, call 9Router to classify:
+
 ```
 Classify this learning content into a subtopic.
 Title: "..."
@@ -248,21 +250,21 @@ Served via NestJS `ServeStaticModule` at `/uploads/learnings/*`
 
 ### Components — `components/learning/`
 
-| Component | Description |
-|---|---|
-| `LearningHeader.tsx` | Tabs ("To Learn" / "Learned" / "Favorites") + topic filter pills (All / Flutter / Android) + subtopic chips + "Add Learning" button |
-| `LearningCard.tsx` | Card: compressed image thumbnail, title, topic badge (Flutter blue / Android green), subtopic tag, source icon (LinkedIn/Medium/blog), "NEW" indicator for unanalyzed items |
-| `LearningGrid.tsx` | Responsive grid + load-more pagination (20 items per batch) |
-| `AddLearningDialog.tsx` | Modal dialog for manual add: URL input field, image upload dropzone, topic selector, submit → AI processes in background |
-| `LearningDetail.tsx` | Detail view: original image (full size from source_url), AI Markdown summary, favorite button, "Mark as Learned" button, subtopic editor dropdown |
+| Component               | Description                                                                                                                                                                 |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LearningHeader.tsx`    | Tabs ("To Learn" / "Learned" / "Favorites") + topic filter pills (All / Flutter / Android) + subtopic chips + "Add Learning" button                                         |
+| `LearningCard.tsx`      | Card: compressed image thumbnail, title, topic badge (Flutter blue / Android green), subtopic tag, source icon (LinkedIn/Medium/blog), "NEW" indicator for unanalyzed items |
+| `LearningGrid.tsx`      | Responsive grid + load-more pagination (20 items per batch)                                                                                                                 |
+| `AddLearningDialog.tsx` | Modal dialog for manual add: URL input field, image upload dropzone, topic selector, submit → AI processes in background                                                    |
+| `LearningDetail.tsx`    | Detail view: original image (full size from source_url), AI Markdown summary, favorite button, "Mark as Learned" button, subtopic editor dropdown                           |
 
 ### Tab Behavior
 
-| Tab | Filter | Default Sort |
-|---|---|---|
-| **To Learn** (default) | `is_learned = false` | `created_at DESC` (newest first) |
-| **Learned** | `is_learned = true` | `updated_at DESC` (recently learned first) |
-| **Favorites** | `is_favorite = true` | `created_at DESC` |
+| Tab                    | Filter               | Default Sort                               |
+| ---------------------- | -------------------- | ------------------------------------------ |
+| **To Learn** (default) | `is_learned = false` | `created_at DESC` (newest first)           |
+| **Learned**            | `is_learned = true`  | `updated_at DESC` (recently learned first) |
+| **Favorites**          | `is_favorite = true` | `created_at DESC`                          |
 
 ### Card Design
 
@@ -332,15 +334,16 @@ Body: {
 
 ## 5. Deduplication Strategy
 
-| Input Type | Hash Method | Field |
-|---|---|---|
-| URL-based content | `SHA256(source_url)` | `content_hash` |
-| Uploaded image (no URL) | `SHA256(raw image buffer)` | `content_hash` |
-| Text-only (no URL, no image) | `SHA256(text content)` | `content_hash` |
+| Input Type                   | Hash Method                | Field          |
+| ---------------------------- | -------------------------- | -------------- |
+| URL-based content            | `SHA256(source_url)`       | `content_hash` |
+| Uploaded image (no URL)      | `SHA256(raw image buffer)` | `content_hash` |
+| Text-only (no URL, no image) | `SHA256(text content)`     | `content_hash` |
 
 The `content_hash` column has a UNIQUE constraint. On insert conflict → skip silently.
 
 For the Hermes batch upsert, dedup happens server-side:
+
 1. Compute hash for each incoming item
 2. Query existing hashes in batch
 3. Filter out duplicates before insert
@@ -356,6 +359,7 @@ Reuses existing `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` already configured i
 ## 7. Verification Plan
 
 ### Backend Tests
+
 - TypeORM migration runs cleanly
 - CRUD endpoints return correct data
 - Deduplication prevents duplicate inserts
@@ -363,6 +367,7 @@ Reuses existing `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` already configured i
 - AI classification assigns correct subtopics
 
 ### Frontend Verification
+
 - `/learning` renders card grid with tabs
 - Topic/subtopic filter pills work correctly
 - "Add Learning" dialog submits and shows analyzing state
@@ -371,5 +376,6 @@ Reuses existing `TELEGRAM_BOT_TOKEN` and `TELEGRAM_CHAT_ID` already configured i
 - Load more pagination works
 
 ### E2E
+
 - Hermes upsert endpoint accepts batch payload and creates learnings
 - Dedup: submitting same URL twice only creates one record
