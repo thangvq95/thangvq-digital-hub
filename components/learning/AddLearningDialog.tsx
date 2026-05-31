@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, DragEvent, ChangeEvent } from "react";
+import React, { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
 import { X, Upload, Link as LinkIcon, FileText, Sparkles } from "lucide-react";
 import { addLearning } from "@/lib/api/learning-client";
 import type { Learning } from "@/lib/api/learning-types";
@@ -21,12 +21,42 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
   const [title, setTitle] = useState<string>("");
   const [text, setText] = useState<string>("");
   const [image, setImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>("");
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const [dragActive, setDragActive] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Global Clipboard paste listener for images
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handlePaste = (e: ClipboardEvent) => {
+      const items = e.clipboardData?.items;
+      if (!items) return;
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") !== -1) {
+          const file = items[i].getAsFile();
+          if (file) {
+            e.preventDefault();
+            setImage(file);
+            setPreviewUrl(URL.createObjectURL(file));
+            setImageUrl(""); // Clear URL input if pasting directly
+            setError(null);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener("paste", handlePaste);
+    return () => {
+      window.removeEventListener("paste", handlePaste);
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -50,6 +80,7 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
       if (file.type.startsWith("image/")) {
         setImage(file);
         setPreviewUrl(URL.createObjectURL(file));
+        setImageUrl("");
         setError(null);
       } else {
         setError("Please drop an image file.");
@@ -62,12 +93,14 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
       const file = e.target.files[0];
       setImage(file);
       setPreviewUrl(URL.createObjectURL(file));
+      setImageUrl("");
       setError(null);
     }
   };
 
   const handleRemoveImage = () => {
     setImage(null);
+    setImageUrl("");
     if (previewUrl) {
       URL.revokeObjectURL(previewUrl);
       setPreviewUrl(null);
@@ -76,8 +109,8 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!url && !text && !image) {
-      setError("Please provide a URL, text content, or upload an image.");
+    if (!url && !text && !image && !imageUrl.trim()) {
+      setError("Please provide a URL, text content, image upload, or image URL.");
       return;
     }
 
@@ -90,6 +123,7 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
       if (url.trim()) formData.append("url", url.trim());
       if (title.trim()) formData.append("title", title.trim());
       if (text.trim()) formData.append("text", text.trim());
+      if (imageUrl.trim()) formData.append("imageUrl", imageUrl.trim());
       if (image) formData.append("image", image);
 
       const result = await addLearning(formData);
@@ -99,6 +133,7 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
       setTitle("");
       setText("");
       setImage(null);
+      setImageUrl("");
       setPreviewUrl(null);
       onClose();
     } catch (err) {
@@ -270,21 +305,25 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
             </div>
           </div>
 
-          {/* Image Upload */}
+          {/* Image Upload or URL */}
           <div className="flex flex-col gap-1.5">
             <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-              Upload Screenshot / Image
+              Screenshot / Image (Upload, Paste image file, or Paste image URL)
             </label>
-            {previewUrl ? (
+            {previewUrl || imageUrl.trim() ? (
               <div
                 className="relative rounded-xl border overflow-hidden group aspect-video max-h-48"
                 style={{ borderColor: "var(--border)" }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={previewUrl}
+                  src={previewUrl || imageUrl.trim()}
                   alt="Upload preview"
                   className="w-full h-full object-cover"
+                  onError={(e) => {
+                    // handle invalid image URLs gracefully
+                    (e.target as HTMLImageElement).style.display = "none";
+                  }}
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
@@ -297,35 +336,53 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
                 </div>
               </div>
             ) : (
-              <div
-                onDragEnter={handleDrag}
-                onDragOver={handleDrag}
-                onDragLeave={handleDrag}
-                onDrop={handleDrop}
-                onClick={() => fileInputRef.current?.click()}
-                className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 bg-black/10 hover:bg-black/20 ${
-                  dragActive
-                    ? "border-indigo-500 bg-indigo-500/5"
-                    : "border-neutral-700"
-                }`}
-              >
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-                <Upload className="w-8 h-8 text-neutral-500 mb-2 group-hover:text-indigo-400 transition-colors" />
-                <p className="text-xs font-medium text-neutral-300 text-center">
-                  Drag and drop image here, or{" "}
-                  <span className="text-indigo-400 hover:underline">
-                    browse
-                  </span>
-                </p>
-                <p className="text-[10px] text-neutral-500 mt-1">
-                  Supports PNG, JPG, WEBP (nerved to &le;150KB)
-                </p>
+              <div className="space-y-2">
+                <div
+                  onDragEnter={handleDrag}
+                  onDragOver={handleDrag}
+                  onDragLeave={handleDrag}
+                  onDrop={handleDrop}
+                  onClick={() => fileInputRef.current?.click()}
+                  className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 bg-black/10 hover:bg-black/20 ${
+                    dragActive
+                      ? "border-indigo-500 bg-indigo-500/5"
+                      : "border-neutral-700"
+                  }`}
+                >
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                  />
+                  <Upload className="w-8 h-8 text-neutral-500 mb-2 group-hover:text-indigo-400 transition-colors" />
+                  <p className="text-xs font-medium text-neutral-300 text-center">
+                    Drag and drop image here, or{" "}
+                    <span className="text-indigo-400 hover:underline">
+                      browse
+                    </span>
+                  </p>
+                  <p className="text-[10px] text-neutral-500 mt-1">
+                    Supports clipboard copy-paste (Ctrl+V / Cmd+V) directly inside dialog
+                  </p>
+                </div>
+
+                <div className="relative flex items-center">
+                  <span className="absolute left-3 text-xs text-neutral-500">URL:</span>
+                  <input
+                    type="url"
+                    placeholder="Or paste direct image URL (e.g. https://.../image.png)"
+                    value={imageUrl}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                    disabled={isSubmitting}
+                    className="w-full pl-12 pr-3 py-2 text-xs rounded-lg outline-none transition-all duration-200 border bg-black/20 focus:ring-1 focus:ring-indigo-500/50"
+                    style={{
+                      borderColor: "var(--border)",
+                      color: "var(--text-primary)",
+                    }}
+                  />
+                </div>
               </div>
             )}
           </div>

@@ -152,8 +152,8 @@ export const LearningHeader: React.FC = () => {
             </div>
           </div>
 
-          {/* Filters Row: Topic Pills + Subtopic Chips */}
-          <div className="flex flex-col gap-2 pt-2 border-t border-white/5">
+          {/* Filters Row: Topic Pills + Subtopic Dropdown */}
+          <div className="flex flex-wrap items-center justify-between gap-4 pt-2 border-t border-white/5">
             {/* Topics */}
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
               <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 flex-shrink-0 mr-1">
@@ -195,56 +195,25 @@ export const LearningHeader: React.FC = () => {
               })}
             </div>
 
-            {/* Subtopics — only show if topics are loaded and subtopics exist */}
+            {/* Subtopics Select Dropdown */}
             {subtopics.length > 0 && (
-              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
-                <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 flex-shrink-0 mr-1 flex items-center gap-1">
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] uppercase font-bold tracking-wider text-neutral-500 flex-shrink-0 flex items-center gap-1">
                   <Layers size={10} /> Subtopic:
                 </span>
-                <button
-                  onClick={() => updateFilters({ subtopic: "" })}
-                  className="px-2.5 py-0.5 rounded-md text-[11px] transition-all cursor-pointer whitespace-nowrap border"
-                  style={
-                    !currentSubtopic
-                      ? {
-                          background: "var(--accent)",
-                          borderColor: "var(--accent)",
-                          color: "#fff",
-                        }
-                      : {
-                          background: "transparent",
-                          borderColor: "var(--border)",
-                          color: "var(--text-muted)",
-                        }
-                  }
+                <select
+                  value={currentSubtopic}
+                  onChange={(e) => updateFilters({ subtopic: e.target.value })}
+                  className="px-3 py-1.5 rounded-lg bg-black/30 text-xs text-neutral-200 outline-none cursor-pointer hover:bg-black/50 border transition-all"
+                  style={{ borderColor: "var(--border)", background: "var(--bg-card)" }}
                 >
-                  All
-                </button>
-                {subtopics.map((sub) => {
-                  const active = currentSubtopic === sub.name;
-                  return (
-                    <button
-                      key={sub.id}
-                      onClick={() => updateFilters({ subtopic: sub.name })}
-                      className="px-2.5 py-0.5 rounded-md text-[11px] transition-all cursor-pointer whitespace-nowrap border"
-                      style={
-                        active
-                          ? {
-                              background: "var(--accent)",
-                              borderColor: "var(--accent)",
-                              color: "#fff",
-                            }
-                          : {
-                              background: "transparent",
-                              borderColor: "var(--border)",
-                              color: "var(--text-muted)",
-                            }
-                      }
-                    >
+                  <option value="">All Subtopics</option>
+                  {subtopics.map((sub) => (
+                    <option key={sub.id} value={sub.name}>
                       {sub.display_name}
-                    </button>
-                  );
-                })}
+                    </option>
+                  ))}
+                </select>
               </div>
             )}
           </div>

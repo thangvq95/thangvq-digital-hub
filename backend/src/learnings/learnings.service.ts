@@ -5,6 +5,7 @@ import { createHash, randomUUID } from 'crypto';
 import { writeFile, mkdir } from 'fs/promises';
 import { join } from 'path';
 import sharp from 'sharp';
+import axios from 'axios';
 import { LearningEntity } from './learning.entity';
 import { LearningTopicEntity } from './learning-topic.entity';
 import { LearningSubtopicEntity } from './learning-subtopic.entity';
@@ -299,20 +300,36 @@ export class LearningsService {
     url?: string;
     text?: string;
     image?: Buffer;
+    imageUrl?: string;
     imageFilename?: string;
     topic?: string; // 'flutter' or 'android'
     title?: string;
   }): Promise<LearningEntity> {
+    let imageBuffer = input.image;
+
+    // Download image from URL if provided and no direct upload buffer
+    if (!imageBuffer && input.imageUrl) {
+      try {
+        const response = await axios.get(input.imageUrl, {
+          responseType: 'arraybuffer',
+          timeout: 10000,
+        });
+        imageBuffer = Buffer.from(response.data);
+      } catch (err) {
+        this.logger.error(`Failed to download image from URL: ${input.imageUrl}`, err);
+      }
+    }
+
     // 1. Compute content hash for dedup
     let hashSource: string | Buffer;
     if (input.url) {
       hashSource = input.url;
-    } else if (input.image) {
-      hashSource = input.image;
+    } else if (imageBuffer) {
+      hashSource = imageBuffer;
     } else if (input.text) {
       hashSource = input.text;
     } else {
-      throw new Error('Must provide url, image, or text');
+      throw new Error('Must provide url, image, imageUrl, or text');
     }
     const contentHash = this.computeHash(hashSource);
 
@@ -333,15 +350,15 @@ export class LearningsService {
         input.url.includes('flutter.dev')
       )
         sourceType = 'official_blog';
-    } else if (input.image) {
+    } else if (imageBuffer) {
       sourceType = 'image';
     }
 
     // 4. Process image (compress to ≤150KB)
     let imagePath: string | null = null;
-    if (input.image) {
+    if (imageBuffer) {
       const uuid = randomUUID();
-      const compressed = await this.compressImage(input.image);
+      const compressed = await this.compressImage(imageBuffer);
       const dir = join(UPLOADS_DIR, 'learnings');
       await mkdir(dir, { recursive: true });
       const filename = `${uuid}.webp`;

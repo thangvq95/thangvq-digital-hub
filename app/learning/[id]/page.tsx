@@ -16,7 +16,6 @@ import {
   Check,
   Copy,
   Heart,
-  BookOpen,
   ExternalLink,
   Calendar,
   Layers,
@@ -222,8 +221,8 @@ export default function LearningDetailPage() {
       {/* Grid Layout: image + details */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
         {/* Left Side: Thumbnail Screenshot */}
-        <div className="md:col-span-5 space-y-4">
-          {imageUrl ? (
+        {imageUrl && (
+          <div className="md:col-span-5 space-y-4">
             <div
               className="rounded-2xl border overflow-hidden bg-black/40 shadow-xl"
               style={{ borderColor: "var(--border)" }}
@@ -235,24 +234,11 @@ export default function LearningDetailPage() {
                 className="w-full h-auto object-contain max-h-[500px]"
               />
             </div>
-          ) : (
-            <div
-              className="rounded-2xl border p-12 flex flex-col items-center justify-center text-center aspect-square bg-black/20"
-              style={{ borderColor: "var(--border)" }}
-            >
-              <BookOpen size={48} className="text-neutral-600 mb-3" />
-              <p className="text-sm font-semibold text-neutral-400">
-                No Image Uploaded
-              </p>
-              <p className="text-xs text-neutral-500 mt-1">
-                This learning consists of text content or a web URL.
-              </p>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
 
         {/* Right Side: metadata, details, & AI Summary */}
-        <div className="md:col-span-7 space-y-6">
+        <div className={imageUrl ? "md:col-span-7 space-y-6" : "md:col-span-12 space-y-6"}>
           {/* Header Card */}
           <div
             className="p-5 sm:p-6 rounded-2xl glass space-y-4"
