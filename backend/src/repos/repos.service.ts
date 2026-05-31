@@ -1,7 +1,7 @@
 // backend/src/repos/repos.service.ts
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { RepositoryEntity } from './repository.entity';
 import { CategoryEntity } from './category.entity';
 
@@ -29,11 +29,15 @@ export class ReposService {
   ) {
     const qb = this.repo.createQueryBuilder('r');
 
-    // Eagerly select the category relation
-    qb.leftJoinAndSelect('r.category', 'cat');
-
     if (categoryName) {
-      qb.andWhere('cat.name = :categoryName', { categoryName });
+      const category = await this.categoryRepo.findOne({
+        where: { name: categoryName.trim().toLowerCase() },
+      });
+      if (category) {
+        qb.andWhere('r.category = :categoryId', { categoryId: category.id });
+      } else {
+        qb.andWhere('1 = 0');
+      }
     }
 
     if (tab === 'favorites') {
@@ -81,6 +85,21 @@ export class ReposService {
     qb.skip((page - 1) * limit).take(limit);
 
     const [data, total] = await qb.getManyAndCount();
+
+    if (data.length > 0) {
+      const fullNames = data.map((r) => r.full_name);
+      const reposWithRelations = await this.repo.find({
+        where: { full_name: In(fullNames) },
+        relations: ['category'],
+      });
+      const relationMap = new Map(
+        reposWithRelations.map((r) => [r.full_name, r.category]),
+      );
+      for (const r of data) {
+        r.category = relationMap.get(r.full_name) || null;
+      }
+    }
+
     return { data, meta: { total, page, limit, tab } };
   }
 
