@@ -7,7 +7,7 @@ import {
   useRef,
   ComponentPropsWithoutRef,
 } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -72,7 +72,6 @@ const PreWithCopy = ({
 
 export default function LearningDetailPage() {
   const params = useParams<{ id: string }>();
-  const router = useRouter();
   const learningId = params.id;
 
   const [learning, setLearning] = useState<Learning | null>(null);

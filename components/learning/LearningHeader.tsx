@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Sparkles, Star, CheckCircle, BookOpen, Layers } from "lucide-react";
+import { Star, CheckCircle, BookOpen, Layers } from "lucide-react";
 import { fetchSubtopics } from "@/lib/api/learning-client";
 import type { LearningSubtopic } from "@/lib/api/learning-types";
 import AddLearningDialog from "./AddLearningDialog";
