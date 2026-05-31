@@ -37,7 +37,7 @@ export const LearningHeader: React.FC = () => {
 
   const updateFilters = (newParams: Record<string, string | null>) => {
     const params = new URLSearchParams(searchParams.toString());
-    
+
     Object.entries(newParams).forEach(([key, val]) => {
       if (val === null || val === "" || val === "all") {
         params.delete(key);
@@ -72,7 +72,11 @@ export const LearningHeader: React.FC = () => {
           <div className="flex items-center justify-between gap-4">
             {/* Logo / Title */}
             <div className="flex items-center gap-2 flex-shrink-0">
-              <Link href="/learning" id="learning-home-link" className="flex items-center gap-2 group">
+              <Link
+                href="/learning"
+                id="learning-home-link"
+                className="flex items-center gap-2 group"
+              >
                 <span
                   className="text-lg sm:text-xl font-bold tracking-tight group-hover:opacity-80 transition-opacity"
                   style={{ color: "var(--text-primary)" }}
@@ -93,7 +97,10 @@ export const LearningHeader: React.FC = () => {
             </div>
 
             {/* Navigation Tabs */}
-            <div className="flex gap-1 p-1 rounded-xl bg-black/30 border border-white/5" style={{ background: "var(--bg-card)" }}>
+            <div
+              className="flex gap-1 p-1 rounded-xl bg-black/30 border border-white/5"
+              style={{ background: "var(--bg-card)" }}
+            >
               {TABS.map((tab) => {
                 const TabIcon = tab.icon;
                 const active = currentTab === tab.value;
@@ -109,7 +116,10 @@ export const LearningHeader: React.FC = () => {
                         : { color: "var(--text-muted)" }
                     }
                   >
-                    <TabIcon size={12} className={active ? "text-white" : "text-neutral-500"} />
+                    <TabIcon
+                      size={12}
+                      className={active ? "text-white" : "text-neutral-500"}
+                    />
                     {tab.label}
                   </button>
                 );
@@ -159,9 +169,18 @@ export const LearningHeader: React.FC = () => {
                     style={
                       active
                         ? {
-                            background: topic.color === "var(--accent)" ? "var(--accent)" : `${topic.color}22`,
-                            borderColor: topic.color === "var(--accent)" ? "var(--accent)" : topic.color,
-                            color: topic.color === "var(--accent)" ? "#fff" : topic.color,
+                            background:
+                              topic.color === "var(--accent)"
+                                ? "var(--accent)"
+                                : `${topic.color}22`,
+                            borderColor:
+                              topic.color === "var(--accent)"
+                                ? "var(--accent)"
+                                : topic.color,
+                            color:
+                              topic.color === "var(--accent)"
+                                ? "#fff"
+                                : topic.color,
                           }
                         : {
                             background: "transparent",
@@ -187,8 +206,16 @@ export const LearningHeader: React.FC = () => {
                   className="px-2.5 py-0.5 rounded-md text-[11px] transition-all cursor-pointer whitespace-nowrap border"
                   style={
                     !currentSubtopic
-                      ? { background: "var(--accent)", borderColor: "var(--accent)", color: "#fff" }
-                      : { background: "transparent", borderColor: "var(--border)", color: "var(--text-muted)" }
+                      ? {
+                          background: "var(--accent)",
+                          borderColor: "var(--accent)",
+                          color: "#fff",
+                        }
+                      : {
+                          background: "transparent",
+                          borderColor: "var(--border)",
+                          color: "var(--text-muted)",
+                        }
                   }
                 >
                   All
@@ -202,8 +229,16 @@ export const LearningHeader: React.FC = () => {
                       className="px-2.5 py-0.5 rounded-md text-[11px] transition-all cursor-pointer whitespace-nowrap border"
                       style={
                         active
-                          ? { background: "var(--accent)", borderColor: "var(--accent)", color: "#fff" }
-                          : { background: "transparent", borderColor: "var(--border)", color: "var(--text-muted)" }
+                          ? {
+                              background: "var(--accent)",
+                              borderColor: "var(--accent)",
+                              color: "#fff",
+                            }
+                          : {
+                              background: "transparent",
+                              borderColor: "var(--border)",
+                              color: "var(--text-muted)",
+                            }
                       }
                     >
                       {sub.display_name}

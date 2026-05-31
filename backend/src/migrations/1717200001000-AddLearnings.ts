@@ -74,12 +74,24 @@ export class AddLearnings1717200001000 implements MigrationInterface {
     `);
 
     // 4. Create indexes
-    await queryRunner.query(`CREATE INDEX idx_learnings_topic ON learnings(topic_id);`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_subtopic ON learnings(subtopic_id);`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_learned ON learnings(is_learned);`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_favorite ON learnings(is_favorite) WHERE is_favorite = TRUE;`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_created ON learnings(created_at DESC);`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_hash ON learnings(content_hash);`);
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_topic ON learnings(topic_id);`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_subtopic ON learnings(subtopic_id);`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_learned ON learnings(is_learned);`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_favorite ON learnings(is_favorite) WHERE is_favorite = TRUE;`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_created ON learnings(created_at DESC);`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_hash ON learnings(content_hash);`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

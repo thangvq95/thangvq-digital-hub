@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { createHash, randomUUID } from 'crypto';
@@ -15,86 +11,182 @@ import { LearningSubtopicEntity } from './learning-subtopic.entity';
 
 const NINE_ROUTER_URL =
   process.env.NINE_ROUTER_URL || 'https://9router.phieucaphe.com/v1';
-const NINE_ROUTER_MODEL =
-  process.env.NINE_ROUTER_MODEL || 'gpt-4o-mini';
+const NINE_ROUTER_MODEL = process.env.NINE_ROUTER_MODEL || 'gpt-4o-mini';
 const UPLOADS_DIR = process.env.UPLOADS_DIR || join(process.cwd(), 'uploads');
 
 // Rule-based subtopic classification keywords
 const SUBTOPIC_RULES: Record<string, string[]> = {
   navigation: [
-    'navigator', 'go_router', 'auto_route', 'routing', 'gorouter',
-    'navigation', 'push', 'pop', 'route',
+    'navigator',
+    'go_router',
+    'auto_route',
+    'routing',
+    'gorouter',
+    'navigation',
+    'push',
+    'pop',
+    'route',
   ],
   'state-management': [
-    'bloc', 'riverpod', 'provider', 'cubit', 'getx', 'setstate',
-    'state management', 'redux', 'mobx', 'signals',
+    'bloc',
+    'riverpod',
+    'provider',
+    'cubit',
+    'getx',
+    'setstate',
+    'state management',
+    'redux',
+    'mobx',
+    'signals',
   ],
   deeplink: [
-    'deep link', 'deeplink', 'universal link', 'app link', 'uri scheme',
+    'deep link',
+    'deeplink',
+    'universal link',
+    'app link',
+    'uri scheme',
     'dynamic link',
   ],
   'ui-widgets': [
-    'widget', 'listview', 'scrollview', 'container', 'layout',
-    'scaffold', 'appbar', 'sliverappbar', 'customscrollview',
-    'gridview', 'column', 'row', 'stack', 'positioned',
+    'widget',
+    'listview',
+    'scrollview',
+    'container',
+    'layout',
+    'scaffold',
+    'appbar',
+    'sliverappbar',
+    'customscrollview',
+    'gridview',
+    'column',
+    'row',
+    'stack',
+    'positioned',
   ],
   architecture: [
-    'clean architecture', 'mvvm', 'mvc', 'repository pattern',
-    'solid', 'design pattern', 'hexagonal',
+    'clean architecture',
+    'mvvm',
+    'mvc',
+    'repository pattern',
+    'solid',
+    'design pattern',
+    'hexagonal',
   ],
   performance: [
-    'performance', 'optimization', 'jank', 'frame rate', 'memory leak',
-    'profiling', 'devtools', 'render', 'build method',
+    'performance',
+    'optimization',
+    'jank',
+    'frame rate',
+    'memory leak',
+    'profiling',
+    'devtools',
+    'render',
+    'build method',
   ],
   testing: [
-    'test', 'widget test', 'integration test', 'unit test', 'mockito',
-    'bloc_test', 'golden test',
+    'test',
+    'widget test',
+    'integration test',
+    'unit test',
+    'mockito',
+    'bloc_test',
+    'golden test',
   ],
   animations: [
-    'animation', 'lottie', 'rive', 'tween', 'implicit animation',
-    'hero animation', 'animated', 'motion',
+    'animation',
+    'lottie',
+    'rive',
+    'tween',
+    'implicit animation',
+    'hero animation',
+    'animated',
+    'motion',
   ],
   networking: [
-    'http', 'dio', 'retrofit', 'api call', 'rest api', 'graphql',
-    'websocket', 'grpc',
+    'http',
+    'dio',
+    'retrofit',
+    'api call',
+    'rest api',
+    'graphql',
+    'websocket',
+    'grpc',
   ],
   storage: [
-    'hive', 'sqflite', 'shared_preferences', 'isar', 'drift',
-    'local storage', 'database', 'objectbox',
+    'hive',
+    'sqflite',
+    'shared_preferences',
+    'isar',
+    'drift',
+    'local storage',
+    'database',
+    'objectbox',
   ],
   'dependency-injection': [
-    'get_it', 'injectable', 'dependency injection', 'service locator',
+    'get_it',
+    'injectable',
+    'dependency injection',
+    'service locator',
   ],
   'ci-cd': [
-    'ci/cd', 'github actions', 'codemagic', 'fastlane', 'bitrise',
+    'ci/cd',
+    'github actions',
+    'codemagic',
+    'fastlane',
+    'bitrise',
     'firebase distribution',
   ],
   'dart-language': [
-    'dart 3', 'sealed class', 'pattern matching', 'records',
-    'extension type', 'dart', 'mixin', 'typedef',
+    'dart 3',
+    'sealed class',
+    'pattern matching',
+    'records',
+    'extension type',
+    'dart',
+    'mixin',
+    'typedef',
   ],
   kotlin: [
-    'kotlin', 'coroutines', 'flow', 'sealed class', 'data class',
+    'kotlin',
+    'coroutines',
+    'flow',
+    'sealed class',
+    'data class',
     'suspend',
   ],
   'jetpack-compose': [
-    'compose', 'composable', 'modifier', 'lazycolumn', 'material3',
+    'compose',
+    'composable',
+    'modifier',
+    'lazycolumn',
+    'material3',
     'jetpack compose',
   ],
-  gradle: [
-    'gradle', 'build.gradle', 'agp', 'version catalog', 'kts',
-  ],
+  gradle: ['gradle', 'build.gradle', 'agp', 'version catalog', 'kts'],
   security: [
-    'security', 'ssl pinning', 'obfuscation', 'proguard', 'r8',
-    'encryption', 'keystore',
+    'security',
+    'ssl pinning',
+    'obfuscation',
+    'proguard',
+    'r8',
+    'encryption',
+    'keystore',
   ],
   accessibility: [
-    'accessibility', 'a11y', 'semantics', 'talkback', 'voiceover',
+    'accessibility',
+    'a11y',
+    'semantics',
+    'talkback',
+    'voiceover',
     'screen reader',
   ],
   'platform-channels': [
-    'platform channel', 'method channel', 'event channel', 'pigeon',
-    'ffi', 'native module',
+    'platform channel',
+    'method channel',
+    'event channel',
+    'pigeon',
+    'ffi',
+    'native module',
   ],
 };
 
@@ -236,7 +328,10 @@ export class LearningsService {
     if (input.url) {
       if (input.url.includes('linkedin.com')) sourceType = 'linkedin';
       else if (input.url.includes('medium.com')) sourceType = 'medium';
-      else if (input.url.includes('dart.dev') || input.url.includes('flutter.dev'))
+      else if (
+        input.url.includes('dart.dev') ||
+        input.url.includes('flutter.dev')
+      )
         sourceType = 'official_blog';
     } else if (input.image) {
       sourceType = 'image';
@@ -275,8 +370,9 @@ export class LearningsService {
     const saved = await this.learningRepo.save(learning);
 
     // 7. Fire-and-forget: AI analysis
-    this.runAnalysis(saved, input.url, input.text).catch((err) => {
-      this.logger.error(`Analysis failed for learning ${saved.id}: ${err.message}`);
+    this.runAnalysis(saved, input.url, input.text).catch((err: unknown) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Analysis failed for learning ${saved.id}: ${msg}`);
     });
 
     return this.findOne(saved.id);
@@ -328,10 +424,9 @@ export class LearningsService {
       newCount++;
 
       // Background classification
-      this.classifyLearning(saved).catch((err) => {
-        this.logger.error(
-          `Classification failed for ${saved.id}: ${err.message}`,
-        );
+      this.classifyLearning(saved).catch((err: unknown) => {
+        const msg = err instanceof Error ? err.message : String(err);
+        this.logger.error(`Classification failed for ${saved.id}: ${msg}`);
       });
     }
 
@@ -447,17 +542,27 @@ Return a JSON object:
         throw new Error(`9Router returned ${llmRes.status}`);
       }
 
-      const llmData = await llmRes.json();
+      const llmData = (await llmRes.json()) as {
+        choices?: Array<{ message?: { content?: string } }>;
+      };
       const contentStr = llmData.choices?.[0]?.message?.content ?? '{}';
 
       let cleanJson = contentStr.trim();
       if (cleanJson.startsWith('```json')) {
-        cleanJson = cleanJson.replace(/^```json/, '').replace(/```$/, '').trim();
+        cleanJson = cleanJson
+          .replace(/^```json/, '')
+          .replace(/```$/, '')
+          .trim();
       } else if (cleanJson.startsWith('```')) {
         cleanJson = cleanJson.replace(/^```/, '').replace(/```$/, '').trim();
       }
 
-      const parsed = JSON.parse(cleanJson);
+      const parsed = JSON.parse(cleanJson) as {
+        title?: string;
+        summary?: string;
+        topic?: string;
+        subtopic?: string;
+      };
 
       // Update title if AI provided a better one and current is generic
       const updateData: Partial<LearningEntity> = {
@@ -511,8 +616,9 @@ Return a JSON object:
       });
       this.logger.log(`Analysis completed for learning ${learning.id}`);
     } catch (error) {
+      const errMessage = error instanceof Error ? error.message : String(error);
       this.logger.error(
-        `Analysis failed for learning ${learning.id}: ${error.message}`,
+        `Analysis failed for learning ${learning.id}: ${errMessage}`,
       );
       await this.learningRepo.update(learning.id, {
         analyze_status: 'failed',
@@ -522,7 +628,8 @@ Return a JSON object:
 
   // ─── Rule-based subtopic classification ─────────────────────────────────
   async classifyLearning(learning: LearningEntity): Promise<void> {
-    const searchText = `${learning.title} ${learning.summary || ''} ${learning.source_url || ''}`.toLowerCase();
+    const searchText =
+      `${learning.title} ${learning.summary || ''} ${learning.source_url || ''}`.toLowerCase();
 
     for (const [subtopicName, keywords] of Object.entries(SUBTOPIC_RULES)) {
       if (keywords.some((kw) => searchText.includes(kw))) {
@@ -542,9 +649,10 @@ Return a JSON object:
 
     // LLM fallback — same as runAnalysis but only for classification
     this.runAnalysis(learning, learning.source_url || undefined).catch(
-      (err) => {
+      (err: unknown) => {
+        const msg = err instanceof Error ? err.message : String(err);
         this.logger.error(
-          `LLM classification failed for ${learning.id}: ${err.message}`,
+          `LLM classification failed for ${learning.id}: ${msg}`,
         );
       },
     );

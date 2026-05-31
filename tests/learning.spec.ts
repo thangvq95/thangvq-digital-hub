@@ -4,7 +4,12 @@ test.describe("Learning Hub", () => {
   test.beforeEach(async ({ page }) => {
     // Mock the learnings API listing
     await page.route("**/api/learnings*", async (route) => {
-      await route.fulfill({ json: { data: [], meta: { total: 0, page: 1, limit: 20, tab: "to_learn" } } });
+      await route.fulfill({
+        json: {
+          data: [],
+          meta: { total: 0, page: 1, limit: 20, tab: "to_learn" },
+        },
+      });
     });
 
     // Mock subtopics endpoint

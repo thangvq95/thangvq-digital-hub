@@ -3,11 +3,22 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Heart, Check, ExternalLink, Globe, Image as ImageIcon, FileText, Calendar } from "lucide-react";
+import {
+  Heart,
+  Check,
+  ExternalLink,
+  Globe,
+  Image as ImageIcon,
+  FileText,
+  Calendar,
+} from "lucide-react";
 import { patchLearning } from "@/lib/api/learning-client";
 import type { Learning } from "@/lib/api/learning-types";
 
-const LinkedinIcon: React.FC<{ size?: number; className?: string }> = ({ size = 12, className }) => (
+const LinkedinIcon: React.FC<{ size?: number; className?: string }> = ({
+  size = 12,
+  className,
+}) => (
   <svg
     width={size}
     height={size}
@@ -32,7 +43,10 @@ interface LearningCardProps {
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3005";
 
-export const LearningCard: React.FC<LearningCardProps> = ({ learning, onUpdate }) => {
+export const LearningCard: React.FC<LearningCardProps> = ({
+  learning,
+  onUpdate,
+}) => {
   const router = useRouter();
   const [isFavorite, setIsFavorite] = useState<boolean>(learning.is_favorite);
   const [isLearned, setIsLearned] = useState<boolean>(learning.is_learned);
@@ -112,7 +126,9 @@ export const LearningCard: React.FC<LearningCardProps> = ({ learning, onUpdate }
   };
 
   const topicColor = learning.topic.color || "#6366f1";
-  const imageUrl = learning.image_path ? `${API_URL}/uploads/${learning.image_path}` : null;
+  const imageUrl = learning.image_path
+    ? `${API_URL}/uploads/${learning.image_path}`
+    : null;
 
   return (
     <article
@@ -123,7 +139,10 @@ export const LearningCard: React.FC<LearningCardProps> = ({ learning, onUpdate }
     >
       {/* Thumbnail or Topic Accent Bar */}
       {imageUrl && !imgError ? (
-        <div className="relative w-full aspect-video border-b overflow-hidden" style={{ borderColor: "var(--border)" }}>
+        <div
+          className="relative w-full aspect-video border-b overflow-hidden"
+          style={{ borderColor: "var(--border)" }}
+        >
           <Image
             src={imageUrl}
             alt={learning.title}
@@ -140,9 +159,11 @@ export const LearningCard: React.FC<LearningCardProps> = ({ learning, onUpdate }
           )}
         </div>
       ) : (
-        <div 
+        <div
           className="h-3 w-full flex-shrink-0"
-          style={{ background: `linear-gradient(90deg, ${topicColor}, ${topicColor}88)` }}
+          style={{
+            background: `linear-gradient(90deg, ${topicColor}, ${topicColor}88)`,
+          }}
         />
       )}
 
@@ -197,8 +218,11 @@ export const LearningCard: React.FC<LearningCardProps> = ({ learning, onUpdate }
           className="text-xs line-clamp-3 mb-4 flex-1"
           style={{ color: "var(--text-secondary)" }}
         >
-          {learning.summary 
-            ? learning.summary.replace(/[#*`\n]/g, " ").replace(/\s+/g, " ").trim()
+          {learning.summary
+            ? learning.summary
+                .replace(/[#*`\n]/g, " ")
+                .replace(/\s+/g, " ")
+                .trim()
             : "Waiting for AI summary analysis..."}
         </p>
 
@@ -248,8 +272,16 @@ export const LearningCard: React.FC<LearningCardProps> = ({ learning, onUpdate }
               className="px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1 border"
               style={
                 isLearned
-                  ? { background: "rgba(16, 185, 129, 0.15)", borderColor: "#10B981", color: "#10B981" }
-                  : { background: "var(--bg-card)", borderColor: "var(--border)", color: "var(--text-muted)" }
+                  ? {
+                      background: "rgba(16, 185, 129, 0.15)",
+                      borderColor: "#10B981",
+                      color: "#10B981",
+                    }
+                  : {
+                      background: "var(--bg-card)",
+                      borderColor: "var(--border)",
+                      color: "var(--text-muted)",
+                    }
               }
               title={isLearned ? "Mark unlearned" : "Mark learned"}
               aria-pressed={isLearned}

@@ -23,7 +23,7 @@ export interface Learning {
   is_learned: boolean;
   is_favorite: boolean;
   content_hash: string | null;
-  analyze_status: 'idle' | 'analyzing' | 'done' | 'failed';
+  analyze_status: "idle" | "analyzing" | "done" | "failed";
   created_at: string;
   updated_at: string;
 }

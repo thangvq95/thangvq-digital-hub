@@ -1,13 +1,32 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef, ComponentPropsWithoutRef } from "react";
+import {
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+  ComponentPropsWithoutRef,
+} from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeHighlight from "rehype-highlight";
-import { Check, Copy, Heart, BookOpen, ExternalLink, Calendar, Layers, CheckCircle } from "lucide-react";
-import { fetchLearning, patchLearning, fetchSubtopics } from "@/lib/api/learning-client";
+import {
+  Check,
+  Copy,
+  Heart,
+  BookOpen,
+  ExternalLink,
+  Calendar,
+  Layers,
+  CheckCircle,
+} from "lucide-react";
+import {
+  fetchLearning,
+  patchLearning,
+  fetchSubtopics,
+} from "@/lib/api/learning-client";
 import type { Learning, LearningSubtopic } from "@/lib/api/learning-types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3005";
@@ -34,7 +53,11 @@ const PreWithCopy = ({
         className="absolute top-3 right-3 p-1.5 rounded-lg border border-white/10 bg-[#1e1e1e]/80 text-white/50 opacity-0 group-hover:opacity-100 transition-all hover:bg-white/10 hover:text-white z-10 backdrop-blur-sm cursor-pointer"
         title="Copy code"
       >
-        {copied ? <Check size={14} className="text-green-400" /> : <Copy size={14} />}
+        {copied ? (
+          <Check size={14} className="text-green-400" />
+        ) : (
+          <Copy size={14} />
+        )}
       </button>
       <pre
         ref={preRef}
@@ -100,7 +123,9 @@ export default function LearningDetailPage() {
     const targetVal = !isFavorite;
     setIsFavorite(targetVal);
     try {
-      const updated = await patchLearning(learning.id, { is_favorite: targetVal });
+      const updated = await patchLearning(learning.id, {
+        is_favorite: targetVal,
+      });
       setLearning(updated);
     } catch (err) {
       console.error(err);
@@ -113,7 +138,9 @@ export default function LearningDetailPage() {
     const targetVal = !isLearned;
     setIsLearned(targetVal);
     try {
-      const updated = await patchLearning(learning.id, { is_learned: targetVal });
+      const updated = await patchLearning(learning.id, {
+        is_learned: targetVal,
+      });
       setLearning(updated);
     } catch (err) {
       console.error(err);
@@ -121,15 +148,20 @@ export default function LearningDetailPage() {
     }
   }, [learning, isLearned]);
 
-  const handleSubtopicChange = useCallback(async (subtopicId: number | null) => {
-    if (!learning) return;
-    try {
-      const updated = await patchLearning(learning.id, { subtopic_id: subtopicId });
-      setLearning(updated);
-    } catch (err) {
-      console.error("Failed to update subtopic:", err);
-    }
-  }, [learning]);
+  const handleSubtopicChange = useCallback(
+    async (subtopicId: number | null) => {
+      if (!learning) return;
+      try {
+        const updated = await patchLearning(learning.id, {
+          subtopic_id: subtopicId,
+        });
+        setLearning(updated);
+      } catch (err) {
+        console.error("Failed to update subtopic:", err);
+      }
+    },
+    [learning],
+  );
 
   const formatDate = (dateStr: string) => {
     try {
@@ -149,7 +181,10 @@ export default function LearningDetailPage() {
   if (loading) {
     return (
       <main className="max-w-5xl mx-auto px-4 py-12">
-        <div className="h-96 rounded-2xl animate-pulse" style={{ background: "var(--bg-card)" }} />
+        <div
+          className="h-96 rounded-2xl animate-pulse"
+          style={{ background: "var(--bg-card)" }}
+        />
       </main>
     );
   }
@@ -157,8 +192,13 @@ export default function LearningDetailPage() {
   if (!learning) {
     return (
       <main className="max-w-5xl mx-auto px-4 py-12 text-center">
-        <p style={{ color: "var(--text-muted)" }}>Learning content not found.</p>
-        <Link href="/learning" className="mt-4 inline-block text-sm text-indigo-400 hover:underline">
+        <p style={{ color: "var(--text-muted)" }}>
+          Learning content not found.
+        </p>
+        <Link
+          href="/learning"
+          className="mt-4 inline-block text-sm text-indigo-400 hover:underline"
+        >
           ← Return to Learning Hub
         </Link>
       </main>
@@ -166,7 +206,9 @@ export default function LearningDetailPage() {
   }
 
   const topicColor = learning.topic.color || "#6366f1";
-  const imageUrl = learning.image_path ? `${API_URL}/uploads/${learning.image_path}` : null;
+  const imageUrl = learning.image_path
+    ? `${API_URL}/uploads/${learning.image_path}`
+    : null;
 
   return (
     <main className="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-12">
@@ -180,11 +222,10 @@ export default function LearningDetailPage() {
 
       {/* Grid Layout: image + details */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
-        
         {/* Left Side: Thumbnail Screenshot */}
         <div className="md:col-span-5 space-y-4">
           {imageUrl ? (
-            <div 
+            <div
               className="rounded-2xl border overflow-hidden bg-black/40 shadow-xl"
               style={{ borderColor: "var(--border)" }}
             >
@@ -196,24 +237,30 @@ export default function LearningDetailPage() {
               />
             </div>
           ) : (
-            <div 
+            <div
               className="rounded-2xl border p-12 flex flex-col items-center justify-center text-center aspect-square bg-black/20"
               style={{ borderColor: "var(--border)" }}
             >
               <BookOpen size={48} className="text-neutral-600 mb-3" />
-              <p className="text-sm font-semibold text-neutral-400">No Image Uploaded</p>
-              <p className="text-xs text-neutral-500 mt-1">This learning consists of text content or a web URL.</p>
+              <p className="text-sm font-semibold text-neutral-400">
+                No Image Uploaded
+              </p>
+              <p className="text-xs text-neutral-500 mt-1">
+                This learning consists of text content or a web URL.
+              </p>
             </div>
           )}
         </div>
 
         {/* Right Side: metadata, details, & AI Summary */}
         <div className="md:col-span-7 space-y-6">
-          
           {/* Header Card */}
-          <div 
+          <div
             className="p-5 sm:p-6 rounded-2xl glass space-y-4"
-            style={{ border: "1px solid var(--border)", background: "var(--bg-card)" }}
+            style={{
+              border: "1px solid var(--border)",
+              background: "var(--bg-card)",
+            }}
           >
             {/* Topic & subtopic badges */}
             <div className="flex items-center justify-between gap-4 flex-wrap">
@@ -250,12 +297,22 @@ export default function LearningDetailPage() {
                   className="p-2 rounded-lg transition-colors cursor-pointer border hover:bg-white/5"
                   style={
                     isFavorite
-                      ? { color: "#ec4899", background: "rgba(236, 72, 153, 0.1)", borderColor: "#ec4899" }
-                      : { color: "var(--text-muted)", borderColor: "var(--border)" }
+                      ? {
+                          color: "#ec4899",
+                          background: "rgba(236, 72, 153, 0.1)",
+                          borderColor: "#ec4899",
+                        }
+                      : {
+                          color: "var(--text-muted)",
+                          borderColor: "var(--border)",
+                        }
                   }
                   title={isFavorite ? "Saved to favorites" : "Favorite"}
                 >
-                  <Heart size={16} fill={isFavorite ? "currentColor" : "none"} />
+                  <Heart
+                    size={16}
+                    fill={isFavorite ? "currentColor" : "none"}
+                  />
                 </button>
 
                 <button
@@ -263,8 +320,16 @@ export default function LearningDetailPage() {
                   className="px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-colors cursor-pointer flex items-center gap-1.5 border"
                   style={
                     isLearned
-                      ? { background: "rgba(16, 185, 129, 0.15)", borderColor: "#10B981", color: "#10B981" }
-                      : { background: "transparent", borderColor: "var(--border)", color: "var(--text-muted)" }
+                      ? {
+                          background: "rgba(16, 185, 129, 0.15)",
+                          borderColor: "#10B981",
+                          color: "#10B981",
+                        }
+                      : {
+                          background: "transparent",
+                          borderColor: "var(--border)",
+                          color: "var(--text-muted)",
+                        }
                   }
                 >
                   <CheckCircle size={14} />
@@ -284,7 +349,7 @@ export default function LearningDetailPage() {
                 <Calendar size={13} className="text-neutral-500" />
                 <span>Captured: {formatDate(learning.created_at)}</span>
               </div>
-              
+
               {learning.source_url && (
                 <a
                   href={learning.source_url}
@@ -322,9 +387,12 @@ export default function LearningDetailPage() {
           </div>
 
           {/* AI Summary Markdown Section */}
-          <div 
+          <div
             className="p-6 rounded-2xl glass space-y-4"
-            style={{ border: "1px solid var(--border)", background: "var(--bg-card)" }}
+            style={{
+              border: "1px solid var(--border)",
+              background: "var(--bg-card)",
+            }}
           >
             <h2 className="text-base font-bold text-white flex items-center gap-2 mb-3">
               <span>✨ AI Analysis Summary</span>
@@ -337,7 +405,8 @@ export default function LearningDetailPage() {
 
             {learning.analyze_status === "failed" ? (
               <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/20 text-xs text-red-400">
-                AI summary analysis failed. Ensure that NINE_ROUTER_API_KEY is configured correctly.
+                AI summary analysis failed. Ensure that NINE_ROUTER_API_KEY is
+                configured correctly.
               </div>
             ) : learning.summary ? (
               <div
@@ -365,11 +434,12 @@ export default function LearningDetailPage() {
             ) : (
               <div className="py-6 flex flex-col items-center justify-center gap-2">
                 <div className="w-5 h-5 border-2 border-indigo-500 border-t-transparent animate-spin rounded-full" />
-                <p className="text-xs text-neutral-500">Retrieving AI summary content...</p>
+                <p className="text-xs text-neutral-500">
+                  Retrieving AI summary content...
+                </p>
               </div>
             )}
           </div>
-
         </div>
       </div>
     </main>

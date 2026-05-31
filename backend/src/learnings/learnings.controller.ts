@@ -66,7 +66,8 @@ export class LearningsController {
   @Post('add')
   @UseInterceptors(FileInterceptor('image'))
   addManual(
-    @Body() body: { url?: string; text?: string; topic?: string; title?: string },
+    @Body()
+    body: { url?: string; text?: string; topic?: string; title?: string },
     @UploadedFile() file?: Express.Multer.File,
   ) {
     return this.learningsService.addManual({

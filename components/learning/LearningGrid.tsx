@@ -44,7 +44,7 @@ export const LearningGrid: React.FC = () => {
         setLoading(false);
       }
     },
-    [tab, topic, subtopic]
+    [tab, topic, subtopic],
   );
 
   // Trigger loading list when filter changes
@@ -68,12 +68,15 @@ export const LearningGrid: React.FC = () => {
 
   if (loading && learnings.length === 0) {
     return (
-      <div id="learning-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        id="learning-grid"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
         {Array.from({ length: 9 }).map((_, i) => (
           <div
             key={i}
             className="h-72 rounded-2xl animate-pulse"
-            style={{ 
+            style={{
               background: "var(--bg-card)",
               border: "1px solid var(--border)",
             }}
@@ -85,14 +88,20 @@ export const LearningGrid: React.FC = () => {
 
   return (
     <div>
-      <div id="learning-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div
+        id="learning-grid"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
         {learnings.length === 0 ? (
           <div
             className="col-span-full flex flex-col items-center justify-center py-24 text-center"
             style={{ color: "var(--text-muted)" }}
           >
             <p className="text-4xl mb-3">🧠</p>
-            <p className="text-lg font-semibold" style={{ color: "var(--text-secondary)" }}>
+            <p
+              className="text-lg font-semibold"
+              style={{ color: "var(--text-secondary)" }}
+            >
               {tab === "favorites"
                 ? "No favorite learnings yet"
                 : tab === "learned"
@@ -109,7 +118,11 @@ export const LearningGrid: React.FC = () => {
           </div>
         ) : (
           learnings.map((item) => (
-            <LearningCard key={item.id} learning={item} onUpdate={handleRefresh} />
+            <LearningCard
+              key={item.id}
+              learning={item}
+              onUpdate={handleRefresh}
+            />
           ))
         )}
       </div>
@@ -121,7 +134,10 @@ export const LearningGrid: React.FC = () => {
             onClick={handleLoadMore}
             disabled={loading}
             className="px-6 py-2.5 rounded-full text-xs font-semibold glass transition-all duration-200 hover:-translate-y-0.5 cursor-pointer disabled:opacity-50"
-            style={{ color: "var(--text-primary)", border: "1px solid var(--border)" }}
+            style={{
+              color: "var(--text-primary)",
+              border: "1px solid var(--border)",
+            }}
           >
             {loading ? "Loading..." : "Load More"}
           </button>

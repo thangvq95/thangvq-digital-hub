@@ -16,50 +16,51 @@
 
 ### Backend — `backend/src/learnings/`
 
-| File | Responsibility |
-|---|---|
-| `learning-topic.entity.ts` | TypeORM entity for `learning_topics` table |
-| `learning-subtopic.entity.ts` | TypeORM entity for `learning_subtopics` table |
-| `learning.entity.ts` | TypeORM entity for `learnings` table with relations |
-| `learnings.controller.ts` | REST endpoints: list, detail, patch, add, upsert, topics, subtopics |
-| `learnings.service.ts` | Business logic: CRUD, AI classification, image compression, dedup |
-| `learnings.module.ts` | NestJS module definition |
+| File                          | Responsibility                                                      |
+| ----------------------------- | ------------------------------------------------------------------- |
+| `learning-topic.entity.ts`    | TypeORM entity for `learning_topics` table                          |
+| `learning-subtopic.entity.ts` | TypeORM entity for `learning_subtopics` table                       |
+| `learning.entity.ts`          | TypeORM entity for `learnings` table with relations                 |
+| `learnings.controller.ts`     | REST endpoints: list, detail, patch, add, upsert, topics, subtopics |
+| `learnings.service.ts`        | Business logic: CRUD, AI classification, image compression, dedup   |
+| `learnings.module.ts`         | NestJS module definition                                            |
 
 ### Backend — `backend/src/migrations/`
 
-| File | Responsibility |
-|---|---|
+| File                            | Responsibility                                                                            |
+| ------------------------------- | ----------------------------------------------------------------------------------------- |
 | `1717200001000-AddLearnings.ts` | Migration: create `learning_topics`, `learning_subtopics`, `learnings` tables + seed data |
 
 ### Frontend — `app/learning/`
 
-| File | Responsibility |
-|---|---|
-| `app/learning/page.tsx` | Landing page (server component, metadata) |
-| `app/learning/loading.tsx` | Loading skeleton |
-| `app/learning/[id]/page.tsx` | Detail page (server component) |
+| File                         | Responsibility                            |
+| ---------------------------- | ----------------------------------------- |
+| `app/learning/page.tsx`      | Landing page (server component, metadata) |
+| `app/learning/loading.tsx`   | Loading skeleton                          |
+| `app/learning/[id]/page.tsx` | Detail page (server component)            |
 
 ### Frontend — `components/learning/`
 
-| File | Responsibility |
-|---|---|
-| `LearningHeader.tsx` | Tabs + topic filter pills + subtopic chips + "Add Learning" button |
-| `LearningCard.tsx` | Card component with image, title, badges, actions |
-| `LearningGrid.tsx` | Grid layout + load-more pagination |
-| `AddLearningDialog.tsx` | Modal for manual add (URL/image/text) |
+| File                    | Responsibility                                                     |
+| ----------------------- | ------------------------------------------------------------------ |
+| `LearningHeader.tsx`    | Tabs + topic filter pills + subtopic chips + "Add Learning" button |
+| `LearningCard.tsx`      | Card component with image, title, badges, actions                  |
+| `LearningGrid.tsx`      | Grid layout + load-more pagination                                 |
+| `AddLearningDialog.tsx` | Modal for manual add (URL/image/text)                              |
 
 ### Frontend — `lib/api/`
 
-| File | Responsibility |
-|---|---|
-| `learning-types.ts` | TypeScript interfaces for Learning, LearningTopic, LearningSubtopic |
-| `learning-client.ts` | API client functions for learning endpoints |
+| File                 | Responsibility                                                      |
+| -------------------- | ------------------------------------------------------------------- |
+| `learning-types.ts`  | TypeScript interfaces for Learning, LearningTopic, LearningSubtopic |
+| `learning-client.ts` | API client functions for learning endpoints                         |
 
 ---
 
 ## Task 1: Database Migration
 
 **Files:**
+
 - Create: `backend/src/migrations/1717200001000-AddLearnings.ts`
 - Modify: `backend/src/data-source.ts` (add migration to list)
 
@@ -67,7 +68,7 @@
 
 ```typescript
 // backend/src/migrations/1717200001000-AddLearnings.ts
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class AddLearnings1717200001000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
@@ -143,12 +144,24 @@ export class AddLearnings1717200001000 implements MigrationInterface {
     `);
 
     // 4. Create indexes
-    await queryRunner.query(`CREATE INDEX idx_learnings_topic ON learnings(topic_id);`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_subtopic ON learnings(subtopic_id);`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_learned ON learnings(is_learned);`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_favorite ON learnings(is_favorite) WHERE is_favorite = TRUE;`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_created ON learnings(created_at DESC);`);
-    await queryRunner.query(`CREATE INDEX idx_learnings_hash ON learnings(content_hash);`);
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_topic ON learnings(topic_id);`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_subtopic ON learnings(subtopic_id);`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_learned ON learnings(is_learned);`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_favorite ON learnings(is_favorite) WHERE is_favorite = TRUE;`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_created ON learnings(created_at DESC);`,
+    );
+    await queryRunner.query(
+      `CREATE INDEX idx_learnings_hash ON learnings(content_hash);`,
+    );
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
@@ -175,6 +188,7 @@ git commit -m "feat(learning): add database migration for learnings tables"
 ## Task 2: Backend Entities
 
 **Files:**
+
 - Create: `backend/src/learnings/learning-topic.entity.ts`
 - Create: `backend/src/learnings/learning-subtopic.entity.ts`
 - Create: `backend/src/learnings/learning.entity.ts`
@@ -183,10 +197,10 @@ git commit -m "feat(learning): add database migration for learnings tables"
 
 ```typescript
 // backend/src/learnings/learning-topic.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { LearningEntity } from './learning.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { LearningEntity } from "./learning.entity";
 
-@Entity('learning_topics')
+@Entity("learning_topics")
 export class LearningTopicEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -197,7 +211,7 @@ export class LearningTopicEntity {
   @Column()
   display_name: string;
 
-  @Column({ default: '#6366f1' })
+  @Column({ default: "#6366f1" })
   color: string;
 
   @OneToMany(() => LearningEntity, (learning) => learning.topic)
@@ -209,10 +223,10 @@ export class LearningTopicEntity {
 
 ```typescript
 // backend/src/learnings/learning-subtopic.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { LearningEntity } from './learning.entity';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
+import { LearningEntity } from "./learning.entity";
 
-@Entity('learning_subtopics')
+@Entity("learning_subtopics")
 export class LearningSubtopicEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -240,59 +254,59 @@ import {
   JoinColumn,
   CreateDateColumn,
   UpdateDateColumn,
-} from 'typeorm';
-import { LearningTopicEntity } from './learning-topic.entity';
-import { LearningSubtopicEntity } from './learning-subtopic.entity';
+} from "typeorm";
+import { LearningTopicEntity } from "./learning-topic.entity";
+import { LearningSubtopicEntity } from "./learning-subtopic.entity";
 
-@Entity('learnings')
+@Entity("learnings")
 export class LearningEntity {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   title: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   summary: string | null;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   source_url: string | null;
 
-  @Column({ type: 'varchar', default: 'manual' })
+  @Column({ type: "varchar", default: "manual" })
   source_type: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
   image_path: string | null;
 
   @ManyToOne(() => LearningTopicEntity, (topic) => topic.learnings, {
     eager: true,
   })
-  @JoinColumn({ name: 'topic_id' })
+  @JoinColumn({ name: "topic_id" })
   topic: LearningTopicEntity;
 
   @ManyToOne(() => LearningSubtopicEntity, (sub) => sub.learnings, {
     eager: true,
     nullable: true,
   })
-  @JoinColumn({ name: 'subtopic_id' })
+  @JoinColumn({ name: "subtopic_id" })
   subtopic: LearningSubtopicEntity | null;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: "boolean", default: false })
   is_learned: boolean;
 
-  @Column({ type: 'boolean', default: false })
+  @Column({ type: "boolean", default: false })
   is_favorite: boolean;
 
-  @Column({ type: 'varchar', nullable: true, unique: true })
+  @Column({ type: "varchar", nullable: true, unique: true })
   content_hash: string | null;
 
-  @Column({ type: 'varchar', default: 'idle' })
+  @Column({ type: "varchar", default: "idle" })
   analyze_status: string;
 
-  @CreateDateColumn({ type: 'timestamptz' })
+  @CreateDateColumn({ type: "timestamptz" })
   created_at: Date;
 
-  @UpdateDateColumn({ type: 'timestamptz' })
+  @UpdateDateColumn({ type: "timestamptz" })
   updated_at: Date;
 }
 ```
@@ -309,6 +323,7 @@ git commit -m "feat(learning): add TypeORM entities for learnings, topics, subto
 ## Task 3: Backend Module, Service & Controller
 
 **Files:**
+
 - Create: `backend/src/learnings/learnings.module.ts`
 - Create: `backend/src/learnings/learnings.service.ts`
 - Create: `backend/src/learnings/learnings.controller.ts`
@@ -318,13 +333,13 @@ git commit -m "feat(learning): add TypeORM entities for learnings, topics, subto
 
 ```typescript
 // backend/src/learnings/learnings.module.ts
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { LearningEntity } from './learning.entity';
-import { LearningTopicEntity } from './learning-topic.entity';
-import { LearningSubtopicEntity } from './learning-subtopic.entity';
-import { LearningsController } from './learnings.controller';
-import { LearningsService } from './learnings.service';
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { LearningEntity } from "./learning.entity";
+import { LearningTopicEntity } from "./learning-topic.entity";
+import { LearningSubtopicEntity } from "./learning-subtopic.entity";
+import { LearningsController } from "./learnings.controller";
+import { LearningsService } from "./learnings.service";
 
 @Module({
   imports: [
@@ -344,6 +359,7 @@ export class LearningsModule {}
 - [ ] **Step 2: Create LearningsService**
 
 This is the largest file. Key methods:
+
 - `findAll()` — paginated list with tab/topic/subtopic filters
 - `findOne()` — single learning by ID
 - `patch()` — toggle is_learned, is_favorite, change subtopic
@@ -353,105 +369,197 @@ This is the largest file. Key methods:
 - `compressImage()` — sharp compression to ≤150KB WebP
 - `computeHash()` — SHA256 for dedup
 
-```typescript
+````typescript
 // backend/src/learnings/learnings.service.ts
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { createHash } from 'crypto';
-import { writeFile, mkdir } from 'fs/promises';
-import { join } from 'path';
-import * as sharp from 'sharp';
-import { LearningEntity } from './learning.entity';
-import { LearningTopicEntity } from './learning-topic.entity';
-import { LearningSubtopicEntity } from './learning-subtopic.entity';
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { createHash } from "crypto";
+import { writeFile, mkdir } from "fs/promises";
+import { join } from "path";
+import * as sharp from "sharp";
+import { LearningEntity } from "./learning.entity";
+import { LearningTopicEntity } from "./learning-topic.entity";
+import { LearningSubtopicEntity } from "./learning-subtopic.entity";
 
 const NINE_ROUTER_URL =
-  process.env.NINE_ROUTER_URL || 'https://9router.phieucaphe.com/v1';
-const NINE_ROUTER_MODEL =
-  process.env.NINE_ROUTER_MODEL || 'gpt-4o-mini';
-const UPLOADS_DIR = process.env.UPLOADS_DIR || '/app/uploads';
+  process.env.NINE_ROUTER_URL || "https://9router.phieucaphe.com/v1";
+const NINE_ROUTER_MODEL = process.env.NINE_ROUTER_MODEL || "gpt-4o-mini";
+const UPLOADS_DIR = process.env.UPLOADS_DIR || "/app/uploads";
 
 // Rule-based subtopic classification keywords
 const SUBTOPIC_RULES: Record<string, string[]> = {
   navigation: [
-    'navigator', 'go_router', 'auto_route', 'routing', 'gorouter',
-    'navigation', 'push', 'pop', 'route',
+    "navigator",
+    "go_router",
+    "auto_route",
+    "routing",
+    "gorouter",
+    "navigation",
+    "push",
+    "pop",
+    "route",
   ],
-  'state-management': [
-    'bloc', 'riverpod', 'provider', 'cubit', 'getx', 'setstate',
-    'state management', 'redux', 'mobx', 'signals',
+  "state-management": [
+    "bloc",
+    "riverpod",
+    "provider",
+    "cubit",
+    "getx",
+    "setstate",
+    "state management",
+    "redux",
+    "mobx",
+    "signals",
   ],
   deeplink: [
-    'deep link', 'deeplink', 'universal link', 'app link', 'uri scheme',
-    'dynamic link',
+    "deep link",
+    "deeplink",
+    "universal link",
+    "app link",
+    "uri scheme",
+    "dynamic link",
   ],
-  'ui-widgets': [
-    'widget', 'listview', 'scrollview', 'container', 'layout',
-    'scaffold', 'appbar', 'sliverappbar', 'customscrollview',
-    'gridview', 'column', 'row', 'stack', 'positioned',
+  "ui-widgets": [
+    "widget",
+    "listview",
+    "scrollview",
+    "container",
+    "layout",
+    "scaffold",
+    "appbar",
+    "sliverappbar",
+    "customscrollview",
+    "gridview",
+    "column",
+    "row",
+    "stack",
+    "positioned",
   ],
   architecture: [
-    'clean architecture', 'mvvm', 'mvc', 'repository pattern',
-    'solid', 'design pattern', 'hexagonal',
+    "clean architecture",
+    "mvvm",
+    "mvc",
+    "repository pattern",
+    "solid",
+    "design pattern",
+    "hexagonal",
   ],
   performance: [
-    'performance', 'optimization', 'jank', 'frame rate', 'memory leak',
-    'profiling', 'devtools', 'render', 'build method',
+    "performance",
+    "optimization",
+    "jank",
+    "frame rate",
+    "memory leak",
+    "profiling",
+    "devtools",
+    "render",
+    "build method",
   ],
   testing: [
-    'test', 'widget test', 'integration test', 'unit test', 'mockito',
-    'bloc_test', 'golden test',
+    "test",
+    "widget test",
+    "integration test",
+    "unit test",
+    "mockito",
+    "bloc_test",
+    "golden test",
   ],
   animations: [
-    'animation', 'lottie', 'rive', 'tween', 'implicit animation',
-    'hero animation', 'animated', 'motion',
+    "animation",
+    "lottie",
+    "rive",
+    "tween",
+    "implicit animation",
+    "hero animation",
+    "animated",
+    "motion",
   ],
   networking: [
-    'http', 'dio', 'retrofit', 'api call', 'rest api', 'graphql',
-    'websocket', 'grpc',
+    "http",
+    "dio",
+    "retrofit",
+    "api call",
+    "rest api",
+    "graphql",
+    "websocket",
+    "grpc",
   ],
   storage: [
-    'hive', 'sqflite', 'shared_preferences', 'isar', 'drift',
-    'local storage', 'database', 'objectbox',
+    "hive",
+    "sqflite",
+    "shared_preferences",
+    "isar",
+    "drift",
+    "local storage",
+    "database",
+    "objectbox",
   ],
-  'dependency-injection': [
-    'get_it', 'injectable', 'dependency injection', 'service locator',
+  "dependency-injection": [
+    "get_it",
+    "injectable",
+    "dependency injection",
+    "service locator",
   ],
-  'ci-cd': [
-    'ci/cd', 'github actions', 'codemagic', 'fastlane', 'bitrise',
-    'firebase distribution',
+  "ci-cd": [
+    "ci/cd",
+    "github actions",
+    "codemagic",
+    "fastlane",
+    "bitrise",
+    "firebase distribution",
   ],
-  'dart-language': [
-    'dart 3', 'sealed class', 'pattern matching', 'records',
-    'extension type', 'dart', 'mixin', 'typedef',
+  "dart-language": [
+    "dart 3",
+    "sealed class",
+    "pattern matching",
+    "records",
+    "extension type",
+    "dart",
+    "mixin",
+    "typedef",
   ],
   kotlin: [
-    'kotlin', 'coroutines', 'flow', 'sealed class', 'data class',
-    'suspend',
+    "kotlin",
+    "coroutines",
+    "flow",
+    "sealed class",
+    "data class",
+    "suspend",
   ],
-  'jetpack-compose': [
-    'compose', 'composable', 'modifier', 'lazycolumn', 'material3',
-    'jetpack compose',
+  "jetpack-compose": [
+    "compose",
+    "composable",
+    "modifier",
+    "lazycolumn",
+    "material3",
+    "jetpack compose",
   ],
-  gradle: [
-    'gradle', 'build.gradle', 'agp', 'version catalog', 'kts',
-  ],
+  gradle: ["gradle", "build.gradle", "agp", "version catalog", "kts"],
   security: [
-    'security', 'ssl pinning', 'obfuscation', 'proguard', 'r8',
-    'encryption', 'keystore',
+    "security",
+    "ssl pinning",
+    "obfuscation",
+    "proguard",
+    "r8",
+    "encryption",
+    "keystore",
   ],
   accessibility: [
-    'accessibility', 'a11y', 'semantics', 'talkback', 'voiceover',
-    'screen reader',
+    "accessibility",
+    "a11y",
+    "semantics",
+    "talkback",
+    "voiceover",
+    "screen reader",
   ],
-  'platform-channels': [
-    'platform channel', 'method channel', 'event channel', 'pigeon',
-    'ffi', 'native module',
+  "platform-channels": [
+    "platform channel",
+    "method channel",
+    "event channel",
+    "pigeon",
+    "ffi",
+    "native module",
   ],
 };
 
@@ -476,33 +584,33 @@ export class LearningsService {
     page?: number;
     limit?: number;
   }) {
-    const { tab = 'to_learn', topic, subtopic, page = 1, limit = 20 } = params;
+    const { tab = "to_learn", topic, subtopic, page = 1, limit = 20 } = params;
 
     const qb = this.learningRepo
-      .createQueryBuilder('l')
-      .leftJoinAndSelect('l.topic', 'topic')
-      .leftJoinAndSelect('l.subtopic', 'subtopic');
+      .createQueryBuilder("l")
+      .leftJoinAndSelect("l.topic", "topic")
+      .leftJoinAndSelect("l.subtopic", "subtopic");
 
     // Tab filters
-    if (tab === 'to_learn') {
-      qb.andWhere('l.is_learned = false');
-    } else if (tab === 'learned') {
-      qb.andWhere('l.is_learned = true');
-    } else if (tab === 'favorites') {
-      qb.andWhere('l.is_favorite = true');
+    if (tab === "to_learn") {
+      qb.andWhere("l.is_learned = false");
+    } else if (tab === "learned") {
+      qb.andWhere("l.is_learned = true");
+    } else if (tab === "favorites") {
+      qb.andWhere("l.is_favorite = true");
     }
 
     // Topic filter
     if (topic) {
-      qb.andWhere('topic.name = :topic', { topic });
+      qb.andWhere("topic.name = :topic", { topic });
     }
 
     // Subtopic filter
     if (subtopic) {
-      qb.andWhere('subtopic.name = :subtopic', { subtopic });
+      qb.andWhere("subtopic.name = :subtopic", { subtopic });
     }
 
-    qb.orderBy('l.created_at', 'DESC');
+    qb.orderBy("l.created_at", "DESC");
     qb.skip((page - 1) * limit).take(limit);
 
     const [data, total] = await qb.getManyAndCount();
@@ -513,7 +621,7 @@ export class LearningsService {
   async findOne(id: string) {
     const learning = await this.learningRepo.findOne({
       where: { id },
-      relations: ['topic', 'subtopic'],
+      relations: ["topic", "subtopic"],
     });
     if (!learning) throw new NotFoundException(`Learning ${id} not found`);
     return learning;
@@ -522,14 +630,14 @@ export class LearningsService {
   // ─── Patch learning fields ──────────────────────────────────────────────
   async patch(
     id: string,
-    updates: Partial<Pick<LearningEntity, 'is_learned' | 'is_favorite'>> & {
+    updates: Partial<Pick<LearningEntity, "is_learned" | "is_favorite">> & {
       subtopic_id?: number | null;
     },
   ) {
     const { subtopic_id, ...rest } = updates;
     const learning = await this.learningRepo.findOne({
       where: { id },
-      relations: ['topic', 'subtopic'],
+      relations: ["topic", "subtopic"],
     });
     if (!learning) throw new NotFoundException(`Learning ${id} not found`);
 
@@ -552,11 +660,11 @@ export class LearningsService {
 
   // ─── Topics & Subtopics ────────────────────────────────────────────────
   async findAllTopics() {
-    return this.topicRepo.find({ order: { name: 'ASC' } });
+    return this.topicRepo.find({ order: { name: "ASC" } });
   }
 
   async findAllSubtopics() {
-    return this.subtopicRepo.find({ order: { display_name: 'ASC' } });
+    return this.subtopicRepo.find({ order: { display_name: "ASC" } });
   }
 
   // ─── Manual Add ─────────────────────────────────────────────────────────
@@ -577,26 +685,29 @@ export class LearningsService {
     } else if (input.text) {
       hashSource = input.text;
     } else {
-      throw new Error('Must provide url, image, or text');
+      throw new Error("Must provide url, image, or text");
     }
     const contentHash = this.computeHash(hashSource);
 
     // 2. Check dedup
     const existing = await this.learningRepo.findOne({
       where: { content_hash: contentHash },
-      relations: ['topic', 'subtopic'],
+      relations: ["topic", "subtopic"],
     });
     if (existing) return existing;
 
     // 3. Determine source type
-    let sourceType = 'manual';
+    let sourceType = "manual";
     if (input.url) {
-      if (input.url.includes('linkedin.com')) sourceType = 'linkedin';
-      else if (input.url.includes('medium.com')) sourceType = 'medium';
-      else if (input.url.includes('dart.dev') || input.url.includes('flutter.dev'))
-        sourceType = 'official_blog';
+      if (input.url.includes("linkedin.com")) sourceType = "linkedin";
+      else if (input.url.includes("medium.com")) sourceType = "medium";
+      else if (
+        input.url.includes("dart.dev") ||
+        input.url.includes("flutter.dev")
+      )
+        sourceType = "official_blog";
     } else if (input.image) {
-      sourceType = 'image';
+      sourceType = "image";
     }
 
     // 4. Process image (compress to ≤150KB)
@@ -604,7 +715,7 @@ export class LearningsService {
     if (input.image) {
       const uuid = crypto.randomUUID();
       const compressed = await this.compressImage(input.image);
-      const dir = join(UPLOADS_DIR, 'learnings');
+      const dir = join(UPLOADS_DIR, "learnings");
       await mkdir(dir, { recursive: true });
       const filename = `${uuid}.webp`;
       await writeFile(join(dir, filename), compressed);
@@ -612,28 +723,30 @@ export class LearningsService {
     }
 
     // 5. Resolve topic
-    const topicName = input.topic || 'flutter'; // default to flutter
+    const topicName = input.topic || "flutter"; // default to flutter
     let topic = await this.topicRepo.findOneBy({ name: topicName });
     if (!topic) {
-      topic = await this.topicRepo.findOneBy({ name: 'flutter' });
+      topic = await this.topicRepo.findOneBy({ name: "flutter" });
     }
 
     // 6. Create learning record
     const learning = this.learningRepo.create({
-      title: input.title || 'Untitled Learning',
+      title: input.title || "Untitled Learning",
       source_url: input.url || null,
       source_type: sourceType,
       image_path: imagePath,
       topic: topic!,
       content_hash: contentHash,
-      analyze_status: 'analyzing',
+      analyze_status: "analyzing",
     });
 
     const saved = await this.learningRepo.save(learning);
 
     // 7. Fire-and-forget: AI analysis
     this.runAnalysis(saved, input.url, input.text).catch((err) => {
-      this.logger.error(`Analysis failed for learning ${saved.id}: ${err.message}`);
+      this.logger.error(
+        `Analysis failed for learning ${saved.id}: ${err.message}`,
+      );
     });
 
     return this.findOne(saved.id);
@@ -665,20 +778,20 @@ export class LearningsService {
       }
 
       // Resolve topic
-      const topicName = item.topic || 'flutter';
+      const topicName = item.topic || "flutter";
       let topic = await this.topicRepo.findOneBy({ name: topicName });
       if (!topic) {
-        topic = await this.topicRepo.findOneBy({ name: 'flutter' });
+        topic = await this.topicRepo.findOneBy({ name: "flutter" });
       }
 
       const learning = this.learningRepo.create({
         title: item.title,
         source_url: item.source_url,
-        source_type: item.source_type || 'manual',
+        source_type: item.source_type || "manual",
         summary: item.description || null,
         topic: topic!,
         content_hash: contentHash,
-        analyze_status: 'idle',
+        analyze_status: "idle",
       });
 
       const saved = await this.learningRepo.save(learning);
@@ -725,7 +838,7 @@ export class LearningsService {
 
   // ─── SHA256 hash for dedup ──────────────────────────────────────────────
   private computeHash(input: string | Buffer): string {
-    return createHash('sha256').update(input).digest('hex');
+    return createHash("sha256").update(input).digest("hex");
   }
 
   // ─── AI Analysis pipeline ──────────────────────────────────────────────
@@ -735,22 +848,22 @@ export class LearningsService {
     text?: string,
   ): Promise<void> {
     try {
-      let content = text || '';
+      let content = text || "";
 
       // Fetch content from URL if provided
       if (url && !content) {
         try {
           const res = await fetch(url, {
-            headers: { 'User-Agent': 'ThangVQ-Digital-Hub/1.0' },
+            headers: { "User-Agent": "ThangVQ-Digital-Hub/1.0" },
           });
           if (res.ok) {
             const html = await res.text();
             // Extract text content (strip HTML tags)
             content = html
-              .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '')
-              .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, '')
-              .replace(/<[^>]+>/g, ' ')
-              .replace(/\s+/g, ' ')
+              .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
+              .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
+              .replace(/<[^>]+>/g, " ")
+              .replace(/\s+/g, " ")
               .trim()
               .substring(0, 5000);
           }
@@ -760,26 +873,26 @@ export class LearningsService {
       }
 
       const NINE_ROUTER_API_KEY =
-        process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || '';
+        process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || "";
       if (!NINE_ROUTER_API_KEY) {
         await this.learningRepo.update(learning.id, {
-          analyze_status: 'failed',
+          analyze_status: "failed",
         });
         return;
       }
 
       const llmRes = await fetch(`${NINE_ROUTER_URL}/chat/completions`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${NINE_ROUTER_API_KEY}`,
         },
         body: JSON.stringify({
           model: NINE_ROUTER_MODEL,
-          response_format: { type: 'json_object' },
+          response_format: { type: "json_object" },
           messages: [
             {
-              role: 'system',
+              role: "system",
               content: `You are a senior mobile developer analyzing learning content about Flutter or Android development.
 Return a JSON object:
 {
@@ -790,8 +903,8 @@ Return a JSON object:
 }`,
             },
             {
-              role: 'user',
-              content: `Title: ${learning.title}\nSource: ${learning.source_url || 'N/A'}\nContent:\n${content || 'No content available — classify based on title only.'}`,
+              role: "user",
+              content: `Title: ${learning.title}\nSource: ${learning.source_url || "N/A"}\nContent:\n${content || "No content available — classify based on title only."}`,
             },
           ],
           temperature: 0.3,
@@ -805,20 +918,23 @@ Return a JSON object:
       }
 
       const llmData = await llmRes.json();
-      const contentStr = llmData.choices?.[0]?.message?.content ?? '{}';
+      const contentStr = llmData.choices?.[0]?.message?.content ?? "{}";
 
       let cleanJson = contentStr.trim();
-      if (cleanJson.startsWith('```json')) {
-        cleanJson = cleanJson.replace(/^```json/, '').replace(/```$/, '').trim();
-      } else if (cleanJson.startsWith('```')) {
-        cleanJson = cleanJson.replace(/^```/, '').replace(/```$/, '').trim();
+      if (cleanJson.startsWith("```json")) {
+        cleanJson = cleanJson
+          .replace(/^```json/, "")
+          .replace(/```$/, "")
+          .trim();
+      } else if (cleanJson.startsWith("```")) {
+        cleanJson = cleanJson.replace(/^```/, "").replace(/```$/, "").trim();
       }
 
       const parsed = JSON.parse(cleanJson);
 
       // Update title if AI provided a better one and current is generic
       const updateData: Partial<LearningEntity> = {
-        analyze_status: 'done',
+        analyze_status: "done",
       };
 
       if (parsed.summary) {
@@ -826,7 +942,7 @@ Return a JSON object:
       }
       if (
         parsed.title &&
-        (learning.title === 'Untitled Learning' || !learning.title)
+        (learning.title === "Untitled Learning" || !learning.title)
       ) {
         updateData.title = parsed.title;
       }
@@ -850,9 +966,9 @@ Return a JSON object:
         if (!subtopic) {
           // Auto-create new subtopic
           const displayName = subtopicName
-            .split('-')
+            .split("-")
             .map((w: string) => w.charAt(0).toUpperCase() + w.slice(1))
-            .join(' ');
+            .join(" ");
           subtopic = this.subtopicRepo.create({
             name: subtopicName,
             display_name: displayName,
@@ -872,14 +988,15 @@ Return a JSON object:
         `Analysis failed for learning ${learning.id}: ${error.message}`,
       );
       await this.learningRepo.update(learning.id, {
-        analyze_status: 'failed',
+        analyze_status: "failed",
       });
     }
   }
 
   // ─── Rule-based subtopic classification ─────────────────────────────────
   async classifyLearning(learning: LearningEntity): Promise<void> {
-    const searchText = `${learning.title} ${learning.summary || ''} ${learning.source_url || ''}`.toLowerCase();
+    const searchText =
+      `${learning.title} ${learning.summary || ""} ${learning.source_url || ""}`.toLowerCase();
 
     for (const [subtopicName, keywords] of Object.entries(SUBTOPIC_RULES)) {
       if (keywords.some((kw) => searchText.includes(kw))) {
@@ -907,7 +1024,7 @@ Return a JSON object:
     );
   }
 }
-```
+````
 
 - [ ] **Step 3: Create LearningsController**
 
@@ -924,22 +1041,22 @@ import {
   UseGuards,
   UploadedFile,
   UseInterceptors,
-} from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiKeyGuard } from '../auth/api-key.guard';
-import { LearningsService } from './learnings.service';
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { ApiKeyGuard } from "../auth/api-key.guard";
+import { LearningsService } from "./learnings.service";
 
-@Controller('api/learnings')
+@Controller("api/learnings")
 export class LearningsController {
   constructor(private readonly learningsService: LearningsService) {}
 
   @Get()
   findAll(
-    @Query('tab') tab?: string,
-    @Query('topic') topic?: string,
-    @Query('subtopic') subtopic?: string,
-    @Query('page') page?: string,
-    @Query('limit') limit?: string,
+    @Query("tab") tab?: string,
+    @Query("topic") topic?: string,
+    @Query("subtopic") subtopic?: string,
+    @Query("page") page?: string,
+    @Query("limit") limit?: string,
   ) {
     return this.learningsService.findAll({
       tab,
@@ -950,24 +1067,24 @@ export class LearningsController {
     });
   }
 
-  @Get('topics')
+  @Get("topics")
   findAllTopics() {
     return this.learningsService.findAllTopics();
   }
 
-  @Get('subtopics')
+  @Get("subtopics")
   findAllSubtopics() {
     return this.learningsService.findAllSubtopics();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
+  @Get(":id")
+  findOne(@Param("id") id: string) {
     return this.learningsService.findOne(id);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   patch(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body()
     body: {
       is_learned?: boolean;
@@ -978,10 +1095,11 @@ export class LearningsController {
     return this.learningsService.patch(id, body);
   }
 
-  @Post('add')
-  @UseInterceptors(FileInterceptor('image'))
+  @Post("add")
+  @UseInterceptors(FileInterceptor("image"))
   addManual(
-    @Body() body: { url?: string; text?: string; topic?: string; title?: string },
+    @Body()
+    body: { url?: string; text?: string; topic?: string; title?: string },
     @UploadedFile() file?: Express.Multer.File,
   ) {
     return this.learningsService.addManual({
@@ -991,7 +1109,7 @@ export class LearningsController {
     });
   }
 
-  @Post('upsert')
+  @Post("upsert")
   @UseGuards(ApiKeyGuard)
   upsert(
     @Body()
@@ -1057,6 +1175,7 @@ git commit -m "feat(learning): add learnings module with service, controller, im
 ## Task 4: Frontend Types & API Client
 
 **Files:**
+
 - Create: `lib/api/learning-types.ts`
 - Create: `lib/api/learning-client.ts`
 
@@ -1089,7 +1208,7 @@ export interface Learning {
   is_learned: boolean;
   is_favorite: boolean;
   content_hash: string | null;
-  analyze_status: 'idle' | 'analyzing' | 'done' | 'failed';
+  analyze_status: "idle" | "analyzing" | "done" | "failed";
   created_at: string;
   updated_at: string;
 }
@@ -1114,9 +1233,9 @@ import type {
   LearningsResponse,
   LearningTopic,
   LearningSubtopic,
-} from './learning-types';
+} from "./learning-types";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3005';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3005";
 
 export async function fetchLearnings(params: {
   tab?: string;
@@ -1126,24 +1245,24 @@ export async function fetchLearnings(params: {
   limit?: number;
 }): Promise<LearningsResponse> {
   const searchParams = new URLSearchParams();
-  if (params.tab) searchParams.set('tab', params.tab);
-  if (params.topic) searchParams.set('topic', params.topic);
-  if (params.subtopic) searchParams.set('subtopic', params.subtopic);
-  if (params.page) searchParams.set('page', String(params.page));
-  if (params.limit) searchParams.set('limit', String(params.limit));
+  if (params.tab) searchParams.set("tab", params.tab);
+  if (params.topic) searchParams.set("topic", params.topic);
+  if (params.subtopic) searchParams.set("subtopic", params.subtopic);
+  if (params.page) searchParams.set("page", String(params.page));
+  if (params.limit) searchParams.set("limit", String(params.limit));
 
   const res = await fetch(`${API_URL}/api/learnings?${searchParams}`, {
-    cache: 'no-store',
+    cache: "no-store",
   });
-  if (!res.ok) throw new Error('Failed to fetch learnings');
+  if (!res.ok) throw new Error("Failed to fetch learnings");
   return res.json();
 }
 
 export async function fetchLearning(id: string): Promise<Learning> {
   const res = await fetch(`${API_URL}/api/learnings/${id}`, {
-    cache: 'no-store',
+    cache: "no-store",
   });
-  if (!res.ok) throw new Error('Failed to fetch learning');
+  if (!res.ok) throw new Error("Failed to fetch learning");
   return res.json();
 }
 
@@ -1156,36 +1275,36 @@ export async function patchLearning(
   },
 ): Promise<Learning> {
   const res = await fetch(`${API_URL}/api/learnings/${id}`, {
-    method: 'PATCH',
-    headers: { 'Content-Type': 'application/json' },
+    method: "PATCH",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(updates),
   });
-  if (!res.ok) throw new Error('Failed to patch learning');
+  if (!res.ok) throw new Error("Failed to patch learning");
   return res.json();
 }
 
 export async function addLearning(formData: FormData): Promise<Learning> {
   const res = await fetch(`${API_URL}/api/learnings/add`, {
-    method: 'POST',
+    method: "POST",
     body: formData,
   });
-  if (!res.ok) throw new Error('Failed to add learning');
+  if (!res.ok) throw new Error("Failed to add learning");
   return res.json();
 }
 
 export async function fetchTopics(): Promise<LearningTopic[]> {
   const res = await fetch(`${API_URL}/api/learnings/topics`, {
-    cache: 'no-store',
+    cache: "no-store",
   });
-  if (!res.ok) throw new Error('Failed to fetch topics');
+  if (!res.ok) throw new Error("Failed to fetch topics");
   return res.json();
 }
 
 export async function fetchSubtopics(): Promise<LearningSubtopic[]> {
   const res = await fetch(`${API_URL}/api/learnings/subtopics`, {
-    cache: 'no-store',
+    cache: "no-store",
   });
-  if (!res.ok) throw new Error('Failed to fetch subtopics');
+  if (!res.ok) throw new Error("Failed to fetch subtopics");
   return res.json();
 }
 ```
@@ -1202,6 +1321,7 @@ git commit -m "feat(learning): add frontend types and API client"
 ## Task 5: Frontend Components
 
 **Files:**
+
 - Create: `components/learning/LearningHeader.tsx`
 - Create: `components/learning/LearningCard.tsx`
 - Create: `components/learning/LearningGrid.tsx`
@@ -1212,6 +1332,7 @@ git commit -m "feat(learning): add frontend types and API client"
 Client component with tabs (To Learn / Learned / Favorites), topic filter pills (All / Flutter / Android), subtopic chips, and "Add Learning" button. Follow the same pattern as `components/dashboard/DashboardHeader.tsx` for styling consistency.
 
 Key behaviors:
+
 - Uses `useSearchParams` to read/write `tab`, `topic`, `subtopic` URL params
 - Fetches topics from `/api/learnings/topics`
 - Fetches subtopics from `/api/learnings/subtopics`
@@ -1220,6 +1341,7 @@ Key behaviors:
 - [ ] **Step 2: Create LearningCard**
 
 Client component displaying:
+
 - Compressed image thumbnail (if `image_path` exists, load from `API_URL/uploads/{image_path}`)
 - Title (truncated to 2 lines)
 - Topic badge (Flutter blue #027DFD / Android green #3DDC84)
@@ -1235,6 +1357,7 @@ Follow the same card styling pattern as `components/dashboard/RepoCard.tsx`.
 - [ ] **Step 3: Create LearningGrid**
 
 Client component with:
+
 - Responsive grid layout (1 col mobile, 2 cols tablet, 3 cols desktop)
 - Load more button (20 items per batch, fetch next page and append)
 - Empty state message per tab
@@ -1245,6 +1368,7 @@ Follow the same pattern as `components/dashboard/RepoGrid.tsx`.
 - [ ] **Step 4: Create AddLearningDialog**
 
 Client component — ShadcnUI Dialog with:
+
 - URL input field (paste a LinkedIn/Medium/blog URL)
 - Image upload dropzone (drag-and-drop or click to select)
 - Topic selector dropdown (Flutter / Android)
@@ -1265,6 +1389,7 @@ git commit -m "feat(learning): add frontend components — header, card, grid, a
 ## Task 6: Frontend Pages
 
 **Files:**
+
 - Create: `app/learning/page.tsx`
 - Create: `app/learning/loading.tsx`
 - Create: `app/learning/[id]/page.tsx`
@@ -1305,6 +1430,7 @@ Follow the same pattern as `app/tech/loading.tsx`.
 - [ ] **Step 3: Create learning detail page**
 
 `app/learning/[id]/page.tsx` — Server component that:
+
 - Fetches learning by ID
 - Displays side-by-side: original image (full size from `source_url`) + AI Markdown summary
 - Shows metadata: topic badge, subtopic tag, source link, created date
@@ -1324,6 +1450,7 @@ git commit -m "feat(learning): add learning pages — landing and detail"
 ## Task 7: Navigation & Integration
 
 **Files:**
+
 - Modify: `app/layout.tsx` or navigation component (add `/learning` link)
 - Modify: `docs/PRD.md` (add Learning Hub route and section)
 - Modify: `CONTEXT.md` (add Learning Hub terminology)
@@ -1339,6 +1466,7 @@ Add the `/learning` route to the Routes section and add a new "Part 3: Learning 
 - [ ] **Step 3: Update CONTEXT.md**
 
 Add terminology:
+
 - **Learning Hub** — Knowledge repository for Flutter & Android learnings scraped from LinkedIn, Medium, and official blogs.
 - **Learning Subtopic** — AI-classified technical category (navigation, state-management, deeplink, etc.)
 
@@ -1400,6 +1528,7 @@ npm run dev
 ```
 
 Open `http://localhost:3002/learning` — verify:
+
 - Landing page renders with tabs and filters
 - Add Learning dialog works
 - Card grid displays items correctly

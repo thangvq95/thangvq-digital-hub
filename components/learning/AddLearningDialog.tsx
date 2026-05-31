@@ -103,7 +103,9 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
       onClose();
     } catch (err) {
       console.error(err);
-      setError(err instanceof Error ? err.message : "Failed to save learning content.");
+      setError(
+        err instanceof Error ? err.message : "Failed to save learning content.",
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -112,15 +114,15 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       {/* Backdrop */}
-      <div 
-        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity" 
-        onClick={onClose} 
+      <div
+        className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
+        onClick={onClose}
       />
 
       {/* Modal Content */}
-      <div 
+      <div
         className="relative w-full max-w-xl rounded-2xl glass p-6 shadow-2xl overflow-y-auto max-h-[90vh] z-10 animate-in fade-in zoom-in-95 duration-200"
-        style={{ 
+        style={{
           background: "var(--bg-card)",
           border: "1px solid var(--border)",
         }}
@@ -146,7 +148,9 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Topic Select */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Topic</label>
+            <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+              Topic
+            </label>
             <div className="flex gap-2">
               <button
                 type="button"
@@ -154,8 +158,16 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
                 className="flex-1 py-2 px-3 rounded-lg text-xs font-semibold border transition-all duration-200 cursor-pointer"
                 style={
                   topic === "flutter"
-                    ? { background: "rgba(2, 125, 253, 0.15)", color: "#027DFD", borderColor: "#027DFD" }
-                    : { background: "var(--bg-card)", color: "var(--text-muted)", borderColor: "var(--border)" }
+                    ? {
+                        background: "rgba(2, 125, 253, 0.15)",
+                        color: "#027DFD",
+                        borderColor: "#027DFD",
+                      }
+                    : {
+                        background: "var(--bg-card)",
+                        color: "var(--text-muted)",
+                        borderColor: "var(--border)",
+                      }
                 }
               >
                 Flutter
@@ -166,8 +178,16 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
                 className="flex-1 py-2 px-3 rounded-lg text-xs font-semibold border transition-all duration-200 cursor-pointer"
                 style={
                   topic === "android"
-                    ? { background: "rgba(61, 220, 132, 0.15)", color: "#3DDC84", borderColor: "#3DDC84" }
-                    : { background: "var(--bg-card)", color: "var(--text-muted)", borderColor: "var(--border)" }
+                    ? {
+                        background: "rgba(61, 220, 132, 0.15)",
+                        color: "#3DDC84",
+                        borderColor: "#3DDC84",
+                      }
+                    : {
+                        background: "var(--bg-card)",
+                        color: "var(--text-muted)",
+                        borderColor: "var(--border)",
+                      }
                 }
               >
                 Android
@@ -177,7 +197,12 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
 
           {/* Title */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="learning-title" className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Title (Optional)</label>
+            <label
+              htmlFor="learning-title"
+              className="text-xs font-semibold uppercase tracking-wider text-neutral-400"
+            >
+              Title (Optional)
+            </label>
             <input
               id="learning-title"
               type="text"
@@ -186,13 +211,21 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
               onChange={(e) => setTitle(e.target.value)}
               disabled={isSubmitting}
               className="w-full px-3 py-2 text-sm rounded-lg outline-none transition-all duration-200 border bg-black/20 focus:ring-1 focus:ring-indigo-500/50"
-              style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
+              style={{
+                borderColor: "var(--border)",
+                color: "var(--text-primary)",
+              }}
             />
           </div>
 
           {/* Source URL */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="learning-url" className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Source URL</label>
+            <label
+              htmlFor="learning-url"
+              className="text-xs font-semibold uppercase tracking-wider text-neutral-400"
+            >
+              Source URL
+            </label>
             <div className="relative flex items-center">
               <LinkIcon className="absolute left-3 w-4 h-4 text-neutral-500" />
               <input
@@ -203,14 +236,22 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
                 onChange={(e) => setUrl(e.target.value)}
                 disabled={isSubmitting}
                 className="w-full pl-9 pr-3 py-2 text-sm rounded-lg outline-none transition-all duration-200 border bg-black/20 focus:ring-1 focus:ring-indigo-500/50"
-                style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
+                style={{
+                  borderColor: "var(--border)",
+                  color: "var(--text-primary)",
+                }}
               />
             </div>
           </div>
 
           {/* Text Content */}
           <div className="flex flex-col gap-1.5">
-            <label htmlFor="learning-text" className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Text Content / Notes</label>
+            <label
+              htmlFor="learning-text"
+              className="text-xs font-semibold uppercase tracking-wider text-neutral-400"
+            >
+              Text Content / Notes
+            </label>
             <div className="relative flex items-start">
               <FileText className="absolute left-3 top-3 w-4 h-4 text-neutral-500" />
               <textarea
@@ -221,23 +262,28 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
                 disabled={isSubmitting}
                 rows={3}
                 className="w-full pl-9 pr-3 py-2 text-sm rounded-lg outline-none transition-all duration-200 border bg-black/20 focus:ring-1 focus:ring-indigo-500/50 resize-none"
-                style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
+                style={{
+                  borderColor: "var(--border)",
+                  color: "var(--text-primary)",
+                }}
               />
             </div>
           </div>
 
           {/* Image Upload */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">Upload Screenshot / Image</label>
+            <label className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
+              Upload Screenshot / Image
+            </label>
             {previewUrl ? (
-              <div 
+              <div
                 className="relative rounded-xl border overflow-hidden group aspect-video max-h-48"
                 style={{ borderColor: "var(--border)" }}
               >
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img 
-                  src={previewUrl} 
-                  alt="Upload preview" 
+                <img
+                  src={previewUrl}
+                  alt="Upload preview"
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
@@ -258,7 +304,9 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
                 onDrop={handleDrop}
                 onClick={() => fileInputRef.current?.click()}
                 className={`flex flex-col items-center justify-center p-6 border-2 border-dashed rounded-xl cursor-pointer transition-all duration-200 bg-black/10 hover:bg-black/20 ${
-                  dragActive ? "border-indigo-500 bg-indigo-500/5" : "border-neutral-700"
+                  dragActive
+                    ? "border-indigo-500 bg-indigo-500/5"
+                    : "border-neutral-700"
                 }`}
               >
                 <input
@@ -270,9 +318,14 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
                 />
                 <Upload className="w-8 h-8 text-neutral-500 mb-2 group-hover:text-indigo-400 transition-colors" />
                 <p className="text-xs font-medium text-neutral-300 text-center">
-                  Drag and drop image here, or <span className="text-indigo-400 hover:underline">browse</span>
+                  Drag and drop image here, or{" "}
+                  <span className="text-indigo-400 hover:underline">
+                    browse
+                  </span>
                 </p>
-                <p className="text-[10px] text-neutral-500 mt-1">Supports PNG, JPG, WEBP (nerved to &le;150KB)</p>
+                <p className="text-[10px] text-neutral-500 mt-1">
+                  Supports PNG, JPG, WEBP (nerved to &le;150KB)
+                </p>
               </div>
             )}
           </div>
