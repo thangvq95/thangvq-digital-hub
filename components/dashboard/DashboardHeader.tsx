@@ -112,6 +112,15 @@ const DashboardHeader: React.FC = () => {
             </Link>
 
             <Link
+              href="/learning"
+              id="dashboard-learning-link"
+              className="hidden sm:block text-sm transition-colors hover:underline"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Learning
+            </Link>
+
+            <Link
               href="/stack"
               id="dashboard-stack-link"
               className="hidden sm:block text-sm transition-colors hover:underline"

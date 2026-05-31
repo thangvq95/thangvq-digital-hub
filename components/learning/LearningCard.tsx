@@ -3,9 +3,27 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { Heart, Check, ExternalLink, Linkedin, Globe, Image as ImageIcon, FileText, Calendar } from "lucide-react";
+import { Heart, Check, ExternalLink, Globe, Image as ImageIcon, FileText, Calendar } from "lucide-react";
 import { patchLearning } from "@/lib/api/learning-client";
 import type { Learning } from "@/lib/api/learning-types";
+
+const LinkedinIcon: React.FC<{ size?: number; className?: string }> = ({ size = 12, className }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+    <rect width="4" height="12" x="2" y="9" />
+    <circle cx="4" cy="4" r="2" />
+  </svg>
+);
 
 interface LearningCardProps {
   learning: Learning;
@@ -53,7 +71,7 @@ export const LearningCard: React.FC<LearningCardProps> = ({ learning, onUpdate }
   const getSourceIcon = (sourceType: string) => {
     switch (sourceType) {
       case "linkedin":
-        return <Linkedin size={12} className="text-[#0A66C2]" />;
+        return <LinkedinIcon size={12} className="text-[#0A66C2]" />;
       case "medium":
         return <Globe size={12} className="text-white" />;
       case "official_blog":

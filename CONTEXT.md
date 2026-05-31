@@ -19,6 +19,8 @@ Developer Intelligence Platform — Portfolio + TechTrend Dashboard with weekly 
 - **Category Classification** — Auto-classification of repositories into categories (e.g. video, memory, skills, finance) during weekly sync or manual additions, utilizing rule-based regex and 9Router LLM.
 - **Sentry Global Filter** — NestJS exception filter that captures all unhandled errors.
 - **Sentry Webhook Handler** — Backend endpoint at `/webhooks/sentry` that maps Sentry alerts to GitHub Issues for automated AI fixing.
+- **Learning Hub** — Technical knowledge repository cataloging mobile developer lessons about Flutter and Android, captured manually or daily by Hermes.
+- **Learning Subtopic** — Specific technical category (e.g., Navigation, State Management, Jetpack Compose) used to classify learning items.
 
 ## Autonomous Workflow — 5-Layer Architecture
 
