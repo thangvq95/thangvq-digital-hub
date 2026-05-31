@@ -61,6 +61,8 @@ services:
       - DEDUP_DB=/app/data/ai-workspace.db
       - COMPOSIO_API_KEY=${COMPOSIO_API_KEY}
       - SYNC_API_KEY=${SYNC_API_KEY}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
     command: [ "hermes", "gateway", "run" ]
 
   hermes-dashboard:
@@ -90,6 +92,8 @@ services:
       - DEDUP_DB=/app/data/ai-workspace.db
       - COMPOSIO_API_KEY=${COMPOSIO_API_KEY}
       - SYNC_API_KEY=${SYNC_API_KEY}
+      - TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
+      - TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID}
     command: [ "hermes", "dashboard", "--host", "0.0.0.0", "--port", "9119", "--no-open", "--insecure" ]
 
   # Cloudflare Tunnel — routes public traffic to internal services, no open ports needed

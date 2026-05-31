@@ -5,7 +5,10 @@ import {
   PrimaryColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  ManyToOne,
+  JoinColumn,
 } from 'typeorm';
+import { CategoryEntity } from './category.entity';
 
 @Entity('repositories')
 export class RepositoryEntity {
@@ -60,6 +63,13 @@ export class RepositoryEntity {
   /** 'idle' | 'analyzing' | 'done' | 'failed' */
   @Column({ default: 'idle' })
   analyze_status: string;
+
+  @ManyToOne(() => CategoryEntity, (category) => category.repositories, {
+    nullable: true,
+    onDelete: 'SET NULL',
+  })
+  @JoinColumn({ name: 'category_id' })
+  category: CategoryEntity | null;
 
   @Column({ type: 'text', array: true, default: [] })
   tags: string[];

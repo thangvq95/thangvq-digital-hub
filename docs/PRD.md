@@ -105,7 +105,7 @@ Design direction, personal content, and implementation details are in:
 
 ### Core Features
 
-1. **Weekly Trending Sync** — Hermes scrapes `github.com/trending?since=weekly` (first page, ~25 repos) at 8AM & 8PM daily
+1. **Weekly Trending Sync** — Hermes scrapes `github.com/trending?since=weekly` (first page, ~25 repos) at 8AM UTC+7 daily (1AM UTC)
 2. **Simple Dedup** — If repo already exists in DB, skip. If new, insert with original trending order.
 3. **Favorite** — Mark repos as favorites, filter by favorites tab
 4. **Archive** — Hide repos you're not interested in, viewable in archived tab
@@ -135,8 +135,8 @@ Key design:
 
 | Cronjob                  | Source                             | Schedule                         | Details                                                                     |
 | ------------------------ | ---------------------------------- | -------------------------------- | --------------------------------------------------------------------------- |
-| Weekly Trending Sync     | `github.com/trending?since=weekly` | `0 8,20 * * *` (8AM & 8PM UTC+7) | → [repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md)             |
-| Favorite Release Monitor | Favorite repos                     | `0 10 * * *` (10AM UTC+7)        | → [release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) |
+| Weekly Trending Sync     | `github.com/trending?since=weekly` | `0 1 * * *` (daily 8AM UTC+7 / 1AM UTC)     | → [repo-sync-lifecycle.md](architecture/repo-sync-lifecycle.md)             |
+| Favorite Release Monitor | Favorite repos                     | `0 10 * * *` (daily 5PM UTC+7 / 10AM UTC)   | → [release-analysis-pipeline.md](architecture/release-analysis-pipeline.md) |
 
 ### API Routes
 

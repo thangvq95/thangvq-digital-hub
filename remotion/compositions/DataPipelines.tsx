@@ -12,7 +12,7 @@ const CARD_H = 65;
 const CARD_GAP = 165;
 
 const trendingSteps = [
-  { label: 'Hermes Cron', sub: '0 8,20 * * *', color: COLORS.blue },
+  { label: 'Hermes Cron', sub: '0 1 * * *', color: COLORS.blue },
   { label: 'github.com/trending', sub: 'weekly · ~25 repos', color: COLORS.blue },
   { label: 'POST /upsert', sub: 'x-api-key auth', color: COLORS.accent },
   { label: 'PostgreSQL', sub: 'INSERT new repos', color: COLORS.accent },
@@ -75,7 +75,7 @@ export const DataPipelines: React.FC = () => {
       {/* TOP LANE — Trending Sync */}
       <FadeIn from={T.topLabel} durationFrames={15}>
         <div style={{ position: 'absolute', top: LANE_Y.top - 30, left: 50, fontFamily: FONTS.body, fontSize: 11, color: COLORS.blue, letterSpacing: 2, textTransform: 'uppercase' }}>
-          ① Trending Sync (8AM & 8PM)
+          ① Trending Sync (8AM daily)
         </div>
       </FadeIn>
 
@@ -106,7 +106,7 @@ export const DataPipelines: React.FC = () => {
       {/* BOTTOM LANE — Release Monitor */}
       <FadeIn from={T.bottomLabel} durationFrames={15}>
         <div style={{ position: 'absolute', top: LANE_Y.bottom - 30, left: 50, fontFamily: FONTS.body, fontSize: 11, color: COLORS.purple, letterSpacing: 2, textTransform: 'uppercase' }}>
-          ② Release Monitor (10AM daily)
+          ② Release Monitor (5PM daily)
         </div>
       </FadeIn>
 
@@ -160,7 +160,7 @@ export const DataPipelines: React.FC = () => {
             <span style={{ background: `${COLORS.blue}20`, border: `1px solid ${COLORS.blue}40`, borderRadius: 4, padding: '2px 8px', fontFamily: FONTS.mono, fontSize: 10, color: COLORS.blue }}>NEW</span>
             <span style={{ background: `${COLORS.amber}20`, border: `1px solid ${COLORS.amber}40`, borderRadius: 4, padding: '2px 8px', fontFamily: FONTS.mono, fontSize: 10, color: COLORS.amber }}>RELEASE ✦</span>
           </div>
-          <span style={{ fontFamily: FONTS.body, fontSize: 11, color: COLORS.textSecondary }}>Auto-updated 2× daily</span>
+          <span style={{ fontFamily: FONTS.body, fontSize: 11, color: COLORS.textSecondary }}>Auto-updated daily</span>
         </div>
       </GlassCard>
     </AbsoluteFill>

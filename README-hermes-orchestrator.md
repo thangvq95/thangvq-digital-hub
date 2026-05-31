@@ -21,7 +21,7 @@ Hermes also runs **scheduled cronjobs** independently (no webhook needed):
 
 | Cronjob                  | Schedule       | Action                                                                   |
 | ------------------------ | -------------- | ------------------------------------------------------------------------ |
-| Weekly Trending Sync     | `0 8,20 * * *` | Scrape GitHub Trending (Weekly) → `POST /api/repos/upsert`               |
+| Weekly Trending Sync     | `0 1 * * *`   | Scrape GitHub Trending (Weekly) → `POST /api/repos/upsert`               |
 | Favorite Release Monitor | `0 10 * * *`   | Check favorite repos for new releases → `POST /api/repos/check-releases` |
 
 ---

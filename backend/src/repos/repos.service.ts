@@ -1,8 +1,9 @@
 // backend/src/repos/repos.service.ts
 import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { RepositoryEntity } from './repository.entity';
+import { CategoryEntity } from './category.entity';
 
 const NINE_ROUTER_URL =
   process.env.NINE_ROUTER_URL || 'https://9router.phieucaphe.com/v1';
@@ -15,11 +16,29 @@ export class ReposService {
   constructor(
     @InjectRepository(RepositoryEntity)
     private readonly repo: Repository<RepositoryEntity>,
+    @InjectRepository(CategoryEntity)
+    private readonly categoryRepo: Repository<CategoryEntity>,
   ) {}
 
   // ─── List repos with tab filtering + pagination ───────────────────────────
-  async findAll(tab: string = 'all', page = 1, limit = 20) {
+  async findAll(
+    tab: string = 'all',
+    page = 1,
+    limit = 20,
+    categoryName?: string,
+  ) {
     const qb = this.repo.createQueryBuilder('r');
+
+    if (categoryName && categoryName.trim().toLowerCase() !== 'all') {
+      const category = await this.categoryRepo.findOne({
+        where: { name: categoryName.trim().toLowerCase() },
+      });
+      if (category) {
+        qb.andWhere('r.category = :categoryId', { categoryId: category.id });
+      } else {
+        qb.andWhere('1 = 0');
+      }
+    }
 
     if (tab === 'favorites') {
       qb.andWhere('r.is_favorite = true');
@@ -66,17 +85,35 @@ export class ReposService {
     qb.skip((page - 1) * limit).take(limit);
 
     const [data, total] = await qb.getManyAndCount();
+
+    if (data.length > 0) {
+      const fullNames = data.map((r) => r.full_name);
+      const reposWithRelations = await this.repo.find({
+        where: { full_name: In(fullNames) },
+        relations: ['category'],
+      });
+      const relationMap = new Map(
+        reposWithRelations.map((r) => [r.full_name, r.category]),
+      );
+      for (const r of data) {
+        r.category = relationMap.get(r.full_name) || null;
+      }
+    }
+
     return { data, meta: { total, page, limit, tab } };
   }
 
   // ─── Get single repo ──────────────────────────────────────────────────────
   async findOne(fullName: string) {
-    const repo = await this.repo.findOneBy({ full_name: fullName });
+    const repo = await this.repo.findOne({
+      where: { full_name: fullName },
+      relations: ['category'],
+    });
     if (!repo) throw new NotFoundException(`Repo ${fullName} not found`);
     return repo;
   }
 
-  // ─── Patch user fields (favorite, archive, dismiss new release) ───────────
+  // ─── Patch user fields (favorite, archive, dismiss new release, category) ─
   async patch(
     fullName: string,
     updates: Partial<
@@ -84,10 +121,30 @@ export class ReposService {
         RepositoryEntity,
         'is_favorite' | 'is_archived' | 'has_new_release' | 'is_read'
       >
-    >,
+    > & { category_id?: number | null },
   ) {
-    await this.repo.update({ full_name: fullName }, updates);
-    return this.repo.findOneBy({ full_name: fullName });
+    const { category_id, ...rest } = updates;
+    const repo = await this.repo.findOne({
+      where: { full_name: fullName },
+      relations: ['category'],
+    });
+    if (!repo) throw new NotFoundException(`Repo ${fullName} not found`);
+
+    if (category_id !== undefined) {
+      if (category_id === null) {
+        repo.category = null;
+      } else {
+        const category = await this.categoryRepo.findOneBy({ id: category_id });
+        if (!category) {
+          throw new NotFoundException(`Category with ID ${category_id} not found`);
+        }
+        repo.category = category;
+      }
+    }
+
+    Object.assign(repo, rest);
+    await this.repo.save(repo);
+    return this.findOne(fullName);
   }
 
   // ─── Trigger async AI analysis (Approach C: async + polling) ──────────────
@@ -396,6 +453,37 @@ Rules for tags:
       (url) => !existingUrlSet.has(url),
     ).length;
 
+    // Run classification in the background for only the repositories in this upsert batch that are uncategorized
+    const fullNames = rows.map((r) => r.full_name);
+    this.repo
+      .find({
+        where: { full_name: In(fullNames) },
+        relations: ['category'],
+      })
+      .then((updatedRepos) => {
+        const uncategorized = updatedRepos.filter((r) => !r.category);
+        if (uncategorized.length > 0) {
+          (async () => {
+            for (const r of uncategorized) {
+              await this.classifyRepo(r).catch((err) => {
+                this.logger.error(
+                  `Failed to classify ${r.full_name} in background: ${err.message}`,
+                );
+              });
+            }
+          })().catch((err) => {
+            this.logger.error(
+              `Error in background batch classification: ${err.message}`,
+            );
+          });
+        }
+      })
+      .catch((err) => {
+        this.logger.error(
+          `Failed to find upserted repos for background classification: ${err.message}`,
+        );
+      });
+
     return { received: repos.length, new: newCount };
   }
 
@@ -406,7 +494,10 @@ Rules for tags:
       .trim();
     fullName = fullName.replace(/\/$/, '').replace(/\.git$/, '');
 
-    const existing = await this.repo.findOneBy({ full_name: fullName });
+    const existing = await this.repo.findOne({
+      where: { full_name: fullName },
+      relations: ['category'],
+    });
     if (existing) return existing;
 
     const res = await fetch(`https://api.github.com/repos/${fullName}`, {
@@ -420,14 +511,22 @@ Rules for tags:
       throw new Error(`GitHub API error: ${res.statusText}`);
     }
 
-    const data = await res.json();
+    const data = (await res.json()) as {
+      full_name: string;
+      description: string | null;
+      html_url: string;
+      language: string | null;
+      owner?: { avatar_url?: string };
+      stargazers_count: number;
+      forks_count: number;
+    };
 
     const newRepo = this.repo.create({
       full_name: data.full_name,
-      description: data.description,
+      description: data.description ?? undefined,
       html_url: data.html_url,
-      language: data.language,
-      avatar_url: data.owner?.avatar_url,
+      language: data.language ?? undefined,
+      avatar_url: data.owner?.avatar_url ?? undefined,
       stars_total: data.stargazers_count,
       forks_total: data.forks_count,
       is_favorite: false,
@@ -438,7 +537,17 @@ Rules for tags:
       last_scraped_at: new Date(),
     });
 
-    return this.repo.save(newRepo);
+    const saved = await this.repo.save(newRepo);
+    await this.classifyRepo(saved);
+
+    // Auto-trigger magic AI analysis in the background
+    await this.triggerAnalyze(saved.full_name).catch((err) => {
+      this.logger.error(
+        `Failed to auto-trigger analysis for ${saved.full_name}: ${err.message}`,
+      );
+    });
+
+    return this.findOne(saved.full_name);
   }
 
   // ─── Sync latest release from GitHub API ────────────────────────────────
@@ -570,5 +679,189 @@ Rules:
       }
     }
     return { received: releases.length, updated };
+  }
+
+  // ─── Categories CRUD ──────────────────────────────────────────────────────
+  async findAllCategories() {
+    return this.categoryRepo.find({ order: { name: 'ASC' } });
+  }
+
+  async createCategory(name: string) {
+    const cleanName = name.trim().toLowerCase();
+    let existing = await this.categoryRepo.findOneBy({ name: cleanName });
+    if (!existing) {
+      existing = this.categoryRepo.create({ name: cleanName });
+      await this.categoryRepo.save(existing);
+    }
+    return existing;
+  }
+
+  async updateCategory(id: number, name: string) {
+    const cleanName = name.trim().toLowerCase();
+    await this.categoryRepo.update(id, { name: cleanName });
+    return this.categoryRepo.findOneBy({ id });
+  }
+
+  async deleteCategory(id: number) {
+    await this.categoryRepo.delete(id);
+  }
+
+  // ─── Repository Classification Logic ──────────────────────────────────────
+  async classifyRepo(repo: RepositoryEntity): Promise<void> {
+    try {
+      const fullName = repo.full_name.toLowerCase();
+      const description = (repo.description || '').toLowerCase();
+      const tags = (repo.tags || []).map((t) => t.toLowerCase());
+
+      let matchedCategoryName: string | null = null;
+
+      // 1. memory: Understand-Anything, Gitnexus, agentmemory, colbymchenry/codegraph
+      if (
+        fullName.includes('understand-anything') ||
+        fullName.includes('gitnexus') ||
+        fullName.includes('agentmemory') ||
+        fullName.includes('codegraph') ||
+        description.includes('knowledge graph') ||
+        description.includes('agent memory') ||
+        tags.includes('knowledge-graph') ||
+        tags.includes('memory')
+      ) {
+        matchedCategoryName = 'memory';
+      }
+      // 2. skills: Superpowers, mattpocock/skills, agent-skills
+      else if (
+        fullName.includes('superpowers') ||
+        fullName.includes('skills') ||
+        fullName.includes('agent-skills') ||
+        fullName.includes('planning') ||
+        description.includes('agent skills') ||
+        tags.includes('skills') ||
+        tags.includes('planning')
+      ) {
+        matchedCategoryName = 'skills';
+      }
+      // 3. finance: TradingAgents, financial-services
+      else if (
+        fullName.includes('tradingagents') ||
+        fullName.includes('financial-services') ||
+        fullName.includes('finance') ||
+        fullName.includes('trading') ||
+        description.includes('financial') ||
+        tags.includes('finance') ||
+        tags.includes('trading')
+      ) {
+        matchedCategoryName = 'finance';
+      }
+      // 4. video:
+      else if (
+        fullName.includes('video') ||
+        fullName.includes('remotion') ||
+        description.includes('video') ||
+        description.includes('remotion') ||
+        tags.includes('video') ||
+        tags.includes('remotion')
+      ) {
+        matchedCategoryName = 'video';
+      }
+
+      // 5. Fallback: LLM Classification via 9Router
+      if (!matchedCategoryName) {
+        const NINE_ROUTER_API_KEY =
+          process.env.NINE_ROUTER_API_KEY || process.env.OPENAI_API_KEY || '';
+        if (NINE_ROUTER_API_KEY) {
+          const existingCategories = await this.categoryRepo.find();
+          const catList = existingCategories.map((c) => c.name);
+
+          const prompt = `You are a technical classifier. Given a GitHub repository:
+- Name: ${repo.full_name}
+- Description: ${repo.description || 'N/A'}
+- Language: ${repo.language || 'N/A'}
+- Tags: ${repo.tags?.join(', ') || 'N/A'}
+
+Existing categories are: ${JSON.stringify(catList)}
+
+Classify this repository into one of the existing categories if it matches. If none of the existing categories are a good fit, suggest a new, appropriate, lowercase category name representing its technical domain (e.g. 'database', 'llm', 'devops', 'web-framework').
+Return a JSON object in this format:
+{
+  "categoryName": "suggested category name"
+}`;
+
+          const llmRes = await fetch(`${NINE_ROUTER_URL}/chat/completions`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${NINE_ROUTER_API_KEY}`,
+            },
+            body: JSON.stringify({
+              model: NINE_ROUTER_MODEL,
+              response_format: { type: 'json_object' },
+              messages: [
+                { role: 'system', content: 'You only output JSON.' },
+                { role: 'user', content: prompt },
+              ],
+              temperature: 0.2,
+              stream: false,
+            }),
+          });
+
+          if (llmRes.ok) {
+            const data = (await llmRes.json()) as {
+              choices?: { message?: { content?: string } }[];
+            };
+            const cleanContent = data.choices?.[0]?.message?.content?.trim();
+            if (cleanContent) {
+              try {
+                const parsed = JSON.parse(cleanContent) as {
+                  categoryName?: string;
+                };
+                if (parsed.categoryName) {
+                  matchedCategoryName = parsed.categoryName
+                    .trim()
+                    .toLowerCase();
+                }
+              } catch (e) {
+                const msg = e instanceof Error ? e.message : String(e);
+                this.logger.error(
+                  `Failed to parse category classification JSON: ${msg}`,
+                );
+              }
+            }
+          }
+        }
+      }
+
+      if (matchedCategoryName) {
+        let category = await this.categoryRepo.findOneBy({
+          name: matchedCategoryName,
+        });
+        if (!category) {
+          category = this.categoryRepo.create({ name: matchedCategoryName });
+          await this.categoryRepo.save(category);
+        }
+        repo.category = category;
+        await this.repo.save(repo);
+        this.logger.log(
+          `Classified ${repo.full_name} as "${matchedCategoryName}"`,
+        );
+      }
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Classification failed for ${repo.full_name}: ${msg}`);
+    }
+  }
+
+  async classifyAllRepos(): Promise<{ processed: number }> {
+    const repos = await this.repo
+      .createQueryBuilder('r')
+      .leftJoinAndSelect('r.category', 'cat')
+      .where('r.category_id IS NULL')
+      .getMany();
+
+    let count = 0;
+    for (const r of repos) {
+      await this.classifyRepo(r);
+      count++;
+    }
+    return { processed: count };
   }
 }

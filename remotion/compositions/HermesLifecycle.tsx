@@ -18,7 +18,7 @@ const steps = [
     sub: "push / PR / check_run",
     color: COLORS.textSecondary,
   },
-  { x: 240, label: "Cron Scheduler", sub: "10 mins", color: COLORS.blue },
+  { x: 240, label: "Cron Scheduler", sub: "1 hour", color: COLORS.blue },
   { x: 420, label: "HMAC Verify", sub: "+ SQLite dedup", color: COLORS.amber },
   {
     x: 600,
@@ -244,7 +244,7 @@ export const HermesLifecycle: React.FC = () => {
           >
             {[
               {
-                time: "0 8,20 * * *",
+                time: "0 1 * * *",
                 label: "Weekly Trending Sync",
                 sub: "Scrape GitHub → POST /api/repos/upsert",
                 color: COLORS.blue,

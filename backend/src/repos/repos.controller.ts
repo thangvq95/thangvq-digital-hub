@@ -22,11 +22,13 @@ export class ReposController {
     @Query('tab') tab?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('category') category?: string,
   ) {
     return this.reposService.findAll(
       tab ?? 'all',
       Number(page) || 1,
       Number(limit) || 20,
+      category,
     );
   }
 
@@ -44,6 +46,7 @@ export class ReposController {
       is_archived?: boolean;
       has_new_release?: boolean;
       is_read?: boolean;
+      category_id?: number | null;
     },
   ) {
     return this.reposService.patch(decodeURIComponent(fullName), body);
@@ -57,6 +60,12 @@ export class ReposController {
   @Post(':fullName/sync-release')
   syncRelease(@Param('fullName') fullName: string) {
     return this.reposService.syncRelease(decodeURIComponent(fullName));
+  }
+
+  @Post('classify-all')
+  @UseGuards(ApiKeyGuard)
+  classifyAll() {
+    return this.reposService.classifyAllRepos();
   }
 
   @Post('add')
