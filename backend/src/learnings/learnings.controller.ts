@@ -64,7 +64,17 @@ export class LearningsController {
   }
 
   @Post('add')
-  @UseInterceptors(FileInterceptor('image'))
+  @UseInterceptors(
+    FileInterceptor('image', {
+      limits: { fileSize: 10 * 1024 * 1024 }, // 10MB limit
+      fileFilter: (req, file, callback) => {
+        if (!file.mimetype.match(/\/(jpg|jpeg|png|webp)$/)) {
+          return callback(new Error('Only image files are allowed!'), false);
+        }
+        callback(null, true);
+      },
+    }),
+  )
   addManual(
     @Body()
     body: { url?: string; text?: string; topic?: string; title?: string; imageUrl?: string },

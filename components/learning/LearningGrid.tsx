@@ -37,7 +37,7 @@ export const LearningGrid: React.FC = () => {
         } else {
           setLearnings(res.data);
         }
-        setHasMore(res.data.length === PAGE_SIZE);
+        setHasMore(pageNum * PAGE_SIZE < res.meta.total);
       } catch (err) {
         console.error("Failed to load learnings:", err);
       } finally {

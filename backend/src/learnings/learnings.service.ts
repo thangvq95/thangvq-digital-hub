@@ -596,13 +596,18 @@ Return a JSON object:
         updateData.title = parsed.title;
       }
 
-      // Resolve topic from AI
+      // Resolve topic from AI (do not overwrite user-selected topic for manual entries)
       if (parsed.topic) {
-        const topic = await this.topicRepo.findOneBy({
-          name: parsed.topic.toLowerCase(),
-        });
-        if (topic) {
-          updateData.topic = topic;
+        const isManual =
+          learning.source_type === 'manual' ||
+          learning.source_type === 'image';
+        if (!isManual) {
+          const topic = await this.topicRepo.findOneBy({
+            name: parsed.topic.toLowerCase(),
+          });
+          if (topic) {
+            updateData.topic = topic;
+          }
         }
       }
 
@@ -627,10 +632,19 @@ Return a JSON object:
         updateData.subtopic = subtopic;
       }
 
-      await this.learningRepo.save({
-        ...learning,
-        ...updateData,
+      // Safe targeted update to avoid clobbering concurrent changes or relation default fields
+      const dbLearning = await this.learningRepo.findOne({
+        where: { id: learning.id },
+        relations: ['topic', 'subtopic'],
       });
+      if (dbLearning) {
+        if (updateData.summary) dbLearning.summary = updateData.summary;
+        if (updateData.title) dbLearning.title = updateData.title;
+        if (updateData.topic) dbLearning.topic = updateData.topic;
+        if (updateData.subtopic) dbLearning.subtopic = updateData.subtopic;
+        dbLearning.analyze_status = 'done';
+        await this.learningRepo.save(dbLearning);
+      }
       this.logger.log(`Analysis completed for learning ${learning.id}`);
     } catch (error) {
       const errMessage = error instanceof Error ? error.message : String(error);

@@ -107,6 +107,24 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
     }
   };
 
+  const resetForm = () => {
+    setUrl("");
+    setTitle("");
+    setText("");
+    setImage(null);
+    setImageUrl("");
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+    setError(null);
+  };
+
+  const handleClose = () => {
+    resetForm();
+    onClose();
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url && !text && !image && !imageUrl.trim()) {
@@ -128,14 +146,7 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
 
       const result = await addLearning(formData);
       onSuccess(result);
-      // Reset form
-      setUrl("");
-      setTitle("");
-      setText("");
-      setImage(null);
-      setImageUrl("");
-      setPreviewUrl(null);
-      onClose();
+      handleClose();
     } catch (err) {
       console.error(err);
       setError(
@@ -151,7 +162,7 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity"
-        onClick={onClose}
+        onClick={handleClose}
       />
 
       {/* Modal Content */}
@@ -163,7 +174,7 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
         }}
       >
         <button
-          onClick={onClose}
+          onClick={handleClose}
           className="absolute top-4 right-4 p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
         >
           <X size={18} />
@@ -391,7 +402,7 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
           <div className="flex justify-end gap-2 pt-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               disabled={isSubmitting}
               className="px-4 py-2 rounded-lg text-xs font-semibold text-neutral-400 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
             >

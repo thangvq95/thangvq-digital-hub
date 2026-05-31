@@ -12,7 +12,9 @@ export const metadata: Metadata = {
 export default async function LearningPage() {
   return (
     <main id="learning-main" className="min-h-screen">
-      <LearningHeader />
+      <Suspense fallback={<div className="h-20" />}>
+        <LearningHeader />
+      </Suspense>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <Suspense>
           <LearningGrid />
