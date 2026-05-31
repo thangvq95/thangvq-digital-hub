@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.9.1...v1.10.0) (2026-05-31)
+
+
+### Features
+
+* learning hub ([#114](https://github.com/thangvq95/thangvq-digital-hub/issues/114)) ([4af5dbf](https://github.com/thangvq95/thangvq-digital-hub/commit/4af5dbf5cad18186e4f278063ba053208c4aa27c))
+
 ## [1.9.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.9.0...v1.9.1) (2026-05-31)
 
 
