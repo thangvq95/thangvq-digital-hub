@@ -94,8 +94,40 @@ export default function RepoDetailPage() {
   const fullName = `${params.owner}/${params.repo}`;
 
   const [repoData, setRepoData] = useState<Repository | null>(null);
+  const [categories, setCategories] = useState<{ id: number; name: string }[]>([]);
+  const [isAddingNewCat, setIsAddingNewCat] = useState(false);
+  const [newCatName, setNewCatName] = useState("");
   const [loading, setLoading] = useState(true);
   const [isSyncingRelease, setIsSyncingRelease] = useState(false);
+
+  useEffect(() => {
+    api.categories.list().then(setCategories).catch(console.error);
+  }, []);
+
+  const handleCategoryChange = useCallback(async (categoryId: number | null) => {
+    try {
+      const updated = await api.repos.patch(fullName, { category_id: categoryId });
+      setRepoData(updated);
+    } catch (err) {
+      console.error("Failed to update category:", err);
+    }
+  }, [fullName]);
+
+  const handleCreateAndAssignCategory = useCallback(async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newCatName.trim()) return;
+    try {
+      const newCat = await api.categories.create(newCatName);
+      setCategories((prev) => [...prev, newCat].sort((a, b) => a.name.localeCompare(b.name)));
+      const updated = await api.repos.patch(fullName, { category_id: newCat.id });
+      setRepoData(updated);
+      setIsAddingNewCat(false);
+      setNewCatName("");
+    } catch (err) {
+      console.error("Failed to create category:", err);
+      alert("Failed to create category. It may already exist.");
+    }
+  }, [fullName, newCatName]);
 
   // ─── Initial fetch ────────────────────────────────────────────────────────
   useEffect(() => {
@@ -277,7 +309,7 @@ export default function RepoDetailPage() {
             </span>
           )}
           <span>🍴 {repoData.forks_total?.toLocaleString()} forks</span>
-          {repoData.language && <span>· {repoData.language}</span>}
+          {repoData.language && repoData.language !== "Unknown" && <span>· {repoData.language}</span>}
         </div>
 
         {repoData.tags && repoData.tags.length > 0 && (
@@ -297,6 +329,64 @@ export default function RepoDetailPage() {
             ))}
           </div>
         )}
+
+        {/* Category Assignment Row */}
+        <div className="mb-4 pt-4 border-t border-white/5 flex flex-wrap items-center gap-3 text-xs sm:text-sm">
+          <span style={{ color: "var(--text-muted)" }}>📁 Category:</span>
+          {isAddingNewCat ? (
+            <form onSubmit={handleCreateAndAssignCategory} className="flex items-center gap-2 flex-1 sm:flex-initial">
+              <input
+                type="text"
+                value={newCatName}
+                onChange={(e) => setNewCatName(e.target.value)}
+                placeholder="new-category"
+                autoFocus
+                className="px-2.5 py-1 text-xs rounded border bg-black/30 outline-none focus:ring-1 focus:ring-green-500/50 font-mono"
+                style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
+              />
+              <button
+                type="submit"
+                className="px-2.5 py-1 text-xs rounded font-semibold cursor-pointer text-white font-mono"
+                style={{ background: "var(--accent)" }}
+              >
+                Create
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsAddingNewCat(false)}
+                className="text-xs px-2.5 py-1 rounded hover:bg-white/5 font-mono"
+                style={{ color: "var(--text-muted)" }}
+              >
+                Cancel
+              </button>
+            </form>
+          ) : (
+            <div className="flex items-center gap-2">
+              <select
+                id="repo-category-select"
+                value={repoData.category?.id ?? ""}
+                onChange={(e) => {
+                  const val = e.target.value;
+                  if (val === "new") {
+                    setIsAddingNewCat(true);
+                  } else {
+                    handleCategoryChange(val ? Number(val) : null);
+                  }
+                }}
+                className="px-2.5 py-1 rounded bg-black/40 outline-none text-xs border cursor-pointer hover:bg-black/50 transition-colors uppercase font-semibold tracking-wider font-mono"
+                style={{ borderColor: "var(--border)", color: "var(--text-primary)" }}
+              >
+                <option value="" className="text-neutral-400">Uncategorized</option>
+                {categories.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    {c.name}
+                  </option>
+                ))}
+                <option value="new" className="text-green-400 font-bold">+ Create New...</option>
+              </select>
+            </div>
+          )}
+        </div>
 
         <div className="flex flex-wrap gap-3 mt-6">
           <a
@@ -356,7 +446,7 @@ export default function RepoDetailPage() {
           </button>
         </h2>
 
-        {isSyncingRelease && !repoData.latest_release_tag ? (
+        {isSyncingRelease && (!repoData.latest_release_tag || repoData.latest_release_tag === "Unknown") ? (
           <div className="py-8 flex flex-col items-center justify-center gap-3">
             <div
               className="w-6 h-6 border-2 border-t-transparent animate-spin rounded-full"
@@ -369,7 +459,7 @@ export default function RepoDetailPage() {
               Syncing latest release...
             </p>
           </div>
-        ) : repoData.latest_release_tag ? (
+        ) : repoData.latest_release_tag && repoData.latest_release_tag !== "Unknown" ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">

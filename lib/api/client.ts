@@ -12,11 +12,11 @@ export async function apiFetch<T>(path: string, options?: RequestInit): Promise<
 
 export const api = {
   repos: {
-    list: (tab = 'all', page = 1, limit = 20) =>
+    list: (tab = 'all', page = 1, limit = 20, category?: string) =>
       apiFetch<{
         data: import('./types').Repository[];
-        meta: { total: number; page: number; limit: number; tab: string };
-      }>(`/api/repos?tab=${tab}&page=${page}&limit=${limit}`),
+        meta: { total: number; page: number; limit: number; tab: string; category?: string };
+      }>(`/api/repos?tab=${tab}&page=${page}&limit=${limit}${category ? `&category=${encodeURIComponent(category)}` : ''}`),
 
     detail: (fullName: string) =>
       apiFetch<import('./types').Repository>(
@@ -47,6 +47,15 @@ export const api = {
         `/api/repos/${encodeURIComponent(fullName)}/sync-release`,
         { method: 'POST' },
       ),
+  },
+  
+  categories: {
+    list: () => apiFetch<import('./types').Category[]>('/api/categories'),
+    create: (name: string) =>
+      apiFetch<import('./types').Category>('/api/categories', {
+        method: 'POST',
+        body: JSON.stringify({ name }),
+      }),
   },
 
   sync: {

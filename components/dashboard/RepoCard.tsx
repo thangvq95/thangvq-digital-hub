@@ -208,8 +208,20 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
             ↑ {sanitizeStarsGrowth(repo.stars_growth)}
           </span>
         )}
-        {repo.language && <span>· {repo.language}</span>}
-        {repo.latest_release_tag && (
+        {repo.language && repo.language !== "Unknown" && <span>· {repo.language}</span>}
+        {repo.category && (
+          <span
+            className="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider"
+            style={{
+              background: "rgba(59, 130, 246, 0.1)",
+              color: "rgb(59, 130, 246)",
+              border: "1px solid rgba(59, 130, 246, 0.2)",
+            }}
+          >
+            {repo.category.name}
+          </span>
+        )}
+        {repo.latest_release_tag && repo.latest_release_tag !== "Unknown" && (
           <span
             className="font-mono text-[10px] px-1.5 py-0.5 rounded"
             style={{ background: "var(--bg-card)" }}
