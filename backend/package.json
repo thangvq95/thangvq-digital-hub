@@ -9,7 +9,7 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
+    "start:dev": "PORT=3005 nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "if [ \"$RUN_MIGRATIONS_ON_START\" = \"true\" ]; then npm run migration:run; fi && node dist/main",
     "migration:run": "typeorm migration:run -d dist/data-source.js",

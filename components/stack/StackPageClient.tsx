@@ -100,7 +100,7 @@ export const StackPageClient: React.FC = () => {
           <div className="flex flex-wrap gap-8 mb-12">
             {[
               { value: "4", label: "Docker containers" },
-              { value: "2×", label: "Daily trending syncs" },
+              { value: "1×", label: "Daily trending sync" },
               { value: "100%", label: "Autonomous CI/CD" },
               { value: "0", label: "Manual deployments" },
             ].map((stat) => (
@@ -253,7 +253,7 @@ export const StackPageClient: React.FC = () => {
               {
                 label: "⏰ Trending Sync",
                 detail:
-                  "0 8,20 * * * — Scrape github.com/trending → POST /api/repos/upsert",
+                  "0 1 * * * — Scrape github.com/trending → POST /api/repos/upsert",
                 color: "#60A5FA",
               },
               {
@@ -382,7 +382,7 @@ export const StackPageClient: React.FC = () => {
           <div className="space-y-3">
             {[
               {
-                label: "① Trending Sync  ·  0 8,20 * * *",
+                label: "① Trending Sync  ·  0 1 * * *",
                 detail:
                   "Scrape first page of github.com/trending?since=weekly (~25 repos). Dedup by full_name. Insert new with is_read=false.",
                 color: "#60A5FA",

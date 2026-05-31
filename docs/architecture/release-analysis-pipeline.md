@@ -65,7 +65,7 @@ has_new_release     BOOLEAN DEFAULT FALSE,   -- Highlighted in UI until user vie
 
 | Job | Schedule | Target |
 |---|---|---|
-| Favorite Release Monitor | `0 10 * * *` (daily 10AM UTC+7) | `is_favorite = true` repos only |
+| Favorite Release Monitor | `0 10 * * *` (daily 10AM UTC / 5PM UTC+7) | `is_favorite = true` repos only |
 
 **Configured via:** Hermes Agent Cron Page (UI)
 

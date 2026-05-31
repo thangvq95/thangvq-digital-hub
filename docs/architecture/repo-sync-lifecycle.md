@@ -17,7 +17,7 @@ Users can also manually add a repository via the `POST /api/repos/add` endpoint 
 
 ```mermaid
 sequenceDiagram
-    participant HC as Hermes Cron (8AM/8PM)
+    participant HC as Hermes Cron (8AM UTC+7 daily)
     participant GH as GitHub Trending (Weekly)
     participant BE as NestJS API
     participant DB as PostgreSQL
@@ -45,8 +45,8 @@ sequenceDiagram
 
 | Job | Schedule | Action |
 |---|---|---|
-| Weekly Trending Sync | `0 8,20 * * *` (8AM & 8PM UTC+7) | Scrape first page of `github.com/trending?since=weekly` |
-| Favorite Release Monitor | `0 10 * * *` (10AM UTC+7) | Check favorite repos for new releases → [release-analysis-pipeline.md](release-analysis-pipeline.md) |
+| Weekly Trending Sync | `0 1 * * *` (daily 8AM UTC+7 / 1AM UTC) | Scrape first page of `github.com/trending?since=weekly` |
+| Favorite Release Monitor | `0 10 * * *` (daily 5PM UTC+7 / 10AM UTC) | Check favorite repos for new releases → [release-analysis-pipeline.md](release-analysis-pipeline.md) |
 
 **Configured via:** Hermes Agent Cron Page (UI)
 
