@@ -135,9 +135,10 @@ export class ReposService {
         repo.category = null;
       } else {
         const category = await this.categoryRepo.findOneBy({ id: category_id });
-        if (category) {
-          repo.category = category;
+        if (!category) {
+          throw new NotFoundException(`Category with ID ${category_id} not found`);
         }
+        repo.category = category;
       }
     }
 
@@ -452,13 +453,36 @@ Rules for tags:
       (url) => !existingUrlSet.has(url),
     ).length;
 
-    // Run classification in the background for new uncategorized repos
-    this.classifyAllRepos().catch((err) => {
-      const msg = err instanceof Error ? err.message : String(err);
-      this.logger.error(
-        `Background classification after upsert failed: ${msg}`,
-      );
-    });
+    // Run classification in the background for only the repositories in this upsert batch that are uncategorized
+    const fullNames = rows.map((r) => r.full_name);
+    this.repo
+      .find({
+        where: { full_name: In(fullNames) },
+        relations: ['category'],
+      })
+      .then((updatedRepos) => {
+        const uncategorized = updatedRepos.filter((r) => !r.category);
+        if (uncategorized.length > 0) {
+          (async () => {
+            for (const r of uncategorized) {
+              await this.classifyRepo(r).catch((err) => {
+                this.logger.error(
+                  `Failed to classify ${r.full_name} in background: ${err.message}`,
+                );
+              });
+            }
+          })().catch((err) => {
+            this.logger.error(
+              `Error in background batch classification: ${err.message}`,
+            );
+          });
+        }
+      })
+      .catch((err) => {
+        this.logger.error(
+          `Failed to find upserted repos for background classification: ${err.message}`,
+        );
+      });
 
     return { received: repos.length, new: newCount };
   }

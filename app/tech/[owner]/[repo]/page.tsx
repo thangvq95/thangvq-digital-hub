@@ -309,7 +309,7 @@ export default function RepoDetailPage() {
             </span>
           )}
           <span>🍴 {repoData.forks_total?.toLocaleString()} forks</span>
-          {repoData.language && repoData.language !== "Unknown" && <span>· {repoData.language}</span>}
+          {repoData.language && repoData.language.toLowerCase() !== "unknown" && <span>· {repoData.language}</span>}
         </div>
 
         {repoData.tags && repoData.tags.length > 0 && (
@@ -446,7 +446,7 @@ export default function RepoDetailPage() {
           </button>
         </h2>
 
-        {isSyncingRelease && (!repoData.latest_release_tag || repoData.latest_release_tag === "Unknown") ? (
+        {isSyncingRelease && (!repoData.latest_release_tag || repoData.latest_release_tag.toLowerCase() === "unknown") ? (
           <div className="py-8 flex flex-col items-center justify-center gap-3">
             <div
               className="w-6 h-6 border-2 border-t-transparent animate-spin rounded-full"
@@ -459,7 +459,7 @@ export default function RepoDetailPage() {
               Syncing latest release...
             </p>
           </div>
-        ) : repoData.latest_release_tag && repoData.latest_release_tag !== "Unknown" ? (
+        ) : repoData.latest_release_tag && repoData.latest_release_tag.toLowerCase() !== "unknown" ? (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-4">

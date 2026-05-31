@@ -63,6 +63,7 @@ export class ReposController {
   }
 
   @Post('classify-all')
+  @UseGuards(ApiKeyGuard)
   classifyAll() {
     return this.reposService.classifyAllRepos();
   }
