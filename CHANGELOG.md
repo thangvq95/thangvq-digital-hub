@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.8.0...v1.9.0) (2026-05-31)
+
+
+### Features
+
+* issue category filtering ([#110](https://github.com/thangvq95/thangvq-digital-hub/issues/110)) ([56a2fed](https://github.com/thangvq95/thangvq-digital-hub/commit/56a2fedda32914ee92e0d0d899a778a40810be16))
+
 ## [1.8.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.7.1...v1.8.0) (2026-05-28)
 
 ### Features
