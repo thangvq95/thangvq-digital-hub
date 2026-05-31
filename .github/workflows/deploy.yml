@@ -57,6 +57,9 @@ jobs:
             echo "SENTRY_PROJECT_BE=${{ secrets.SENTRY_PROJECT_BE }}" >> .env
             echo "GH_PAT=${{ secrets.GH_PAT }}" >> .env
             echo "COMPOSIO_API_KEY=${{ secrets.COMPOSIO_API_KEY }}" >> .env
+            echo "TELEGRAM_BOT_TOKEN=${{ secrets.TELEGRAM_BOT_TOKEN }}" >> .env
+            echo "TELEGRAM_CHAT_ID=${{ secrets.TELEGRAM_CHAT_ID }}" >> .env
+
             
             # Set secure permissions
             chmod 600 .env
