@@ -34,6 +34,8 @@ services:
       PORT: 3001
     depends_on:
       - postgres
+    volumes:
+      - api_uploads:/app/uploads
 
   hermes-gateway:
     build:
@@ -111,3 +113,4 @@ volumes:
   hermes_data:
   gitnexus_data:
   hermes_db_data:
+  api_uploads:
