@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.2...v1.10.3) (2026-06-01)
+
+
+### Bug Fixes
+
+* sync main to develop ([#121](https://github.com/thangvq95/thangvq-digital-hub/issues/121)) ([22b1745](https://github.com/thangvq95/thangvq-digital-hub/commit/22b17456fa4461c98d2f4c094c99e5ef78b0b88a))
+
 ## [1.10.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.1...v1.10.2) (2026-06-01)
 
 ### Bug Fixes
