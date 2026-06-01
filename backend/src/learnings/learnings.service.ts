@@ -316,7 +316,10 @@ export class LearningsService {
         });
         imageBuffer = Buffer.from(response.data);
       } catch (err) {
-        this.logger.error(`Failed to download image from URL: ${input.imageUrl}`, err);
+        this.logger.error(
+          `Failed to download image from URL: ${input.imageUrl}`,
+          err,
+        );
       }
     }
 
@@ -405,6 +408,12 @@ export class LearningsService {
       description?: string;
     }[],
   ): Promise<{ received: number; new: number; skipped: number }> {
+    if (!items || !Array.isArray(items)) {
+      this.logger.warn(
+        `[upsert] received invalid or empty payload: ${typeof items}`,
+      );
+      return { received: 0, new: 0, skipped: 0 };
+    }
     let newCount = 0;
     let skipped = 0;
 
@@ -599,8 +608,7 @@ Return a JSON object:
       // Resolve topic from AI (do not overwrite user-selected topic for manual entries)
       if (parsed.topic) {
         const isManual =
-          learning.source_type === 'manual' ||
-          learning.source_type === 'image';
+          learning.source_type === 'manual' || learning.source_type === 'image';
         if (!isManual) {
           const topic = await this.topicRepo.findOneBy({
             name: parsed.topic.toLowerCase(),
