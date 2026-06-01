@@ -1,6 +1,6 @@
-// backend/src/webhooks/webhooks.controller.ts
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { WebhooksService } from './webhooks.service';
+import type { SentryAlertPayload } from './webhooks.service';
 
 @Controller('webhooks')
 export class WebhooksController {
@@ -8,7 +8,7 @@ export class WebhooksController {
 
   @Post('sentry')
   @HttpCode(HttpStatus.OK)
-  async handleSentry(@Body() payload: Record<string, unknown>) {
+  async handleSentry(@Body() payload: SentryAlertPayload) {
     return this.webhooksService.handleSentryAlert(payload);
   }
 }
