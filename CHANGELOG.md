@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.0...v1.10.1) (2026-06-01)
+
+
+### Bug Fixes
+
+* **techtrend:** change upsert conflict target to primary key full_name to avoid duplicate key errors ([#116](https://github.com/thangvq95/thangvq-digital-hub/issues/116)) ([ed8e2e1](https://github.com/thangvq95/thangvq-digital-hub/commit/ed8e2e12654f978d8145e7ca56ede275466c816f))
+
 ## [1.10.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.9.1...v1.10.0) (2026-05-31)
 
 
