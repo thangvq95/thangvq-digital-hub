@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.1...v1.10.2) (2026-06-01)
+
+
+### Bug Fixes
+
+* **techtrend:** support direct array payload format in repository and learning upsert endpoints ([#118](https://github.com/thangvq95/thangvq-digital-hub/issues/118)) ([a22d93f](https://github.com/thangvq95/thangvq-digital-hub/commit/a22d93fcb2123c550b2383ce65862c84dd7ba870))
+
 ## [1.10.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.0...v1.10.1) (2026-06-01)
 
 
