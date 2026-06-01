@@ -7,6 +7,10 @@ permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: sync-main-to-develop
+  cancel-in-progress: false
+
 name: "Release & Versioning Management"
 
 jobs:
