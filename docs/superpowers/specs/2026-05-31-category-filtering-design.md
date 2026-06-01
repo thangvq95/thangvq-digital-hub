@@ -5,12 +5,14 @@ This document details the design for adding category filtering, category CRUD, r
 ---
 
 ## 1. Problem & Context
+
 The TechTrend dashboard currently lists trending and manually added repositories without any categorization. Users need a way to filter repositories by categories (e.g., 'video', 'memory', 'skills', 'finance') to quickly navigate and view repositories belonging to specific domains.
 Additionally, when repository metadata (like language or latest release tag) is missing or defaults to `"Unknown"`, the UI displays placeholder text that clutters the interface.
 
 ---
 
 ## 2. Requirements & Goals
+
 1. **Metadata Cleanup**: Hide the release badge and language display in both the repository card and details page if their value is `"Unknown"` (case-insensitive) or missing.
 2. **Category CRUD API**: Add endpoints to fetch, create, update, and delete categories.
 3. **Repository Category Relationship**: Associate each repository with a unique category (optional relation, many-to-one).
@@ -25,6 +27,7 @@ Additionally, when repository metadata (like language or latest release tag) is 
 ---
 
 ## 3. Database Schema changes
+
 We will create a new `categories` table and link it to the `repositories` table.
 
 ```sql
@@ -50,6 +53,7 @@ FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL;
 ## 4. Backend Architecture & API Changes
 
 ### Entities
+
 - **`CategoryEntity`** (`backend/src/repos/category.entity.ts`):
   - `id`: number (PK)
   - `name`: string (unique)
@@ -58,6 +62,7 @@ FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL;
   - Add `category`: `CategoryEntity | null` (Many-to-One with `@JoinColumn({ name: 'category_id' })`)
 
 ### Controllers & Endpoints
+
 - **`CategoriesController`** (`backend/src/repos/categories.controller.ts`):
   - `GET /api/categories` -> List all categories ordered by name.
   - `POST /api/categories` -> Create a category.
@@ -69,6 +74,7 @@ FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL;
   - Add `POST /api/repos/classify-all` to trigger background classification of all uncategorized repos.
 
 ### Services & Classification Logic
+
 - **`ReposService`** (`backend/src/repos/repos.service.ts`):
   - `classifyRepo(repo: RepositoryEntity)`:
     - Runs rule-based matching:
@@ -87,12 +93,14 @@ FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL;
 ## 5. Frontend UI/UX Design
 
 ### Dashboard Filter Pills (`components/dashboard/DashboardHeader.tsx` or `app/tech/page.tsx`)
+
 - Display category pills right above the repository cards grid.
 - Fetch categories from `GET /api/categories`.
 - Show "All" pill by default.
 - Select category pill -> update URL query parameters and reload repository list.
 
 ### Detail Page Category Selector (`app/tech/[owner]/[repo]/page.tsx`)
+
 - Show current category tag under the repo name/description.
 - Clickable dropdown menu showing all existing categories.
 - An option to "Create new category" which prompts the user for a name, makes a POST request to create it, and automatically updates the repository.
@@ -100,6 +108,7 @@ FOREIGN KEY ("category_id") REFERENCES "categories"("id") ON DELETE SET NULL;
 ---
 
 ## 6. Verification & E2E Testing Plan
+
 - **Backend Tests**: Run TypeORM migrations and check schema integrity.
 - **Auto-classification Integration**: Verify rule-based classification and 9Router classification logic in mock environments.
 - **API Tests**: Verify category CRUD and filtering via curl or playwright tests.

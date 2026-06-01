@@ -205,7 +205,10 @@ export const LearningHeader: React.FC = () => {
                   value={currentSubtopic}
                   onChange={(e) => updateFilters({ subtopic: e.target.value })}
                   className="px-3 py-1.5 rounded-lg bg-black/30 text-xs text-neutral-200 outline-none cursor-pointer hover:bg-black/50 border transition-all"
-                  style={{ borderColor: "var(--border)", background: "var(--bg-card)" }}
+                  style={{
+                    borderColor: "var(--border)",
+                    background: "var(--bg-card)",
+                  }}
                 >
                   <option value="">All Subtopics</option>
                   {subtopics.map((sub) => (

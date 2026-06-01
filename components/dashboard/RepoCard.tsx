@@ -200,7 +200,7 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
                 color: "var(--text-muted)",
                 borderColor: "var(--border)",
               }}
-              title={repo.tags.slice(3).join(', ')}
+              title={repo.tags.slice(3).join(", ")}
             >
               ...
             </span>
@@ -221,7 +221,9 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
             ↑ {sanitizeStarsGrowth(repo.stars_growth)}
           </span>
         )}
-        {repo.language && repo.language.toLowerCase() !== "unknown" && <span>· {repo.language}</span>}
+        {repo.language && repo.language.toLowerCase() !== "unknown" && (
+          <span>· {repo.language}</span>
+        )}
         {repo.category && (
           <span
             className="text-[9px] px-1.5 py-0.5 rounded uppercase font-bold tracking-wider"
@@ -234,14 +236,15 @@ const RepoCard: React.FC<RepoCardProps> = ({ repo, onUpdate }) => {
             {repo.category.name}
           </span>
         )}
-        {repo.latest_release_tag && repo.latest_release_tag.toLowerCase() !== "unknown" && (
-          <span
-            className="font-mono text-[10px] px-1.5 py-0.5 rounded"
-            style={{ background: "var(--bg-card)" }}
-          >
-            {repo.latest_release_tag}
-          </span>
-        )}
+        {repo.latest_release_tag &&
+          repo.latest_release_tag.toLowerCase() !== "unknown" && (
+            <span
+              className="font-mono text-[10px] px-1.5 py-0.5 rounded"
+              style={{ background: "var(--bg-card)" }}
+            >
+              {repo.latest_release_tag}
+            </span>
+          )}
       </div>
 
       {/* Actions */}

@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useRef, useEffect, DragEvent, ChangeEvent } from "react";
+import React, {
+  useState,
+  useRef,
+  useEffect,
+  DragEvent,
+  ChangeEvent,
+} from "react";
 import { X, Upload, Link as LinkIcon, FileText, Sparkles } from "lucide-react";
 import { addLearning } from "@/lib/api/learning-client";
 import type { Learning } from "@/lib/api/learning-types";
@@ -128,7 +134,9 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!url && !text && !image && !imageUrl.trim()) {
-      setError("Please provide a URL, text content, image upload, or image URL.");
+      setError(
+        "Please provide a URL, text content, image upload, or image URL.",
+      );
       return;
     }
 
@@ -375,12 +383,15 @@ export const AddLearningDialog: React.FC<AddLearningDialogProps> = ({
                     </span>
                   </p>
                   <p className="text-[10px] text-neutral-500 mt-1">
-                    Supports clipboard copy-paste (Ctrl+V / Cmd+V) directly inside dialog
+                    Supports clipboard copy-paste (Ctrl+V / Cmd+V) directly
+                    inside dialog
                   </p>
                 </div>
 
                 <div className="relative flex items-center">
-                  <span className="absolute left-3 text-xs text-neutral-500">URL:</span>
+                  <span className="absolute left-3 text-xs text-neutral-500">
+                    URL:
+                  </span>
                   <input
                     type="url"
                     placeholder="Or paste direct image URL (e.g. https://.../image.png)"

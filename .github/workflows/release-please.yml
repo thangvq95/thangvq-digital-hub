@@ -28,3 +28,31 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_PAT }}
         run: gh pr merge --auto --squash "${{ fromJson(steps.release.outputs.pr).number }}" --repo "$GITHUB_REPOSITORY"
+
+  sync-develop:
+    name: Sync Main into Develop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GH_PAT || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Merge main into develop
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          # Fetch all branches from origin
+          git fetch origin
+          
+          # Checkout develop branch
+          git checkout develop
+          
+          # Merge origin/main into develop
+          git merge origin/main --no-edit -m "chore: merge main into develop"
+          
+          # Push the changes back to origin/develop
+          git push origin develop
+
