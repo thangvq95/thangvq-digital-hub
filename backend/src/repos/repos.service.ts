@@ -374,6 +374,12 @@ Rules for tags:
   async upsert(
     repos: Partial<RepositoryEntity>[],
   ): Promise<{ received: number; new: number }> {
+    if (!repos || !Array.isArray(repos)) {
+      this.logger.warn(
+        `[upsert] received invalid or empty payload: ${typeof repos}`,
+      );
+      return { received: 0, new: 0 };
+    }
     // DEBUG: log first repo's trending fields to verify Hermes payload shape
     if (repos.length > 0) {
       const sample = repos[0];
@@ -666,6 +672,12 @@ Rules:
   async checkReleases(
     releases: { full_name: string; tag_name: string }[],
   ): Promise<{ received: number; updated: number }> {
+    if (!releases || !Array.isArray(releases)) {
+      this.logger.warn(
+        `[checkReleases] received invalid or empty payload: ${typeof releases}`,
+      );
+      return { received: 0, updated: 0 };
+    }
     let updated = 0;
     for (const r of releases) {
       const existing = await this.repo.findOneBy({ full_name: r.full_name });

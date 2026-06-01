@@ -77,7 +77,13 @@ export class LearningsController {
   )
   addManual(
     @Body()
-    body: { url?: string; text?: string; topic?: string; title?: string; imageUrl?: string },
+    body: {
+      url?: string;
+      text?: string;
+      topic?: string;
+      title?: string;
+      imageUrl?: string;
+    },
     @UploadedFile() file?: Express.Multer.File,
   ) {
     return this.learningsService.addManual({
@@ -89,18 +95,25 @@ export class LearningsController {
 
   @Post('upsert')
   @UseGuards(ApiKeyGuard)
-  upsert(
-    @Body()
-    body: {
-      learnings: {
+  upsert(@Body() body: unknown) {
+    let learnings: unknown[] = [];
+    if (Array.isArray(body)) {
+      learnings = body;
+    } else if (body && typeof body === 'object') {
+      const obj = body as Record<string, unknown>;
+      const candidates = obj.learnings || obj.items;
+      if (Array.isArray(candidates)) {
+        learnings = candidates;
+      }
+    }
+    return this.learningsService.upsert(
+      learnings as {
         title: string;
         source_url: string;
         source_type?: string;
         topic?: string;
         description?: string;
-      }[];
-    },
-  ) {
-    return this.learningsService.upsert(body.learnings);
+      }[],
+    );
   }
 }
