@@ -1,5 +1,9 @@
 # ADR 001: Autonomous AI Developer Workflow via Git Worktrees
 
+> [!WARNING]
+> **Status: Superseded / Updated**
+> The `listener.py` webhook server described in this document has been replaced by the native **Hermes cron scheduler** polling workflow. See [hermes-native-cron.md](file:///Users/thang/Development/thangvq-digital-hub/docs/architecture/hermes-native-cron.md) for details on the current dispatch orchestration. The Git worktrees and execution flow principles remain valid.
+
 This document outlines the standard workflow for the AI Developer Workspace running on the VPS. It handles both automated CI bug fixing and feature development.
 
 ## 1. Workflow Architecture

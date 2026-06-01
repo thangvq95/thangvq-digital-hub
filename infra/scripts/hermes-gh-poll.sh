@@ -20,6 +20,16 @@ mkdir -p "$WORKTREES_DIR"
 # Initialize dedup DB
 sqlite3 "$DEDUP_DB" "CREATE TABLE IF NOT EXISTS seen_events (event_id TEXT PRIMARY KEY, created_at INTEGER NOT NULL);"
 
+send_telegram() {
+    local message="$1"
+    if [ -n "${TELEGRAM_BOT_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ]; then
+        curl -s -X POST "https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage" \
+            -d "chat_id=${TELEGRAM_CHAT_ID}" \
+            -d "parse_mode=Markdown" \
+            --data-urlencode "text=${message}" > /dev/null || true
+    fi
+}
+
 seen_before() {
     local event_id="$1"
     
@@ -42,6 +52,18 @@ mark_seen() {
 
 cd "$REPO_DIR"
 git fetch origin
+
+# Check if main changed, if so run gitnexus analyze first
+echo "[INFO] Checking if main branch updated..."
+latest_hash=$(git ls-remote origin main | awk '{print $1}')
+event_id="commit_${latest_hash}"
+
+if ! seen_before "$event_id"; then
+    echo "[INFO] Main branch updated. Running gitnexus analyze..."
+    git reset --hard "origin/main"
+    gitnexus analyze || true
+    mark_seen "$event_id"
+fi
 
 headless_prompt=" (CRITICAL: You are running in a headless automated environment. Do NOT use ask_user tools. Do NOT ask for clarification. Make safe assumptions and proceed. Ensure all CLI commands use non-interactive flags like --yes or --fill. If you must, guess the best approach and create a PR.)"
 
@@ -84,10 +106,33 @@ gh issue list --state open --json number,labels,updatedAt --limit 20 | jq -c '.[
     }
     
     echo "[INFO] Running hermes with skill: $skill on worktree: $worktree"
+    send_telegram "🤖 *[Hermes]* Bắt đầu xử lý Issue [#$num](https://github.com/thangvq95/thangvq-digital-hub/issues/$num)
+*Skill*: \`$skill\`"
+
+    set +e
     (
         cd "$worktree"
-        timeout 45m hermes -s "$skill" -z "$target_desc" || echo "[WARN] Hermes run failed or timed out."
+        timeout 45m hermes -s "$skill" -z "$target_desc"
     )
+    status=$?
+    set -e
+
+    if [ $status -eq 0 ]; then
+        # Query the latest open PR to see if one was just created for this issue
+        pr_info=$(gh pr list --state open --limit 5 --json number,title,url,headRefName 2>/dev/null | jq -c '.[]' | head -n 1 || true)
+        if [ -n "$pr_info" ]; then
+            pr_num=$(echo "$pr_info" | jq -r '.number')
+            pr_url=$(echo "$pr_info" | jq -r '.url')
+            pr_title=$(echo "$pr_info" | jq -r '.title')
+            send_telegram "✅ *[Hermes]* Đã xử lý thành công Issue [#$num](https://github.com/thangvq95/thangvq-digital-hub/issues/$num)
+*Kết quả*: Đã tạo Pull Request [#$pr_num]($pr_url): \`$pr_title\`
+👉 Vui lòng click vào link để review và merge."
+        else
+            send_telegram "✅ *[Hermes]* Đã hoàn thành xử lý Issue [#$num](https://github.com/thangvq95/thangvq-digital-hub/issues/$num) thành công!"
+        fi
+    else
+        send_telegram "❌ *[Hermes]* Xử lý Issue [#$num](https://github.com/thangvq95/thangvq-digital-hub/issues/$num) THẤT BẠI hoặc bị timeout (status: $status)!"
+    fi
     
     git worktree remove --force "$worktree" || true
     mark_seen "$event_id"
@@ -143,26 +188,26 @@ gh pr list --state open --json number,headRefName,updatedAt,title,author --limit
     }
 
     echo "[INFO] Running hermes on PR #$num worktree"
+    send_telegram "🤖 *[Hermes]* Bắt đầu sửa lỗi CI cho PR [#$num](https://github.com/thangvq95/thangvq-digital-hub/pull/$num)
+*Tiêu đề*: \`$title\`"
+
+    set +e
     (
         cd "$worktree"
-        timeout 45m hermes -s "$skill" -z "$target_desc" || echo "[WARN] Hermes run failed or timed out."
+        timeout 45m hermes -s "$skill" -z "$target_desc"
     )
+    status=$?
+    set -e
+
+    if [ $status -eq 0 ]; then
+        send_telegram "✅ *[Hermes]* Đã sửa lỗi CI thành công cho PR [#$num](https://github.com/thangvq95/thangvq-digital-hub/pull/$num)!"
+    else
+        send_telegram "❌ *[Hermes]* Xử lý sửa lỗi CI cho PR [#$num](https://github.com/thangvq95/thangvq-digital-hub/pull/$num) THẤT BẠI hoặc bị timeout (status: $status)!"
+    fi
 
     git worktree remove --force "$worktree" || true
     mark_seen "$event_id"
 done
 
-
-# Check if main changed, if so run gitnexus analyze
-echo "[INFO] Checking if main branch updated..."
-latest_hash=$(git ls-remote origin main | awk '{print $1}')
-event_id="commit_${latest_hash}"
-
-if ! seen_before "$event_id"; then
-    echo "[INFO] Main branch updated. Running gitnexus analyze..."
-    git reset --hard "origin/main"
-    gitnexus analyze || true
-    mark_seen "$event_id"
-fi
 
 echo "[INFO] Polling complete."

@@ -53,7 +53,11 @@ const DashboardHeader: React.FC = () => {
         <div className="h-14 sm:h-16 flex items-center justify-between gap-2 sm:gap-4">
           {/* Logo */}
           <div className="flex items-center gap-2 flex-shrink-0">
-            <Link href="/tech" id="dashboard-home-link" className="flex items-center gap-2 group">
+            <Link
+              href="/tech"
+              id="dashboard-home-link"
+              className="flex items-center gap-2 group"
+            >
               <span
                 className="text-lg sm:text-xl font-bold tracking-tight group-hover:opacity-80 transition-opacity"
                 style={{ color: "var(--text-primary)" }}
@@ -74,7 +78,10 @@ const DashboardHeader: React.FC = () => {
           </div>
 
           {/* Tab navigation — scrollable on mobile */}
-          <div className="flex gap-1 p-1 rounded-xl flex-shrink-0" style={{ background: "var(--bg-card)" }}>
+          <div
+            className="flex gap-1 p-1 rounded-xl flex-shrink-0"
+            style={{ background: "var(--bg-card)" }}
+          >
             {TABS.map((tab) => (
               <button
                 key={tab.value}
@@ -97,7 +104,10 @@ const DashboardHeader: React.FC = () => {
             <button
               onClick={() => setIsAdding(!isAdding)}
               className="text-xs sm:text-sm px-2.5 sm:px-3 py-1.5 rounded-lg transition-colors hover:bg-white/5 whitespace-nowrap"
-              style={{ color: "var(--text-primary)", border: "1px solid var(--border)" }}
+              style={{
+                color: "var(--text-primary)",
+                border: "1px solid var(--border)",
+              }}
             >
               + Add
             </button>
@@ -112,6 +122,15 @@ const DashboardHeader: React.FC = () => {
             </Link>
 
             <Link
+              href="/learning"
+              id="dashboard-learning-link"
+              className="hidden sm:block text-sm transition-colors hover:underline"
+              style={{ color: "var(--text-secondary)" }}
+            >
+              Learning
+            </Link>
+
+            <Link
               href="/stack"
               id="dashboard-stack-link"
               className="hidden sm:block text-sm transition-colors hover:underline"
@@ -123,10 +142,16 @@ const DashboardHeader: React.FC = () => {
             {isAdding && (
               <div
                 className="absolute top-full right-0 mt-3 p-4 rounded-xl glass shadow-xl w-[calc(100vw-2rem)] sm:min-w-[300px] sm:w-auto"
-                style={{ border: "1px solid var(--border)", background: "var(--bg-card)" }}
+                style={{
+                  border: "1px solid var(--border)",
+                  background: "var(--bg-card)",
+                }}
               >
                 <form onSubmit={handleAddRepo} className="flex flex-col gap-3">
-                  <label className="text-sm font-medium" style={{ color: "var(--text-primary)" }}>
+                  <label
+                    className="text-sm font-medium"
+                    style={{ color: "var(--text-primary)" }}
+                  >
                     Add Repository
                   </label>
                   <input
@@ -137,7 +162,10 @@ const DashboardHeader: React.FC = () => {
                     disabled={isSubmitting}
                     autoFocus
                     className="w-full px-3 py-2 rounded-lg text-sm bg-black/20 outline-none focus:ring-2 focus:ring-green-500/50 transition-all"
-                    style={{ border: "1px solid var(--border)", color: "var(--text-primary)" }}
+                    style={{
+                      border: "1px solid var(--border)",
+                      color: "var(--text-primary)",
+                    }}
                   />
                   <div className="flex justify-end gap-2 mt-1">
                     <button

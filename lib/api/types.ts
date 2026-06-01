@@ -16,10 +16,16 @@ export interface Repository {
   has_new_release: boolean;
   ai_summary: string | null; // Markdown format
   tags: string[]; // AI generated tags
-  analyze_status: 'idle' | 'analyzing' | 'done' | 'failed';
+  analyze_status: "idle" | "analyzing" | "done" | "failed";
+  category: Category | null;
   first_seen_at: string;
   last_scraped_at: string | null;
   updated_at: string;
+}
+
+export interface Category {
+  id: number;
+  name: string;
 }
 
 export interface SyncLog {

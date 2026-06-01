@@ -12,7 +12,7 @@ export class SyncService {
   ) {}
 
   async getLatest(): Promise<SyncLogEntity | null> {
-    return this.repo.findOne({ order: { started_at: 'DESC' } });
+    return this.repo.findOne({ where: {}, order: { started_at: 'DESC' } });
   }
 
   async create(): Promise<SyncLogEntity> {

@@ -63,9 +63,9 @@ has_new_release     BOOLEAN DEFAULT FALSE,   -- Highlighted in UI until user vie
 
 ## Schedule
 
-| Job | Schedule | Target |
-|---|---|---|
-| Favorite Release Monitor | `0 10 * * *` (daily 10AM UTC+7) | `is_favorite = true` repos only |
+| Job                      | Schedule                                  | Target                          |
+| ------------------------ | ----------------------------------------- | ------------------------------- |
+| Favorite Release Monitor | `0 10 * * *` (daily 10AM UTC / 5PM UTC+7) | `is_favorite = true` repos only |
 
 **Configured via:** Hermes Agent Cron Page (UI)
 
@@ -85,6 +85,7 @@ Body: {
 ```
 
 **Logic:**
+
 1. For each entry, find repo by `full_name`
 2. If `tag_name` differs from stored `latest_release_tag`:
    - Update `latest_release_tag = tag_name`
@@ -109,7 +110,7 @@ Body: {
 2. For each repo, call GitHub API: GET https://api.github.com/repos/{full_name}/releases/latest
 3. Collect results: [{ full_name, tag_name (from response) }]
    Skip any repo where GitHub returns 404 (no releases).
-4. POST the results to https://api.thangvq95.page/api/repos/check-releases 
+4. POST the results to https://api.thangvq95.page/api/repos/check-releases
    with header x-api-key: <SYNC_API_KEY>
    Body: { "releases": [{ "full_name": "...", "tag_name": "..." }] }
 ```
@@ -118,9 +119,9 @@ Body: {
 
 ## Edge Cases
 
-| Case | Behavior |
-|---|---|
-| Repo has never had a release | GitHub returns 404 → skip, `latest_release_tag` stays `null` |
+| Case                              | Behavior                                                                   |
+| --------------------------------- | -------------------------------------------------------------------------- |
+| Repo has never had a release      | GitHub returns 404 → skip, `latest_release_tag` stays `null`               |
 | Repo publishes first-ever release | `latest_release_tag` was `null` → now has value → `has_new_release = true` |
-| User un-favorites a repo | Cronjob won't check it anymore (only targets `is_favorite = true`) |
-| Same release tag, edited notes | No change detected (we only compare tags, not content) |
+| User un-favorites a repo          | Cronjob won't check it anymore (only targets `is_favorite = true`)         |
+| Same release tag, edited notes    | No change detected (we only compare tags, not content)                     |
