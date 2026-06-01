@@ -446,7 +446,7 @@ Rules for tags:
             'last_scraped_at',
             'forks_total',
           ],
-          ['html_url'],
+          ['full_name'],
         )
         .execute();
     }
