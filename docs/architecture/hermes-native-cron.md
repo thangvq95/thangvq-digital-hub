@@ -1,6 +1,6 @@
 # Hermes Native Polling Orchestrator
 
-To replace the `listener.py` webhook workflow (which required exposing a public endpoint and managing a separate background Python server loop), this project now uses the native **Hermes cron scheduler** to poll GitHub every 10 minutes.
+to replace the `listener.py` webhook workflow (which required exposing a public endpoint and managing a separate background Python server loop), this project now uses the native **Hermes cron scheduler** to poll GitHub every hour.
 
 This approach offers better stability, native deduplication logging within Hermes sessions, no required Docker volumes for deduplication DBs outside the standard Hermes volume, and no open ports.
 
@@ -21,12 +21,12 @@ This approach offers better stability, native deduplication logging within Herme
 3. **Create the native cron job:**
    Run this command in the environment where the Hermes gateway runs:
    ```bash
-   hermes cron create "*/10 * * * *" \
+   hermes cron create "0 * * * *" \
        --name "gh-issue-polling" \
        --script "hermes-gh-poll.sh" \
        --no-agent
    ```
-   _Note: `--no-agent` ensures the script is executed purely as a standard bash script every 10 minutes without wrapping it in an LLM reasoning loop, saving tokens and speeding up the execution. The script will internally spawn `hermes -z` tasks dynamically when actual work needs to be done._
+   _Note: `--no-agent` ensures the script is executed purely as a standard bash script every hour without wrapping it in an LLM reasoning loop, saving tokens and speeding up the execution. The script will internally spawn `hermes -z` tasks dynamically when actual work needs to be done._
 
 ## How It Works
 

@@ -20,5 +20,5 @@ The project is structured around a "Stateless AI & Stateful Repo" philosophy:
 ## Rules
 
 - Read `CONTEXT.md` before making architectural decisions or naming things.
-- When making a significant architectural change, create a new ADR under `docs/adr/`.
+- When making a significant architectural change, create a new ADR under `docs/architecture/adr/`.
 - Never bypass GitHub Projects/Issues when tracking state. All agents must read and update issues to maintain a unified truth.

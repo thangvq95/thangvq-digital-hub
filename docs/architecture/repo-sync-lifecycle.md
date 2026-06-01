@@ -17,7 +17,7 @@ Users can also manually add a repository via the `POST /api/repos/add` endpoint 
 
 ```mermaid
 sequenceDiagram
-    participant HC as Hermes Cron (8AM/8PM)
+    participant HC as Hermes Cron (8AM UTC+7 daily)
     participant GH as GitHub Trending (Weekly)
     participant BE as NestJS API
     participant DB as PostgreSQL
@@ -43,10 +43,10 @@ sequenceDiagram
 
 ## Cronjob Schedule
 
-| Job | Schedule | Action |
-|---|---|---|
-| Weekly Trending Sync | `0 8,20 * * *` (8AM & 8PM UTC+7) | Scrape first page of `github.com/trending?since=weekly` |
-| Favorite Release Monitor | `0 10 * * *` (10AM UTC+7) | Check favorite repos for new releases → [release-analysis-pipeline.md](release-analysis-pipeline.md) |
+| Job                      | Schedule                                  | Action                                                                                               |
+| ------------------------ | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| Weekly Trending Sync     | `0 1 * * *` (daily 8AM UTC+7 / 1AM UTC)   | Scrape first page of `github.com/trending?since=weekly`                                              |
+| Favorite Release Monitor | `0 10 * * *` (daily 5PM UTC+7 / 10AM UTC) | Check favorite repos for new releases → [release-analysis-pipeline.md](release-analysis-pipeline.md) |
 
 **Configured via:** Hermes Agent Cron Page (UI)
 
@@ -75,29 +75,30 @@ To ensure data is always fresh without losing user preferences and custom AI sum
 
 ### 🛡️ Preserved Fields (Never Overwritten on Upsert)
 
-| Field | Reason |
-|---|---|
-| `is_favorite` | User preference |
-| `is_archived` | User preference |
-| `is_read` | User view tracking |
-| `latest_release_tag` | Release tracking state |
-| `has_new_release` | Release notification state |
-| `ai_summary` | AI-generated content (Markdown, from Magic Analyze) |
-| `tags` | AI-generated tags |
-| `first_seen_at` | Historical tracking |
-| `analyze_status` | Status of the background AI analyzer |
+| Field                | Reason                                                  |
+| -------------------- | ------------------------------------------------------- |
+| `is_favorite`        | User preference                                         |
+| `is_archived`        | User preference                                         |
+| `is_read`            | User view tracking                                      |
+| `latest_release_tag` | Release tracking state                                  |
+| `has_new_release`    | Release notification state                              |
+| `ai_summary`         | AI-generated content (Markdown, from Magic Analyze)     |
+| `tags`               | AI-generated tags                                       |
+| `category_id`        | Associated repository category (preserved/manually set) |
+| `first_seen_at`      | Historical tracking                                     |
+| `analyze_status`     | Status of the background AI analyzer                    |
 
 ### 🔄 Updated Fields (Refreshed on Every Sync)
 
-| Field | Description |
-|---|---|
-| `stars_total` | Total stars on GitHub |
-| `stars_growth` | Stars gained during the weekly period (e.g. "1,234 stars this week") |
-| `forks_total` | Total forks on GitHub |
-| `trending_rank` | Position on the GitHub Trending page (1-based) |
-| `description` | Main repository description |
-| `language` | Primary programming language |
-| `avatar_url` | Repository owner's profile picture |
+| Field           | Description                                                          |
+| --------------- | -------------------------------------------------------------------- |
+| `stars_total`   | Total stars on GitHub                                                |
+| `stars_growth`  | Stars gained during the weekly period (e.g. "1,234 stars this week") |
+| `forks_total`   | Total forks on GitHub                                                |
+| `trending_rank` | Position on the GitHub Trending page (1-based)                       |
+| `description`   | Main repository description                                          |
+| `language`      | Primary programming language                                         |
+| `avatar_url`    | Repository owner's profile picture                                   |
 
 ---
 
@@ -121,10 +122,10 @@ CREATE TABLE sync_logs (
 
 ```
 Scrape the first page of https://github.com/trending?since=weekly.
-For each repository, extract: full_name (owner/repo), description, html_url, 
-language, avatar_url, stars_total, stars_growth (e.g. "1,234 stars this week"), 
+For each repository, extract: full_name (owner/repo), description, html_url,
+language, avatar_url, stars_total, stars_growth (e.g. "1,234 stars this week"),
 forks_total, and trending_rank (1-based position on the page).
-POST the results to https://api.thangvq95.page/api/repos/upsert 
+POST the results to https://api.thangvq95.page/api/repos/upsert
 with header x-api-key: <SYNC_API_KEY>.
 Body format: { "repositories": [{ full_name, description, html_url, ... }] }
 ```

@@ -4,9 +4,7 @@ import './instrument';
 
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
-import { SentryGlobalFilter } from '@sentry/nestjs/setup';
 import { AppModule } from './app.module';
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.enableCors({
@@ -21,11 +19,10 @@ async function bootstrap() {
   });
   app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
 
-  // Sentry global exception filter — reports unhandled exceptions to Sentry
-  // app.useGlobalFilters(new SentryGlobalFilter());
-
   const port = process.env.PORT ?? 3001;
   await app.listen(port);
   console.log(`API running on port ${port}`);
 }
-bootstrap();
+bootstrap().catch((err) => {
+  console.error('Error starting backend:', err);
+});

@@ -22,11 +22,13 @@ export class ReposController {
     @Query('tab') tab?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
+    @Query('category') category?: string,
   ) {
     return this.reposService.findAll(
       tab ?? 'all',
       Number(page) || 1,
       Number(limit) || 20,
+      category,
     );
   }
 
@@ -44,6 +46,7 @@ export class ReposController {
       is_archived?: boolean;
       has_new_release?: boolean;
       is_read?: boolean;
+      category_id?: number | null;
     },
   ) {
     return this.reposService.patch(decodeURIComponent(fullName), body);
@@ -59,6 +62,12 @@ export class ReposController {
     return this.reposService.syncRelease(decodeURIComponent(fullName));
   }
 
+  @Post('classify-all')
+  @UseGuards(ApiKeyGuard)
+  classifyAll() {
+    return this.reposService.classifyAllRepos();
+  }
+
   @Post('add')
   addRepo(@Body() body: { url: string }) {
     if (!body.url) throw new Error('URL is required');
@@ -67,16 +76,36 @@ export class ReposController {
 
   @Post('upsert')
   @UseGuards(ApiKeyGuard)
-  upsert(@Body() body: { repositories: Partial<RepositoryEntity>[] }) {
-    return this.reposService.upsert(body.repositories);
+  upsert(@Body() body: unknown) {
+    let repos: unknown[] = [];
+    if (Array.isArray(body)) {
+      repos = body;
+    } else if (body && typeof body === 'object') {
+      const obj = body as Record<string, unknown>;
+      const candidates = obj.repositories || obj.repos;
+      if (Array.isArray(candidates)) {
+        repos = candidates;
+      }
+    }
+    return this.reposService.upsert(repos as Partial<RepositoryEntity>[]);
   }
 
   @Post('check-releases')
   @UseGuards(ApiKeyGuard)
-  checkReleases(
-    @Body() body: { releases: { full_name: string; tag_name: string }[] },
-  ) {
-    return this.reposService.checkReleases(body.releases);
+  checkReleases(@Body() body: unknown) {
+    let releases: unknown[] = [];
+    if (Array.isArray(body)) {
+      releases = body;
+    } else if (body && typeof body === 'object') {
+      const obj = body as Record<string, unknown>;
+      const candidates = obj.releases;
+      if (Array.isArray(candidates)) {
+        releases = candidates;
+      }
+    }
+    return this.reposService.checkReleases(
+      releases as { full_name: string; tag_name: string }[],
+    );
   }
 }
 
@@ -86,7 +115,17 @@ export class ReposCompatController {
 
   @Post(['github/trending/repo', 'github/trending/repos'])
   @UseGuards(ApiKeyGuard)
-  upsertCompat(@Body() body: { repositories: Partial<RepositoryEntity>[] }) {
-    return this.reposService.upsert(body.repositories);
+  upsertCompat(@Body() body: unknown) {
+    let repos: unknown[] = [];
+    if (Array.isArray(body)) {
+      repos = body;
+    } else if (body && typeof body === 'object') {
+      const obj = body as Record<string, unknown>;
+      const candidates = obj.repositories || obj.repos;
+      if (Array.isArray(candidates)) {
+        repos = candidates;
+      }
+    }
+    return this.reposService.upsert(repos as Partial<RepositoryEntity>[]);
   }
 }
