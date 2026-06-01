@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.10.4](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.3...v1.10.4) (2026-06-01)
+
+
+### Bug Fixes
+
+* webhook types and release workflow concurrency ([#123](https://github.com/thangvq95/thangvq-digital-hub/issues/123)) ([61d6db5](https://github.com/thangvq95/thangvq-digital-hub/commit/61d6db5e24070fcd26924fd9d60e61742a65b259))
+
 ## [1.10.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.2...v1.10.3) (2026-06-01)
 
 
