@@ -46,7 +46,6 @@ services:
     volumes:
       - ../:/app/repo
       - hermes_data:/root/.hermes
-      - gitnexus_data:/root/.gitnexus
       - /root/.config/gh:/root/.config/gh
       - hermes_db_data:/app/data
     environment:
@@ -78,7 +77,6 @@ services:
     volumes:
       - ../:/app/repo
       - hermes_data:/root/.hermes
-      - gitnexus_data:/root/.gitnexus
       - hermes_db_data:/app/data
     environment:
       - HOST=0.0.0.0
@@ -111,6 +109,5 @@ services:
 volumes:
   pgdata:
   hermes_data:
-  gitnexus_data:
   hermes_db_data:
   api_uploads:
