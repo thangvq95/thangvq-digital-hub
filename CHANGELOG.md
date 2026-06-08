@@ -1,32 +1,48 @@
 # Changelog
 
-## [1.10.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.0...v1.10.1) (2026-06-01)
+## [1.10.4](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.3...v1.10.4) (2026-06-01)
 
 
 ### Bug Fixes
 
-* **techtrend:** change upsert conflict target to primary key full_name to avoid duplicate key errors ([#116](https://github.com/thangvq95/thangvq-digital-hub/issues/116)) ([ed8e2e1](https://github.com/thangvq95/thangvq-digital-hub/commit/ed8e2e12654f978d8145e7ca56ede275466c816f))
+* webhook types and release workflow concurrency ([#123](https://github.com/thangvq95/thangvq-digital-hub/issues/123)) ([61d6db5](https://github.com/thangvq95/thangvq-digital-hub/commit/61d6db5e24070fcd26924fd9d60e61742a65b259))
+
+## [1.10.3](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.2...v1.10.3) (2026-06-01)
+
+
+### Bug Fixes
+
+* sync main to develop ([#121](https://github.com/thangvq95/thangvq-digital-hub/issues/121)) ([22b1745](https://github.com/thangvq95/thangvq-digital-hub/commit/22b17456fa4461c98d2f4c094c99e5ef78b0b88a))
+
+## [1.10.2](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.1...v1.10.2) (2026-06-01)
+
+### Bug Fixes
+
+- **techtrend:** support direct array payload format in repository and learning upsert endpoints ([#118](https://github.com/thangvq95/thangvq-digital-hub/issues/118)) ([a22d93f](https://github.com/thangvq95/thangvq-digital-hub/commit/a22d93fcb2123c550b2383ce65862c84dd7ba870))
+
+## [1.10.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.10.0...v1.10.1) (2026-06-01)
+
+### Bug Fixes
+
+- **techtrend:** change upsert conflict target to primary key full_name to avoid duplicate key errors ([#116](https://github.com/thangvq95/thangvq-digital-hub/issues/116)) ([ed8e2e1](https://github.com/thangvq95/thangvq-digital-hub/commit/ed8e2e12654f978d8145e7ca56ede275466c816f))
 
 ## [1.10.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.9.1...v1.10.0) (2026-05-31)
 
-
 ### Features
 
-* learning hub ([#114](https://github.com/thangvq95/thangvq-digital-hub/issues/114)) ([4af5dbf](https://github.com/thangvq95/thangvq-digital-hub/commit/4af5dbf5cad18186e4f278063ba053208c4aa27c))
+- learning hub ([#114](https://github.com/thangvq95/thangvq-digital-hub/issues/114)) ([4af5dbf](https://github.com/thangvq95/thangvq-digital-hub/commit/4af5dbf5cad18186e4f278063ba053208c4aa27c))
 
 ## [1.9.1](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.9.0...v1.9.1) (2026-05-31)
 
-
 ### Bug Fixes
 
-* add telegram env variables to deploy workflow ([#112](https://github.com/thangvq95/thangvq-digital-hub/issues/112)) ([b3c244b](https://github.com/thangvq95/thangvq-digital-hub/commit/b3c244ba05cc3590eb365907fc78e5b28e3b7a9a))
+- add telegram env variables to deploy workflow ([#112](https://github.com/thangvq95/thangvq-digital-hub/issues/112)) ([b3c244b](https://github.com/thangvq95/thangvq-digital-hub/commit/b3c244ba05cc3590eb365907fc78e5b28e3b7a9a))
 
 ## [1.9.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.8.0...v1.9.0) (2026-05-31)
 
-
 ### Features
 
-* issue category filtering ([#110](https://github.com/thangvq95/thangvq-digital-hub/issues/110)) ([56a2fed](https://github.com/thangvq95/thangvq-digital-hub/commit/56a2fedda32914ee92e0d0d899a778a40810be16))
+- issue category filtering ([#110](https://github.com/thangvq95/thangvq-digital-hub/issues/110)) ([56a2fed](https://github.com/thangvq95/thangvq-digital-hub/commit/56a2fedda32914ee92e0d0d899a778a40810be16))
 
 ## [1.8.0](https://github.com/thangvq95/thangvq-digital-hub/compare/v1.7.1...v1.8.0) (2026-05-28)
 
